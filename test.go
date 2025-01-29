@@ -1,34 +1,28 @@
-
+//package main
 
 import (
-	"context"
 	"fmt"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/resend/resend-go/v2"
 )
 
 func main() {
-	// Use the SetServerAPIOptions() method to set the version of the Stable API on the client
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI("mongodb+srv://vanspaul09:ab7vSvvo14nx7gN3@cluster0.euhiz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").SetServerAPIOptions(serverAPI)
+	apiKey := "re_QUQsC8qH_2rznRRpCysRkGNT4npLurqge"
 
-	// Create a new client and connect to the server
-	client, err := mongo.Connect(context.TODO(), opts)
+	client := resend.NewClient(apiKey)
+
+	params := &resend.SendEmailRequest{
+		From:    "onboarding@resend.dev",
+		To:      []string{"vanspaul09@gmail.com"},
+		Subject: "Hello World",
+		Html:    "<p>Congrats on sending your <strong>first email</strong>!</p>",
+	}
+
+	sent, err := client.Emails.Send(params)
+
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+	} else {
+		fmt.Println(sent)
 	}
-
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
-
-	// Send a ping to confirm a successful connection
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
-		panic(err)
-	}
-	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 }

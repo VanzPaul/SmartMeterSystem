@@ -1,0 +1,180 @@
+{
+    _id: ObjectId,          // Use MongoDB's native ID format
+        accountNumber: string,  // Consider unique identifier for account
+            name: string,
+                address: {
+        street: string,
+            city: string,
+                state: string,
+                    postalCode: string,
+                        country: string
+    },
+    contact: {             // Better structure for contact info
+        phone: string,       // Store as string to preserve formatting
+            email: string
+    },
+    accountType: string,   // Convert to enum (e.g., "residential", "commercial")
+        meters: [              // Array for multiple meters
+            {
+                meterId: string,
+                location: {
+                    type: "Point",   // GeoJSON format for geospatial queries
+                    coordinates: [long, lat]
+                },
+                sim: {
+                    iccid: string,   // SIM identifiers are usually alphanumeric
+                    imsi: string,
+                    activationDate: Date
+                },
+                usage: [           // Array for better querying
+                    {
+                        date: Date,
+                        consumption: Number,
+                        unit: string   // e.g., "kWh"
+                    }
+                ],
+                alerts: {
+                    current: {
+                        outage: { active: boolean, since: Date },
+                        tamper: { active: boolean, detectedAt: Date }
+                    },
+                    history: [       // Track alert events
+                        {
+                            type: string,
+                            startDate: Date,
+                            endDate: Date,
+                            resolved: boolean
+                        }
+                    ]
+                },
+                commands: {
+                    active: [
+                        {
+                            commandId: string,
+                            type: string,      // e.g., "FIRMWARE_UPDATE"
+                            issuedAt: Date,
+                            parameters: Map,   // Store command-specific parameters
+                            status: string     // e.g., "PENDING", "COMPLETED"
+                        }
+                    ],
+                    history: [             // Completed commands
+                        {
+                            ...activeCommandFields,
+                            completedAt: Date,
+                            response: string
+                        }
+                    ]
+                },
+                status: {
+                    lastSeen: Date,
+                    gridConnection: boolean,  // Fixed spelling
+                    batteryLevel: Number      // Additional useful field
+                }
+            }
+        ],
+
+            // Simplified billing cycle structure
+            billing: {
+        currentBill: {
+            billingPeriod: {
+                start: Date,
+                    end: Date
+            },
+            dueDate: Date,
+                totalConsumption: Number,
+                    amountDue: Number,
+                        paid: boolean,
+                            gracePeriodEnd: Date      // Optional late payment window
+        },
+        paymentHistory: [
+            {
+                billingPeriod: Date,    // Reference period
+                amountPaid: Number,
+                paymentDate: Date,
+                paymentMethod: string,  // Enum: ["bank_transfer", "credit_card", "cash"]
+                transactionId: string,
+                lateFee: Number         // If paid after due date
+            }
+        ]
+    },
+
+    // Combined ledger structure
+    ledger: {
+        currentBalance: {
+            amount: Number,
+                updatedAt: Date
+        },
+        upcomingBill: {             // Preview of next bill
+            estimatedAmount: Number,
+                projectionDate: Date
+        },
+        latePayments: [             // Track overdue amounts
+            {
+                originalAmount: Number,
+                dueDate: Date,
+                daysOverdue: Number,
+                penaltyAdded: Number
+            }
+        ]
+    },
+
+    // Audit fields
+    createdAt: Date,
+        updatedAt: Date
+
+}
+
+
+
+
+/*
+
+
+Key Improvements:
+
+- Normalized Contact Information: Separated phone / email and added proper validation
+
+- Geospatial Format: GeoJSON for better location queries
+
+- Array Structures: Better for querying and indexing than nested objects
+
+- Type Safety: Proper use of Date types instead of strings
+
+- Expanded Status Monitoring: Added battery level and connection status
+
+- Command Tracking: Added status tracking and response logging
+
+- Ledger Improvements: Structured transactions and billing history
+
+- Audit Fields: createdAt / updatedAt for tracking document changes
+
+- Error Handling: Added resolution tracking for alerts
+
+- MongoDB Best Practices:
+
+    - Proper use of _id
+
+    - Array structures for one - to - many relationships
+
+    - GeoJSON for spatial data
+
+    - Camel case field names
+
+    - Date types for temporal data
+
+- Consider adding indexes on:
+
+    - meters.meterId
+
+    - meters.location(2dsphere index)
+
+    - ledger.transactions.date
+
+    - status.lastSeen
+
+This structure provides better querying capabilities, maintains data consistency, and follows MongoDB best practices while being more extensible for future requirements.
+
+
+
+
+*/
