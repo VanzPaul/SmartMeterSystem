@@ -5,25 +5,63 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/shopspring/decimal"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// Enums for type safety
+type AccountType string
+
+const (
+	AccountTypeConsumer AccountType = "consumer"
+	AccountTypeBusiness AccountType = "business"
+)
+
+type ConsumerType string
+
+const (
+	ConsumerTypeResidential ConsumerType = "residential"
+	ConsumerTypeCommercial  ConsumerType = "commercial"
+)
+
+type CommandType string
+
+const (
+	CommandTypeMeterRead CommandType = "METER_READ"
+	CommandTypeReboot    CommandType = "REBOOT"
+)
+
+type CommandStatus string
+
+const (
+	CommandStatusPending   CommandStatus = "PENDING"
+	CommandStatusCompleted CommandStatus = "COMPLETED"
+)
+
+type PaymentMethod string
+
+const (
+	PaymentMethodCreditCard   PaymentMethod = "credit_card"
+	PaymentMethodBankTransfer PaymentMethod = "bank_transfer"
+)
+
+// Core account structure
 type Account struct {
 	ID            primitive.ObjectID `bson:"_id,omitempty"`
 	AccountNumber string             `bson:"accountNumber"`
 	Name          string             `bson:"name"`
 	Address       Address            `bson:"address"`
 	Contact       Contact            `bson:"contact"`
-	AccountType   string             `bson:"accountType"`
-	ConsumerType  string             `bson:"consumerType"`
+	AccountType   AccountType        `bson:"accountType"`
+	ConsumerType  ConsumerType       `bson:"consumerType"`
 	Meters        []Meter            `bson:"meters"`
 	Billing       Billing            `bson:"billing"`
 	Ledger        Ledger             `bson:"ledger"`
-	CreatedAt     time.Time          `bson:"createdAt"`
-	UpdatedAt     time.Time          `bson:"updatedAt"`
+	CreatedAt     int64              `bson:"createdAt"`
+	UpdatedAt     int64              `bson:"updatedAt"`
 }
 
 type Address struct {
@@ -31,7 +69,6 @@ type Address struct {
 	City       string `bson:"city"`
 	State      string `bson:"state"`
 	PostalCode string `bson:"postalCode"`
-	Country    string `bson:"country"`
 }
 
 type Contact struct {
@@ -55,15 +92,16 @@ type GeoJSON struct {
 }
 
 type SIM struct {
-	ICCID          string    `bson:"iccid"`
-	IMSI           string    `bson:"imsi"`
-	ActivationDate time.Time `bson:"activationDate"`
+	ICCID          string  `bson:"iccid"`
+	MobileNumber   string  `bson:"mobileNumber"`
+	DataUsage      float64 `bson:"dataUsage"`
+	ActivationDate int64   `bson:"activationDate"`
 }
 
 type Usage struct {
-	Date        time.Time `bson:"date"`
-	Consumption float64   `bson:"consumption"`
-	Unit        string    `bson:"unit"`
+	Date        int64   `bson:"date"`
+	Consumption float64 `bson:"consumption"`
+	Unit        string  `bson:"unit"`
 }
 
 type Alert struct {
@@ -77,15 +115,15 @@ type CurrentAlert struct {
 }
 
 type AlertStatus struct {
-	Active bool      `bson:"active"`
-	Since  time.Time `bson:"since,omitempty"`
+	Active bool   `bson:"active"`
+	Since  *int64 `bson:"since,omitempty"`
 }
 
 type AlertEvent struct {
-	Type      string    `bson:"type"`
-	StartDate time.Time `bson:"startDate"`
-	EndDate   time.Time `bson:"endDate"`
-	Resolved  bool      `bson:"resolved"`
+	Type      string `bson:"type"`
+	StartDate int64  `bson:"startDate"`
+	EndDate   int64  `bson:"endDate"`
+	Resolved  bool   `bson:"resolved"`
 }
 
 type Commands struct {
@@ -95,22 +133,22 @@ type Commands struct {
 
 type ActiveCommand struct {
 	CommandID  string                 `bson:"commandId"`
-	Type       string                 `bson:"type"`
-	IssuedAt   time.Time              `bson:"issuedAt"`
+	Type       CommandType            `bson:"type"`
+	IssuedAt   int64                  `bson:"issuedAt"`
 	Parameters map[string]interface{} `bson:"parameters"`
-	Status     string                 `bson:"status"`
+	Status     CommandStatus          `bson:"status"`
 }
 
 type HistoryCommand struct {
 	ActiveCommand `bson:",inline"`
-	CompletedAt   time.Time `bson:"completedAt"`
-	Response      string    `bson:"response"`
+	CompletedAt   int64  `bson:"completedAt"`
+	Response      string `bson:"response"`
 }
 
 type MeterStatus struct {
-	LastSeen       time.Time `bson:"lastSeen"`
-	GridConnection bool      `bson:"gridConnection"`
-	BatteryLevel   float64   `bson:"batteryLevel"`
+	LastSeen       int64   `bson:"lastSeen"`
+	GridConnection bool    `bson:"gridConnection"`
+	BatteryLevel   float64 `bson:"batteryLevel"`
 }
 
 type Billing struct {
@@ -119,24 +157,24 @@ type Billing struct {
 }
 
 type CurrentBill struct {
-	BillingPeriod    DateRange `bson:"billingPeriod"`
-	DueDate          time.Time `bson:"dueDate"`
-	TotalConsumption float64   `bson:"totalConsumption"`
-	AmountDue        float64   `bson:"amountDue"`
-	Paid             bool      `bson:"paid"`
+	BillingPeriod    DateRange       `bson:"billingPeriod"`
+	DueDate          int64           `bson:"dueDate"`
+	TotalConsumption decimal.Decimal `bson:"totalConsumption"`
+	AmountDue        decimal.Decimal `bson:"amountDue"`
+	Paid             bool            `bson:"paid"`
 }
 
 type DateRange struct {
-	Start time.Time `bson:"start"`
-	End   time.Time `bson:"end"`
+	Start int64 `bson:"start"`
+	End   int64 `bson:"end"`
 }
 
 type Payment struct {
-	BillingPeriod DateRange `bson:"billingPeriod"`
-	AmountPaid    float64   `bson:"amountPaid"`
-	PaymentDate   time.Time `bson:"paymentDate"`
-	PaymentMethod string    `bson:"paymentMethod"`
-	TransactionID string    `bson:"transactionId"`
+	BillingPeriod DateRange       `bson:"billingPeriod"`
+	AmountPaid    decimal.Decimal `bson:"amountPaid"`
+	PaymentDate   int64           `bson:"paymentDate"`
+	PaymentMethod PaymentMethod   `bson:"paymentMethod"`
+	TransactionID string          `bson:"transactionId"`
 }
 
 type Ledger struct {
@@ -145,13 +183,13 @@ type Ledger struct {
 }
 
 type Balance struct {
-	Amount    float64   `bson:"amount"`
-	UpdatedAt time.Time `bson:"updatedAt"`
+	Amount    decimal.Decimal `bson:"amount"`
+	UpdatedAt int64           `bson:"updatedAt"`
 }
 
 type UpcomingBill struct {
-	EstimatedAmount float64   `bson:"estimatedAmount"`
-	ProjectionDate  time.Time `bson:"projectionDate"`
+	EstimatedAmount decimal.Decimal `bson:"estimatedAmount"`
+	ProjectionDate  int64           `bson:"projectionDate"`
 }
 
 func main() {
@@ -182,17 +220,16 @@ func main() {
 	// Create sample account
 	sampleAccount := Account{
 		AccountNumber: "ACC-2023-001",
-		Name:          "John Doe",
+		Name:          "John Deere",
 		Address: Address{
-			Street:     "123 Main St",
-			City:       "New York",
-			State:      "NY",
-			PostalCode: "10001",
-			Country:    "USA",
+			Street:     "kaylaway",
+			City:       "Nasugbu",
+			State:      "Batangas",
+			PostalCode: "4231",
 		},
 		Contact: Contact{
-			Phone: "+1-555-123-4567",
-			Email: "john.doe@example.com",
+			Phone: "+639000000000",
+			Email: "john.deere@example.com",
 		},
 		AccountType:  "consumer",
 		ConsumerType: "residential",
@@ -204,13 +241,13 @@ func main() {
 					Coordinates: []float64{-73.935242, 40.730610},
 				},
 				SIM: SIM{
-					ICCID:          "8910042348034555366",
-					IMSI:           "310150123456789",
-					ActivationDate: time.Date(2023, 1, 15, 0, 0, 0, 0, time.UTC),
+					ICCID:        "8910042348034555366",
+					MobileNumber: "+639000000000",
+					DataUsage:    10.0,
 				},
 				Usage: []Usage{
 					{
-						Date:        time.Date(2023, 10, 1, 0, 0, 0, 0, time.UTC),
+						Date:        time.Date(2023, 10, 1, 0, 0, 0, 0, time.UTC).Unix(),
 						Consumption: 150.5,
 						Unit:        "kWh",
 					},
@@ -227,7 +264,7 @@ func main() {
 						{
 							CommandID: "CMD-001",
 							Type:      "METER_READ",
-							IssuedAt:  time.Now(),
+							IssuedAt:  time.Now().Unix(),
 							Parameters: map[string]interface{}{
 								"interval": "15m",
 							},
@@ -237,7 +274,7 @@ func main() {
 					History: []HistoryCommand{},
 				},
 				Status: MeterStatus{
-					LastSeen:       time.Now().Add(-30 * time.Minute),
+					LastSeen:       time.Now().Add(-30 * time.Minute).Unix(),
 					GridConnection: true,
 					BatteryLevel:   85.5,
 				},
@@ -246,22 +283,22 @@ func main() {
 		Billing: Billing{
 			CurrentBill: CurrentBill{
 				BillingPeriod: DateRange{
-					Start: time.Date(2023, 9, 1, 0, 0, 0, 0, time.UTC),
-					End:   time.Date(2023, 9, 30, 0, 0, 0, 0, time.UTC),
+					Start: time.Date(2023, 9, 1, 0, 0, 0, 0, time.UTC).Unix(),
+					End:   time.Date(2023, 9, 30, 0, 0, 0, 0, time.UTC).Unix(),
 				},
-				DueDate:          time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),
-				TotalConsumption: 450.0,
-				AmountDue:        85.50,
+				DueDate:          time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC).Unix(),
+				TotalConsumption: decimal.NewFromFloat(450.0),
+				AmountDue:        decimal.NewFromFloat(85.50),
 				Paid:             false,
 			},
 			PaymentHistory: []Payment{
 				{
 					BillingPeriod: DateRange{
-						Start: time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC),
-						End:   time.Date(2023, 8, 31, 0, 0, 0, 0, time.UTC),
+						Start: time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC).Unix(),
+						End:   time.Date(2023, 8, 31, 0, 0, 0, 0, time.UTC).Unix(),
 					},
-					AmountPaid:    82.75,
-					PaymentDate:   time.Date(2023, 9, 14, 0, 0, 0, 0, time.UTC),
+					AmountPaid:    decimal.NewFromFloat(82.75),
+					PaymentDate:   time.Date(2023, 9, 14, 0, 0, 0, 0, time.UTC).Unix(),
 					PaymentMethod: "credit_card",
 					TransactionID: "TX-20230914-001",
 				},
@@ -269,16 +306,16 @@ func main() {
 		},
 		Ledger: Ledger{
 			CurrentBalance: Balance{
-				Amount:    -85.50,
-				UpdatedAt: time.Now(),
+				Amount:    decimal.NewFromFloat(-85.50),
+				UpdatedAt: time.Now().Unix(),
 			},
 			UpcomingBill: UpcomingBill{
-				EstimatedAmount: 90.00,
-				ProjectionDate:  time.Date(2023, 11, 1, 0, 0, 0, 0, time.UTC),
+				EstimatedAmount: decimal.NewFromFloat(90.00),
+				ProjectionDate:  time.Date(2023, 11, 1, 0, 0, 0, 0, time.UTC).Unix(),
 			},
 		},
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().Unix(),
+		UpdatedAt: time.Now().Unix(),
 	}
 
 	// Insert document

@@ -23,7 +23,8 @@ Account{
 			},
 			SIM: SIM{
 				ICCID: "8910042348034555366",
-				mobileNumber: "+631234567890",
+				MobileNumber: "+631234567890",
+                DataUsage: 0.0,
 			},
 			Usage: []Usage{
 				{
