@@ -17,7 +17,7 @@ type Person struct {
 	Sex  string
 }
 
-func main() {
+func login() Person {
 	// Use the SetServerAPIOptions() method to set the version of the Stable API on the client
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI("mongodb+srv://vanspaul09:ab7vSvvo14nx7gN3@cluster0.euhiz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").SetServerAPIOptions(serverAPI)
@@ -63,11 +63,12 @@ func main() {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println(err)
-			return
+			panic(err)
 		}
 		panic(err)
 	}
-	fmt.Println("Result:")
-	fmt.Printf("ID: %s\nName: %s\nAge: %d\nSex: %s\n", result.ID.Hex(), result.Name, result.Age, result.Sex)
+	//fmt.Println("Result:")
+	//fmt.Printf("ID: %s\nName: %s\nAge: %d\nSex: %s\n", result.ID.Hex(), result.Name, result.Age, result.Sex)
 
+	return result
 }
