@@ -1,0 +1,104 @@
+Account{
+	AccountNumber: "ACC-2023-001",
+	Name: "John Doe",
+	Address: Address{
+		Street: "Calzada",	
+		City: "Balayan",	
+		State: "Batangas",	
+		PostalCode: "4213",
+	},
+	
+	Contact: Contact{
+		Phone: "+639928532715",	
+		Email: "john.doe@example.com",
+	},
+	AccountType: "consumer",
+	ConsumerType: "residential",
+	Meters: []Meter{
+		{	
+			MeterID: "MTR-001",
+			Location: GeoJSON{
+				Type: "Point",		
+				Coordinates: []float64{-73.935242, 40.730610},	
+			},
+			SIM: SIM{
+				ICCID: "8910042348034555366",
+				mobileNumber: "+631234567890",
+			},
+			Usage: []Usage{
+				{
+					Date: time.Date().Unix(),
+					ConsumptionKWH: 150.5,
+				},
+			},	
+			Alerts: Alert{			
+				Current: CurrentAlert{			
+					Outage: AlertStatus{
+						Active: false,
+						Date: nil,
+					},			
+					Tamper: AlertStatus{
+						Active: false,
+						Date: nil,
+					},			
+				},			
+				History: []AlertEvent{},			
+			},			
+			Commands: Commands{			
+				Active: []ActiveCommand{			
+					{			
+						CommandID: "CMD-001",			
+						Type: "METER_READ",			
+						IssuedAt: time.Now(),			
+						Parameters: map[string]interface{}{			
+							"interval": "15m",			
+						},			
+						Status: "PENDING",			
+					},			
+				},			
+				History: []HistoryCommand{},			
+			},			
+			Status: MeterStatus{			
+				LastSeen: time.Now().Add(-30 * time.Minute),			
+				GridConnection: true,			
+				BatteryLevel: 85.5,			
+				},		
+		},	
+	},	
+	Billing: Billing{	
+		CurrentBill: CurrentBill{	
+			BillingPeriod: DateRange{	
+				Start: time.Date(2023, 9, 1, 0, 0, 0, 0, time.UTC),	
+				End: time.Date(2023, 9, 30, 0, 0, 0, 0, time.UTC),	
+			},	
+			DueDate: time.Date(2023, 10, 15, 0, 0, 0, 0, time.UTC),	
+			TotalConsumption: 450.0,	
+			AmountDue: 85.50,	
+			Paid: false,	
+		},	
+		PaymentHistory: []Payment{	
+			{	
+				BillingPeriod: DateRange{	
+					Start: time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC),	
+					End: time.Date(2023, 8, 31, 0, 0, 0, 0, time.UTC),	
+				},	
+				AmountPaid: 82.75,	
+				PaymentDate: time.Date(2023, 9, 14, 0, 0, 0, 0, time.UTC),	
+				PaymentMethod: "credit_card",	
+				TransactionID: "TX-20230914-001",	
+			},	
+		},	
+	},	
+	Ledger: Ledger{	
+		CurrentBalance: Balance{	
+			Amount: -85.50,	
+			UpdatedAt: time.Now(),	
+		},	
+		UpcomingBill: UpcomingBill{	
+			EstimatedAmount: 90.00,	
+			ProjectionDate: time.Date(2023, 11, 1, 0, 0, 0, 0, time.UTC),	
+		},	
+	},	
+	CreatedAt: time.Now(),	
+	UpdatedAt: time.Now(),
+}
