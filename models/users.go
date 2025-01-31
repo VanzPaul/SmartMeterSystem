@@ -63,7 +63,7 @@ func NewSystemAdmin(id int, username, password, email string) *SystemAdmin {
 			UpdatedAt: time.Now(),
 			Role:      "SystemAdmin",
 		},
-			: 1,
+		AdminLevel: 1,
 	}
 }
 
