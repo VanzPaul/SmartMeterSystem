@@ -60,15 +60,6 @@ type FinancialAdminData struct {
 	AuditPrivileges bool     `bson:"audit_privileges"`
 }
 
-// Consumer (Your existing structure adapted)
-type ConsumerData struct {
-	LoyaltyPoints  int             `bson:"loyalty_points"`
-	ServiceAddress ServiceAddress  `bson:"service_address"`
-	Meters         []Meter         `bson:"meters"`
-	BillingProfile BillingProfile  `bson:"billing_profile"`
-	PaymentMethods []PaymentMethod `bson:"payment_methods"`
-}
-
 // Cashier
 type CashierData struct {
 	TillNumber     int     `bson:"till_number"`
