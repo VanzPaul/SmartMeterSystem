@@ -87,14 +87,13 @@ type GeoJSON struct {
 type SIM struct {
 	ICCID          string  `bson:"iccid"`
 	MobileNumber   string  `bson:"mobileNumber"`
-	DataUsage      float64 `bson:"dataUsage"`
+	DataUsageMb    float64 `bson:"dataUsage"`
 	ActivationDate int64   `bson:"activationDate"`
 }
 
 type Usage struct {
-	Date        int64   `bson:"date"`
-	Consumption float64 `bson:"consumption"`
-	Unit        string  `bson:"unit"`
+	Date           int64   `bson:"date"`
+	ConsumptionKwh float64 `bson:"consumption"`
 }
 
 type Alert struct {
