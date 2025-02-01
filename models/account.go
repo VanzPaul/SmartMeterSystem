@@ -19,12 +19,10 @@ const (
 
 type Account struct {
 	ID               primitive.ObjectID `bson:"_id,omitempty"`
-	Username         string             `bson:"username"`
 	HashedPassword   string             `bson:"hashed_password"`
 	Email            string             `bson:"email"`
-	ContactInfo      Contact            `bson:"contact_info"`
-	CreatedAt        int64              `bson:"created_at"` // Unix timestamp
-	UpdatedAt        int64              `bson:"updated_at"` // Unix timestamp
+	CreatedAt        int64              `bson:"created_at"`
+	UpdatedAt        int64              `bson:"updated_at"`
 	Role             Role               `bson:"role"`
 	Status           AccountStatus      `bson:"status"`
 	RoleSpecificData interface{}        `bson:"role_specific_data"`
@@ -33,14 +31,8 @@ type Account struct {
 
 type AccountStatus struct {
 	IsActive    bool   `bson:"is_active"`
-	Deactivated *int64 `bson:"deactivated,omitempty"` // Unix timestamp pointer
+	Deactivated *int64 `bson:"deactivated,omitempty"`
 	Reason      string `bson:"reason,omitempty"`
-}
-
-type Contact struct {
-	Phone       string `bson:"phone"`
-	Alternative string `bson:"alternative,omitempty"`
-	Address     string `bson:"address,omitempty"`
 }
 
 type Metadata struct {
