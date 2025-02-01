@@ -26,7 +26,7 @@ type Account struct {
 	Role             Role               `bson:"role"`
 	Status           AccountStatus      `bson:"status"`
 	RoleSpecificData interface{}        `bson:"role_specific_data"`
-	Metadata         Metadata           `bson:"metadata"`
+	//Metadata         Metadata           `bson:"metadata"`
 }
 
 type AccountStatus struct {
@@ -34,6 +34,8 @@ type AccountStatus struct {
 	Deactivated *int64 `bson:"deactivated,omitempty"`
 	Reason      string `bson:"reason,omitempty"`
 }
+
+/*
 
 type Metadata struct {
 	LastLogin   int64             `bson:"last_login"`
@@ -94,3 +96,5 @@ type ServiceAddress struct {
 	PostalCode  string  `bson:"postal_code"`
 	ServiceType string  `bson:"service_type"`
 }
+
+*/
