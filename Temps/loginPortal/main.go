@@ -20,20 +20,14 @@ type Login struct {
 var users = map[string]Login{}
 
 func main() {
-	http.HandleFunc("/register", register)
-	http.HandleFunc("/login", login)
+	http.HandleFunc("POST /register", register)
+	http.HandleFunc("POST /login", login)
 	http.HandleFunc("/logout", logout)
-	http.HandleFunc("/protected", protected)
+	http.HandleFunc("POST /protected", protected)
 	http.ListenAndServe(":8080", nil)
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		er := http.StatusMethodNotAllowed
-		http.Error(w, "Invalid Method", er)
-		return
-	}
-
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
@@ -58,12 +52,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		er := http.StatusMethodNotAllowed
-		http.Error(w, "Invalid Method", er)
-		return
-	}
-
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
@@ -102,12 +90,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func protected(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		er := http.StatusMethodNotAllowed
-		http.Error(w, "Invalid Method", er)
-		return
-	}
-
 	if err := Authorize(r); err != nil {
 		er := http.StatusUnauthorized
 		http.Error(w, "Unauthorized", er)
