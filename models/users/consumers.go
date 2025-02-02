@@ -92,8 +92,8 @@ type SIM struct {
 }
 
 type Usage struct {
-	Date           int64   `bson:"date"`
-	ConsumptionKwh float64 `bson:"consumption"`
+	Date int64   `bson:"date"`
+	Kwh  float64 `bson:"consumption"`
 }
 
 type Alert struct {
