@@ -1,4 +1,4 @@
 // [x] placed all routes in /routes/route.go
 // [x] login portal is now working in root main.go
 // [x] upload model-test data in mongodb
-// [ ] retrieve the model-test data in mongo db
+// [x] retrieve the model-test data in mongo db
