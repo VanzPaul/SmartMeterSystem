@@ -18,6 +18,7 @@ type Database interface {
 	Delete(ctx context.Context, filter interface{}) (*mongo.DeleteResult, error)
 	Find(ctx context.Context, filter interface{}, results interface{}, opts ...*options.FindOptions) error
 	FindOne(ctx context.Context, filter interface{}, result interface{}, opts ...*options.FindOneOptions) error
+	Aggregate(ctx context.Context, pipeline interface{}, results interface{}) error // New method for aggregation
 	Close(ctx context.Context) error
 }
 
@@ -34,12 +35,10 @@ func NewMongoDBController(uri, dbName, collName string) (*MongoDBController, err
 	if err != nil {
 		return nil, err
 	}
-
 	// Ping the database to verify the connection
 	if err := client.Ping(context.Background(), nil); err != nil {
 		return nil, err
 	}
-
 	return &MongoDBController{
 		client:     client,
 		collection: client.Database(dbName).Collection(collName),
@@ -96,7 +95,6 @@ func (m *MongoDBController) Find(ctx context.Context, filter interface{}, result
 		return err
 	}
 	defer cursor.Close(ctx)
-
 	if err := cursor.All(ctx, results); err != nil {
 		return err
 	}
@@ -111,7 +109,6 @@ func (m *MongoDBController) FindOne(ctx context.Context, filter interface{}, res
 	if result == nil {
 		return errors.New("result target cannot be nil")
 	}
-
 	singleResult := m.collection.FindOne(ctx, filter, opts...)
 	if err := singleResult.Err(); err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -119,16 +116,7 @@ func (m *MongoDBController) FindOne(ctx context.Context, filter interface{}, res
 		}
 		return err
 	}
-
 	return singleResult.Decode(result)
-}
-
-// Close disconnects the MongoDB client.
-func (m *MongoDBController) Close(ctx context.Context) error {
-	if m.client == nil {
-		return nil // Already closed or not initialized
-	}
-	return m.client.Disconnect(ctx)
 }
 
 // PaginatedFind supports paginated queries.
@@ -136,18 +124,31 @@ func (m *MongoDBController) PaginatedFind(ctx context.Context, filter interface{
 	if page < 1 || perPage < 1 {
 		return errors.New("page and perPage must be greater than zero")
 	}
-
 	opts := options.Find().
 		SetSkip((page - 1) * perPage).
 		SetLimit(perPage)
-
 	cursor, err := m.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return err
 	}
 	defer cursor.Close(ctx)
-
 	return cursor.All(ctx, results)
+}
+
+// Aggregate executes an aggregation pipeline and returns the results.
+func (m *MongoDBController) Aggregate(ctx context.Context, pipeline interface{}, results interface{}) error {
+	if pipeline == nil {
+		return errors.New("pipeline cannot be nil")
+	}
+	cursor, err := m.collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		return err
+	}
+	defer cursor.Close(ctx)
+	if err := cursor.All(ctx, results); err != nil {
+		return err
+	}
+	return nil
 }
 
 // WithTransaction supports transactional operations.
@@ -157,7 +158,14 @@ func (m *MongoDBController) WithTransaction(ctx context.Context, fn func(sessCtx
 		return err
 	}
 	defer session.EndSession(ctx)
-
 	_, err = session.WithTransaction(ctx, fn)
 	return err
+}
+
+// Close disconnects the MongoDB client.
+func (m *MongoDBController) Close(ctx context.Context) error {
+	if m.client == nil {
+		return nil // Already closed or not initialized
+	}
+	return m.client.Disconnect(ctx)
 }
