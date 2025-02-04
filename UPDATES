@@ -2,3 +2,5 @@
 // [x] login portal is now working in root main.go
 // [x] upload model-test data in mongodb
 // [x] retrieve the model-test data in mongo db
+// [ ] 1.1 connect the login function in root/main with mongodb (save the register credentials to mongodb)
+// [ ] 1.2 connect the login function in root/main with mongodb (return the user credentials when successfully logged in)

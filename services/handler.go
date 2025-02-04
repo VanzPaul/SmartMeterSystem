@@ -10,7 +10,7 @@ import (
 )
 
 type login struct {
-	HashedPassword, SessionToken, CSRFToken string
+	HashedPassword, AccountNo, essionToken, CSRFToken string
 }
 
 // Database. change this with mongodb
@@ -19,6 +19,7 @@ var users = map[string]login{}
 func Register(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+	accountNo := r.FormValue("accountNo")
 
 	if len(username) < 8 || len(password) < 8 {
 		er := http.StatusNotAcceptable
@@ -35,6 +36,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	hashedPassword, _ := utils.HashPassword(password)
 	users[username] = login{
 		HashedPassword: hashedPassword,
+		AccountNo:      accountNo,
 	}
 
 	fmt.Fprintln(w, "User Registered Succesfulluy")
