@@ -6,6 +6,7 @@ import (
 	"github.com/resend/resend-go/v2"
 )
 
+// Send Email
 func main() {
 	apiKey := "re_QUQsC8qH_2rznRRpCysRkGNT4npLurqge"
 

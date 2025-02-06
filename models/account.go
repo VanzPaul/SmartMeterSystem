@@ -4,6 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// FIXME: Separate Account, Consumer, and Meter into different databases
 // ---Unified Base Account Structure---//
 type Role string
 
@@ -18,14 +19,14 @@ const (
 )
 
 type Account struct {
-	ID               primitive.ObjectID `bson:"_id,omitempty"`
-	HashedPassword   string             `bson:"hashed_password"`
-	Email            string             `bson:"email"`
-	CreatedAt        int64              `bson:"created_at"`
-	UpdatedAt        int64              `bson:"updated_at"`
-	Role             Role               `bson:"role"`
-	Status           AccountStatus      `bson:"status"`
-	RoleSpecificData interface{}        `bson:"role_specific_data"`
+	ID                 primitive.ObjectID `bson:"_id,omitempty"`
+	HashedPassword     string             `bson:"hashed_password"`
+	Email              string             `bson:"email"`
+	CreatedAt          int64              `bson:"created_at"`
+	UpdatedAt          int64              `bson:"updated_at"`
+	Role               Role               `bson:"role"`
+	Status             AccountStatus      `bson:"status"`
+	RoleSpecificDataID primitive.ObjectID `bson:"role_specific_data_id"`
 	//Metadata         Metadata           `bson:"metadata"`
 }
 
