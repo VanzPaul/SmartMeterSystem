@@ -1,17 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/vanspaul/SmartMeterSystem/routes"
 )
 
+// FIXME: session token and authorization middleware
 func main() {
-	// Define all routes in a single function
-	routes.SetupRoutes()
+	// Handle the routes
+	globalMiddleware := routes.ServeMuxInit()
 
 	// Start the server
-	fmt.Println("Server is running on :8080")
-	http.ListenAndServe(":8080", nil)
+	log.Println("Server is running on :8080")
+	http.ListenAndServe(":8080", globalMiddleware)
 }

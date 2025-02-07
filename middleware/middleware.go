@@ -1,0 +1,39 @@
+package middleware
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/vanspaul/SmartMeterSystem/services"
+)
+
+// ChainMiddleware chains multiple middleware functions together.
+func ChainMiddleware(middlewares ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
+	return func(final http.Handler) http.Handler {
+		for i := len(middlewares) - 1; i >= 0; i-- {
+			final = middlewares[i](final)
+		}
+		return final
+	}
+}
+
+// AuthMiddleware validates the session token and CSRF token using the Authorize function from the services package.
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Call the Authorize function to validate the session and CSRF tokens
+		if err := services.Authorize(r); err != nil {
+			log.Printf("Authentication failed: %v", err)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// LoggingMiddleware logs incoming requests.
+func LoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Request received: %s %s\n", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
