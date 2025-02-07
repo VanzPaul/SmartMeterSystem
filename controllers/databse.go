@@ -11,7 +11,6 @@ import (
 
 // Database interface defines the contract for database operations.
 type Database interface {
-	Init(ctx context.Context) error
 	Create(ctx context.Context, document interface{}) (*mongo.InsertOneResult, error)
 	Replace(ctx context.Context, filter, replacement interface{}) (*mongo.UpdateResult, error)
 	Update(ctx context.Context, filter, update interface{}) (*mongo.UpdateResult, error)
@@ -43,14 +42,6 @@ func NewMongoDBController(uri, dbName, collName string) (*MongoDBController, err
 		client:     client,
 		collection: client.Database(dbName).Collection(collName),
 	}, nil
-}
-
-// Init initializes the MongoDB connection (optional if using NewMongoDBController).
-func (m *MongoDBController) Init(ctx context.Context) error {
-	if m.client == nil || m.collection == nil {
-		return errors.New("controller not initialized")
-	}
-	return nil
 }
 
 // Create inserts a document into the collection.
