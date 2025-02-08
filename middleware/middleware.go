@@ -4,7 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vanspaul/SmartMeterSystem/services"
+	"github.com/vanspaul/SmartMeterSystem/models"
+	"github.com/vanspaul/SmartMeterSystem/utils"
 )
 
 // ChainMiddleware chains multiple middleware functions together.
@@ -17,11 +18,14 @@ func ChainMiddleware(middlewares ...func(http.Handler) http.Handler) func(http.H
 	}
 }
 
-// AuthMiddleware validates the session token and CSRF token using the Authorize function from the services package.
+// AuthMiddleware validates the session token and CSRF token using the Authorize function.
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Retrieve the singleton store instance
+		store := models.GetStore()
+
 		// Call the Authorize function to validate the session and CSRF tokens
-		if err := services.Authorize(r); err != nil {
+		if err := utils.Authorize(r, store.Users, store.Sessions); err != nil {
 			log.Printf("Authentication failed: %v", err)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return

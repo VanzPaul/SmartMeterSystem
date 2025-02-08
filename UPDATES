@@ -1,7 +1,1 @@
-// [x] placed all routes in /routes/route.go
-// [x] login portal is now working in root main.go
-// [x] upload model-test data in mongodb
-// [x] retrieve the model-test data in mongo db
-// [ ] when retrieving the model-test data, limit the items in usage to 30 latest items based on the date
-// [ ] 1.1 connect the login function in root/main with mongodb (save the register credentials to mongodb)
-// [ ] 1.2 connect the login function in root/main with mongodb (return the user credentials when successfully logged in)
+// [ ] Add a layer in the authentication middleware that blocks access to certain routes based on their account type. 

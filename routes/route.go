@@ -17,7 +17,7 @@ func ServeMuxInit() http.Handler {
 	// Group routes together
 	mux.HandleFunc("POST /register", services.Register) // Register public routes
 	mux.HandleFunc("POST /login", services.Login)
-	mux.HandleFunc("/logout", services.Logout)
+	protectedMux.HandleFunc("/logout", services.Logout)
 	protectedMux.HandleFunc("POST /dashboard", services.Dashboard) // Register protected routes
 
 	// Apply AuthMiddleware

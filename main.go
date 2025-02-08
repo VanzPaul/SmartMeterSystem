@@ -7,7 +7,6 @@ import (
 	"github.com/vanspaul/SmartMeterSystem/routes"
 )
 
-// FIXME: session token and authorization middleware
 func main() {
 	// Handle the routes
 	globalMiddleware := routes.ServeMuxInit()
