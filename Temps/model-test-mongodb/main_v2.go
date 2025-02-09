@@ -28,51 +28,6 @@ func main() {
 		fmt.Println("err")
 	}
 	fmt.Printf("MeterId: %s\tAccountingId: %s\tConsumerId: %s\tAccountId: %s\n", meterid, accountingid, consumerid, accountid)
-
-	// consumer := client.Consumer{
-	// 	AccountNumber: "dfapjdfpajdaf",
-	// 	Name:          "John Doe",
-	// 	Address: client.Address{
-	// 		Street:     "Calzada",
-	// 		City:       "Balayan",
-	// 		State:      "Batangas",
-	// 		PostalCode: "4230",
-	// 	},
-	// 	Contact: client.Contact{
-	// 		Phone: "09000000000",
-	// 		Email: "johndoe@mail.com",
-	// 	},
-	// 	MeterIDs: insertResult.InsertedID,
-	// 	AccountingID: ,
-	// }
-
-	// acc := models.Account{
-	// 	HashedPassword:     "wpefojpanfasdfuivabnib",
-	// 	Email:              "johndoe@mail.com",
-	// 	CreatedAt:          time.Now().Unix(),
-	// 	UpdatedAt:          time.Now().Unix(),
-	// 	Role:               models.RoleConsumer,
-	// 	RoleSpecificDataId: ,
-	// 	Status: models.AccountStatus{
-	// 		IsActive: true,
-	// 	},
-	// }
-
-	// // Convert the struct to BSON
-	// bsonBytes, err := bson.Marshal(acc)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// // Insert a document
-	// insertResult, err := controller.Create(context.Background(), bsonBytes)
-	// if err != nil {
-	// 	log.Fatalf("Failed to insert document: %v", err)
-	// }
-	// fmt.Printf("Inserted document with ID: %v\n", insertResult.InsertedID)
-
-	//jsonF, _ := json.MarshalIndent(acc, "", "	")
-	//fmt.Println(string(jsonF))
 }
 
 func createMeter() (primitive.ObjectID, error) {
@@ -278,11 +233,6 @@ func createConsumer(meterId []primitive.ObjectID, accountingId primitive.ObjectI
 		}
 	}()
 
-	// Initialize the controller (optional if using NewMongoDBController)
-	if err := controller.Init(context.Background()); err != nil {
-		log.Fatalf("Failed to initialize MongoDB controller: %v", err)
-	}
-
 	// Insert meter document
 	dataBson, err := bson.Marshal(client.Consumer{
 		AccountNumber: "ACC-2023-001",
@@ -339,11 +289,6 @@ func createAccount(roledataid primitive.ObjectID) (primitive.ObjectID, error) {
 			log.Printf("Failed to close MongoDB connection: %v", err)
 		}
 	}()
-
-	// Initialize the controller (optional if using NewMongoDBController)
-	if err := controller.Init(context.Background()); err != nil {
-		log.Fatalf("Failed to initialize MongoDB controller: %v", err)
-	}
 
 	// Insert meter document
 	dataBson, err := bson.Marshal(models.Account{

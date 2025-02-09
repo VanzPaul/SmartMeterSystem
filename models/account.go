@@ -19,21 +19,20 @@ const (
 )
 
 type Account struct {
-	ID                 primitive.ObjectID `bson:"_id,omitempty"`
-	HashedPassword     string             `bson:"hashed_password"`
-	Email              string             `bson:"email"`
-	CreatedAt          int64              `bson:"created_at"`
-	UpdatedAt          int64              `bson:"updated_at"`
-	Role               Role               `bson:"role"`
-	Status             AccountStatus      `bson:"status"`
-	RoleSpecificDataID primitive.ObjectID `bson:"role_specific_data_id"`
-	//Metadata         Metadata           `bson:"metadata"`
+	ID                 primitive.ObjectID `bson:"_id,omitempty" validate:"-"`
+	HashedPassword     string             `bson:"hashed_password" validate:"required,min=8"`                                                                              // Password must be at least 8 characters
+	Email              string             `bson:"email" validate:"required,email"`                                                                                        // Email must be valid
+	CreatedAt          int64              `bson:"created_at" validate:"required"`                                                                                         // Must be a valid timestamp
+	UpdatedAt          int64              `bson:"updated_at" validate:"required"`                                                                                         // Must be a valid timestamp
+	Role               Role               `bson:"role" validate:"oneof=system_admin financial_admin hr_admin customer_service_admin operations_monitor cashier consumer"` // Only predefined roles allowed
+	Status             AccountStatus      `bson:"status" validate:"required"`
+	RoleSpecificDataID primitive.ObjectID `bson:"role_specific_data_id" validate:"required"` // Must be a valid ObjectID
 }
 
 type AccountStatus struct {
-	IsActive    bool   `bson:"is_active"`
-	Deactivated *int64 `bson:"deactivated,omitempty"`
-	Reason      string `bson:"reason,omitempty"`
+	IsActive    bool   `bson:"is_active" validate:"required"`                 // Must be true or false
+	Deactivated *int64 `bson:"deactivated,omitempty" validate:"omitempty"`    // Optional, but must be a valid timestamp if present
+	Reason      string `bson:"reason,omitempty" validate:"omitempty,max=255"` // Optional, but max length 255 if present
 }
 
 /*

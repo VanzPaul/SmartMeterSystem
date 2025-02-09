@@ -1,1 +1,2 @@
+// [x] Centralize the authentication in the authentication middleware
 // [ ] Add a layer in the authentication middleware that blocks access to certain routes based on their account type. 

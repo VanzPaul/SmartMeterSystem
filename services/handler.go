@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,11 +27,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO:
+	// create a document in mongodb using services/createDocument()
 	hashedPassword, _ := utils.HashPassword(password)
 	store.Users[username] = models.LoginData{
 		HashedPassword: hashedPassword,
 		AccountNo:      accountNo,
 	}
+
+	// Convert the user struct to JSON
+	jsonData, _ := json.MarshalIndent(store.Users[username], "", "  ")
+	log.Printf("store.Users[%s]: %s", username, string(jsonData))
 
 	fmt.Fprintln(w, "User Registered Successfully")
 }

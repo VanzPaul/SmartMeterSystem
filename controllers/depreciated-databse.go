@@ -1,5 +1,6 @@
 package controllers
 
+/*
 import (
 	"context"
 	"errors"
@@ -160,3 +161,4 @@ func (m *MongoDBController) Close(ctx context.Context) error {
 	}
 	return m.client.Disconnect(ctx)
 }
+*/
