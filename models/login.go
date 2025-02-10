@@ -1,5 +1,6 @@
 package models
 
+// FIXME: remove HashedPassword, AccountNo,
 type LoginData struct {
 	HashedPassword, AccountNo, SessionToken, CSRFToken string
 }

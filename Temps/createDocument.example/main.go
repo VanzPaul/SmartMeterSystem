@@ -1,23 +1,28 @@
 package main
 
 import (
+	"context"
 	"log"
 	"time"
 
+	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/controllers"
 	"github.com/vanspaul/SmartMeterSystem/models"
 	"github.com/vanspaul/SmartMeterSystem/models/client"
 	"github.com/vanspaul/SmartMeterSystem/services"
 )
 
-// TODO: Implement this sample usage of /controllers/database.go
+// REMINDER
 func main() {
-	// MongoDB connection details
-	uri := "mongodb+srv://vanspaul09:ab7vSvvo14nx7gN3@cluster0.euhiz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-	dbName := "system_data"
+	// Create a root context with a timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	config.LoadEnv()
+	controllers.Init(ctx)
 
 	// Create a new MongoDB controller
-	db, dbErr := controllers.NewMongoDB(uri, dbName)
+	db, dbErr := controllers.NewMongoDB(ctx, uri, dbName)
 	if dbErr != nil {
 		log.Printf("Err creating new MongoDB: %s\n", dbErr)
 	}

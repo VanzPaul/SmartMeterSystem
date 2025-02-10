@@ -1,125 +1,147 @@
-The issue you're encountering is due to the fact that the `Logout` endpoint requires both a valid session token **and** a CSRF token for authentication. In your `curl` request, you provided the `session_token` cookie but did not include the `X-CSRF-Token` header. As a result, the server detected a mismatch between the expected CSRF token and the one provided (or lack thereof).
+From the logs and your `curl` commands, it seems that the issue lies in how the `/client/dashboard` route is being accessed. Specifically:
 
-### Problem Analysis
-1. **CSRF Token Missing**:
-   - The `authorize` function in the `services` package checks for the presence of the `X-CSRF-Token` header and validates it against the stored CSRF token for the user.
-   - Since the `X-CSRF-Token` header was not included in your `curl` request, the server logged a CSRF token mismatch error.
+1. **Incorrect HTTP Method**:
+   - The `Protected` handler is registered as a `GET` route (`GET /dashboard`) in your `protectedMux`. However, you are sending a `POST` request to `/client/dashboard`.
 
-2. **Session Token Validity**:
-   - The `session_token` cookie you provided (`ucGFf4MyeGjNdN5dWl7hGSA9OsiH6cNud8wKEoQ87TU=`) appears to be valid, as the server did not log a session token mismatch error.
-
-3. **Error Response**:
-   - The server returned `"Unauthorized"` with a `401 Unauthorized` status code because the CSRF token validation failed.
+2. **Route Mismatch**:
+   - Since the `ServeMux` does not find a matching `POST` route for `/client/dashboard`, it defaults to returning an `Unauthorized` error (likely from middleware or default behavior).
 
 ---
 
-### Solution
-To resolve this issue, you need to include the `X-CSRF-Token` header in your `curl` request. The CSRF token should match the one stored in the server's database for the user associated with the session token.
+### Solution:
+
+You need to send a `GET` request to `/client/dashboard` instead of a `POST` request. Here's the corrected workflow:
 
 ---
 
-### Steps to Fix
+### Corrected Workflow:
 
-#### 1. Retrieve the CSRF Token
-After logging in, the server sets the `csrf_token` cookie. You can extract this value from the login response or inspect it using browser developer tools or the `-v` flag with `curl`.
-
-For example:
+#### 1. **Register a User**:
 ```bash
-curl -v -X POST http://localhost:8080/login \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -d "username=testuser&password=securepassword123"
+curl -X POST "http://localhost:8080/register" \
+     -d "username=testuser" \
+     -d "password=securepassword123" \
+     -d "accountNo=123456789"
 ```
 
-Look for the `Set-Cookie` header in the response:
+**Expected Output:**
 ```
-Set-Cookie: csrf_token=yzpI3I7G4LPXMWCytv7yFEpbcCAhVS7bhp8OxD1aIwk=; Expires=...; HttpOnly=false
-```
-
-In this case, the CSRF token is `yzpI3I7G4LPXMWCytv7yFEpbcCAhVS7bhp8OxD1aIwk=`.
-
----
-
-#### 2. Include the CSRF Token in the Logout Request
-Update your `curl` command to include the `X-CSRF-Token` header with the correct CSRF token value.
-
-```bash
-curl -X GET http://localhost:8080/logout \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -H "Cookie: session_token=ucGFf4MyeGjNdN5dWl7hGSA9OsiH6cNud8wKEoQ87TU=" \
-     -H "X-CSRF-Token: yzpI3I7G4LPXMWCytv7yFEpbcCAhVS7bhp8OxD1aIwk=" \
-     -d "username=testuser"
+User Registered Successfully
 ```
 
 ---
 
-### Expected Response
-If both the session token and CSRF token are valid, the server will respond with:
-```
-Logged Out Successfully!
+#### 2. **Login**:
+```bash
+curl -X POST "http://localhost:8080/login" \
+     -d "username=testuser" \
+     -d "password=securepassword123" \
+     -v
 ```
 
-Additionally, the server will clear the `session_token` and `csrf_token` cookies by setting their expiration dates to a past time.
+**Sample Response Headers (Success):**
+```
+Set-Cookie: session_token=<session_token_value>; HttpOnly; Expires=<expiry_time>
+Set-Cookie: csrf_token=<csrf_token_value>; Expires=<expiry_time>
+```
+
+Save the `session_token` and `csrf_token` values from the response headers.
 
 ---
 
-### Debugging Tips
-1. **Inspect Cookies**:
-   - Use the `-v` flag with `curl` to view the `Set-Cookie` headers in the login response:
-     ```bash
-     curl -v -X POST http://localhost:8080/login \
-          -H "Content-Type: application/x-www-form-urlencoded" \
-          -d "username=testuser&password=securepassword123"
-     ```
+#### 3. **Access Protected Route**:
+Use a `GET` request to access `/client/dashboard` with the correct query parameter, cookies, and headers:
 
-2. **Verify CSRF Token**:
-   - Ensure that the `X-CSRF-Token` header matches the `csrf_token` cookie value.
-
-3. **Server Logs**:
-   - Check the server logs for detailed error messages. For example, if the CSRF token is invalid, the server will log:
-     ```
-     CSRF token mismatch: <provided_token> != <expected_token>
-     ```
-
----
-
-### Example Workflow
-
-#### Step 1: Register a User
 ```bash
-curl -X POST http://localhost:8080/register \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -d "username=testuser&password=securepassword123&accountNo=123456789"
+curl -X GET "http://localhost:8080/client/dashboard?username=testuser" \
+     -H "X-CSRF-Token: <csrf_token_value>" \
+     -b "session_token=<session_token_value>"
 ```
 
-#### Step 2: Login and Extract Tokens
+Replace `<csrf_token_value>` and `<session_token_value>` with the values obtained from the login response.
+
+**Example Command:**
 ```bash
-curl -v -X POST http://localhost:8080/login \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -d "username=testuser&password=securepassword123"
+curl -X GET "http://localhost:8080/client/dashboard?username=testuser" \
+     -H "X-CSRF-Token: KlZ3dcPkl7bQsLE2U82lYrvdMiN_Oif31SMfMJn67fk=" \
+     -b "session_token=Re_xlsB8IcPVMWrtUMfqL-YKAyQOc4X-yZOXq5waub8="
 ```
 
-Extract the `session_token` and `csrf_token` from the response headers.
-
-#### Step 3: Access a Protected Route
-```bash
-curl -X POST http://localhost:8080/client/dashboard \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -H "Cookie: session_token=<SESSION_TOKEN>" \
-     -H "X-CSRF-Token: <CSRF_TOKEN>" \
-     -d "username=testuser"
+**Expected Output (Success):**
 ```
-
-#### Step 4: Logout
-```bash
-curl -X GET http://localhost:8080/logout \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -H "Cookie: session_token=<SESSION_TOKEN>" \
-     -H "X-CSRF-Token: <CSRF_TOKEN>" \
-     -d "username=testuser"
+CSRF validation successful! Welcome, testuser
 ```
 
 ---
 
-### Final Notes
-- Always ensure that both the `session_token` cookie and `X-CSRF-Token` header are included in requests to protected routes and logout endpoints.
-- If you encounter further issues, check the server logs for detailed error messages and verify that the tokens are being correctly extracted and used in your requests.
+### Key Changes:
+
+1. **Switch to `GET` Request**:
+   - The `Protected` handler is registered as a `GET` route in your `protectedMux`. Sending a `POST` request will not match this route.
+
+2. **Pass `username` as a Query Parameter**:
+   - Use `?username=testuser` in the URL instead of passing it as form data (`-d`). This ensures that the `username` is correctly retrieved using `r.FormValue("username")`.
+
+3. **Verify Middleware**:
+   - Ensure that the `AuthMiddleware` is applied only to the `protectedMux` and does not block valid requests.
+
+---
+
+### Debugging Tips:
+
+1. **Log Incoming Requests**:
+   Add debug logs to the `authorize` function to confirm the values of `username`, `session_token`, and `csrf_token` during the request:
+   ```go
+   func authorize(r *http.Request) error {
+       username := r.FormValue("username")
+       fmt.Println("Username:", username)
+       user, ok := users[username]
+       if !ok {
+           fmt.Println("User not found:", username)
+           return ErrAuth
+       }
+       st, err := r.Cookie("session_token")
+       if err != nil || st.Value != user.SessionToken {
+           fmt.Println("Session token mismatch:", st.Value, "!=", user.SessionToken)
+           return ErrAuth
+       }
+       csrf := r.Header.Get("X-CSRF-Token")
+       if csrf != user.CSRFToken || csrf == "" {
+           fmt.Println("CSRF token mismatch:", csrf, "!=", user.CSRFToken)
+           return ErrAuth
+       }
+       return nil
+   }
+   ```
+
+2. **Check Middleware Configuration**:
+   Verify that the `ChainMiddleware` function applies the `AuthMiddleware` correctly to the `protectedMux`.
+
+3. **Test with Verbose Output**:
+   Use the `-v` flag with `curl` to inspect the request and response headers:
+   ```bash
+   curl -X GET "http://localhost:8080/client/dashboard?username=testuser" \
+        -H "X-CSRF-Token: KlZ3dcPkl7bQsLE2U82lYrvdMiN_Oif31SMfMJn67fk=" \
+        -b "session_token=Re_xlsB8IcPVMWrtUMfqL-YKAyQOc4X-yZOXq5waub8=" \
+        -v
+   ```
+
+---
+
+### Example Logs After Fix:
+
+If everything is configured correctly, you should see logs like this on the server:
+
+```
+2025/02/07 13:23:59 Request received: GET /client/dashboard
+Username: testuser
+Session Token: Re_xlsB8IcPVMWrtUMfqL-YKAyQOc4X-yZOXq5waub8=
+CSRF Token: KlZ3dcPkl7bQsLE2U82lYrvdMiN_Oif31SMfMJn67fk=
+CSRF validation successful! Welcome, testuser
+```
+
+---
+
+### Conclusion:
+
+The main issue was sending a `POST` request to a `GET` route. By switching to a `GET` request and ensuring the `username` is passed as a query parameter, the `Protected` handler should work as expected. Always double-check the HTTP method and route configuration when debugging such issues.

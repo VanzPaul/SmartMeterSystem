@@ -1,24 +1,21 @@
 package models
 
-import "github.com/vanspaul/SmartMeterSystem/models/client"
-
-type Config struct {
-	MongoURI string `env:"MONGO_URI"`
-	DBName   string `env:"DB_NAME"`
-}
+import (
+	"github.com/vanspaul/SmartMeterSystem/models/client"
+)
 
 type Collection string
 
 const (
 	Meters      Collection = "meters"
 	Accountings Collection = "accountings"
-	Cosumers    Collection = "consumers"
+	Consumers   Collection = "consumers"
 	Accounts    Collection = "accounts"
 )
 
 var collectionStructMap = map[Collection]interface{}{
 	Accounts:    &Account{},
-	Cosumers:    &Consumer{},
+	Consumers:   &client.Consumer{},
 	Meters:      &client.Meter{},
 	Accountings: &client.Accounting{},
 }

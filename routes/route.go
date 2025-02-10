@@ -8,29 +8,31 @@ import (
 )
 
 func ServeMuxInit() http.Handler {
-	// Register public routes
-	mux := http.NewServeMux()
+	// Create base router
+	baseMux := http.NewServeMux()
 
-	// Register protected routes
+	// Public routes (no auth required)
+	baseMux.HandleFunc("POST /register", services.Register)
+	baseMux.HandleFunc("POST /login", services.Login)
+
+	// Protected routes subsystem
 	protectedMux := http.NewServeMux()
+	protectedMux.HandleFunc("POST /dashboard", services.Dashboard)
+	protectedMux.HandleFunc("POST /logout", services.Logout)
 
-	// Group routes together
-	mux.HandleFunc("POST /register", services.Register) // Register public routes
-	mux.HandleFunc("POST /login", services.Login)
-	protectedMux.HandleFunc("/logout", services.Logout)
-	protectedMux.HandleFunc("POST /dashboard", services.Dashboard) // Register protected routes
-
-	// Apply AuthMiddleware
-	protectedMiddleware := middleware.ChainMiddleware( // Protected Middlewares
+	// Apply auth-specific middleware to protected routes
+	protectedHandler := middleware.ChainMiddleware(
 		middleware.AuthMiddleware,
 	)(protectedMux)
 
-	globalMiddleware := middleware.ChainMiddleware( // General Middlewares
+	// Mount protected routes under /client/ path
+	baseMux.Handle("/client/", http.StripPrefix("/client", protectedHandler))
+
+	// Apply GLOBAL middleware to ALL routes
+	globalHandler := middleware.ChainMiddleware(
 		middleware.LoggingMiddleware,
-	)(mux)
+		middleware.RecoveryMiddleware, // Example of additional global middleware
+	)(baseMux)
 
-	// Register the protected routes under a common prefix
-	mux.Handle("/client/", http.StripPrefix("/client", protectedMiddleware))
-
-	return globalMiddleware
+	return globalHandler
 }

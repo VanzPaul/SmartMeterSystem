@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/vanspaul/SmartMeterSystem/controllers"
 	"github.com/vanspaul/SmartMeterSystem/models"
@@ -12,10 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func CreateDocument(db controllers.Database, collName models.Collection, data interface{}) (primitive.ObjectID, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
+func CreateDocument(ctx context.Context, db *controllers.MongoDB, collName models.Collection, data interface{}) (primitive.ObjectID, error) {
 	// Validate the data before inserting
 	if err := utils.ValidateData(data, collName); err != nil {
 		return primitive.NilObjectID, fmt.Errorf("validation failed: %v", err)
@@ -24,7 +20,7 @@ func CreateDocument(db controllers.Database, collName models.Collection, data in
 	dataBson, _ := bson.Marshal(data)
 
 	// Insert the document
-	insertResult, err := db.Create(ctx, dataBson)
+	insertResult, err := db.Create(ctx, collName, dataBson)
 	if err != nil {
 		return primitive.NilObjectID, fmt.Errorf("failed to insert document: %v", err)
 	}

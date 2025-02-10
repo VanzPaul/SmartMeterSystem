@@ -1,108 +1,81 @@
-/*
-Package config provides functionality for managing environment variables and connecting to a MongoDB database.
-
-The package includes the following key components:
-
-1. **EnvLoader Interface**:
-  - Defines an interface `EnvLoader` with a method `GetEnv(key string) string` for retrieving environment variables.
-  - This allows for flexible dependency injection, enabling the use of different environment variable loaders.
-
-2. **DefaultEnvLoader**:
-  - Implements the `EnvLoader` interface using the actual environment variables from the operating system.
-  - Provides a default implementation for retrieving environment variables.
-
-3. **GetEnv Function**:
-  - A convenience function that uses `DefaultEnvLoader` to retrieve environment variables.
-  - Simplifies the process of accessing environment variables without needing to instantiate a loader.
-
-4. **LoadEnv Function**:
-  - Loads environment variables from a `.env` file using the `godotenv` package.
-  - Logs the loading process and handles errors if the `.env` file cannot be loaded.
-
-5. **ConnectDB Function**:
-  - Connects to a MongoDB database using the provided `EnvLoader` to retrieve the MongoDB URI from environment variables.
-  - Configures the MongoDB client with the appropriate options, including the Stable API version.
-  - Attempts to connect to the MongoDB instance and pings the database to confirm a successful connection.
-  - Logs the connection process and handles errors if the connection or ping fails.
-
-This package is designed to centralize configuration management and database connection logic, making it easier to manage environment variables and establish database connections in a Go application.
-*/
 package config
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.uber.org/zap"
 )
 
-// EnvLoader defines an interface for loading environment variables.
-type EnvLoader interface {
-	GetEnv(key string) string
+// Database environment variables
+type DBConfig struct {
+	MongoURI string `env:"MONGO_URI"`
+	DBName   string `env:"DB_NAME"`
 }
 
-// DefaultEnvLoader implements the EnvLoader interface using the actual environment.
-type DefaultEnvLoader struct{}
+var MongoEnv DBConfig
 
-func (d DefaultEnvLoader) GetEnv(key string) string {
-	return os.Getenv(key)
+// Logger initialization
+var (
+	Logger *zap.Logger // Exported logger
+	once   sync.Once
+)
+
+// InitLogger initializes the logger and ensures it is only done once.
+func InitLogger() {
+	once.Do(func() {
+		var err error
+
+		// Check the DEBUG environment variable
+		debug := os.Getenv("DEBUG")
+		if debug == "true" {
+			// Use Development mode for debugging
+			Logger, err = zap.NewDevelopment()
+			Logger.Info("Logger initialized in development mode.")
+		} else {
+			// Use Production mode with custom configuration
+			config := zap.NewProductionConfig()
+			config.Level.SetLevel(zap.InfoLevel) // Default to Info level
+			Logger, err = config.Build()
+			Logger.Info("Logger initialized in production mode.")
+		}
+
+		if err != nil {
+			log.Fatalf("Failed to initialize logger: %v", err)
+		}
+	})
 }
 
-// GetEnv retrieves an environment variable using the DefaultEnvLoader.
-func GetEnv(key string) string {
-	loader := DefaultEnvLoader{}
-	return loader.GetEnv(key)
-}
-
-// LoadEnv loads environment variables from the .env file.
-func LoadEnv() {
-	fmt.Println("Loading .env file...")
-	// Load the .env file
+// LoadEnv loads environment variables from the .env file and validates them.
+func LoadEnv() error {
+	// Load .env file first
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file:", err)
-	}
-	fmt.Println(".env file loaded successfully.")
-}
-
-// ConnectDB connects to MongoDB using the provided EnvLoader.
-func ConnectDB(loader EnvLoader) *mongo.Client {
-	fmt.Println("Connecting to MongoDB...")
-
-	// Retrieve the MongoDB URI from the environment variables
-	uri := loader.GetEnv("MONGODB_URI")
-	fmt.Println("MongoDB URI retrieved from environment:", uri)
-
-	if uri == "" {
-		log.Fatal("MONGODB_URI is not set in the .env file.")
+		// Log to stdout since the logger isn't initialized yet
+		log.Println("No .env file found, using system environment variables")
 	}
 
-	// Use the SetServerAPIOptions() method to set the version of the Stable API on the client
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	clientOptions := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
+	// Initialize logger after loading environment variables
+	InitLogger()
 
-	fmt.Println("Attempting to connect to MongoDB with the following options:")
-	fmt.Println("URI:", uri)
-	fmt.Println("Server API Version:", serverAPI)
+	Logger.Info("Loading environment variables...")
 
-	// Connect to MongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal("Error connecting to MongoDB:", err)
+	// Validate required environment variables
+	requiredVars := map[string]*string{
+		"MONGODB_URI":   &MongoEnv.MongoURI,
+		"DATABASE_NAME": &MongoEnv.DBName,
 	}
-	fmt.Println("Successfully connected to MongoDB.")
-
-	// Send a ping to confirm a successful connection
-	fmt.Println("Pinging MongoDB deployment...")
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Err(); err != nil {
-		log.Fatal("Error pinging MongoDB:", err)
+	for key, field := range requiredVars {
+		value := os.Getenv(key)
+		if value == "" {
+			Logger.Error("Missing required environment variable", zap.String("key", key))
+			return fmt.Errorf("missing required environment variable: %s", key)
+		}
+		*field = value
 	}
-	fmt.Println("Ping successful. MongoDB connection is active.")
 
-	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
-	return client
+	Logger.Info("Environment variables loaded successfully.")
+	return nil
 }

@@ -7,49 +7,83 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/models"
 	"github.com/vanspaul/SmartMeterSystem/utils"
+	"go.uber.org/zap"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	username := r.FormValue("username")
+	email := r.FormValue("email")
 	password := r.FormValue("password")
 	accountNo := r.FormValue("accountNo")
 
-	if len(username) < 8 || len(password) < 8 {
-		http.Error(w, "Invalid username/password", http.StatusNotAcceptable)
+	if len(email) < 4 || len(password) < 8 {
+		http.Error(w, "Invalid email/password", http.StatusNotAcceptable)
 		return
 	}
 
+	// FIXME: this should be a database find call
 	store := models.GetStore() // Use the singleton store
-	if _, ok := store.Users[username]; ok {
+	if _, ok := store.Users[email]; ok {
 		http.Error(w, "User already exists", http.StatusConflict)
 		return
 	}
 
-	// TODO:
-	// create a document in mongodb using services/createDocument()
-	hashedPassword, _ := utils.HashPassword(password)
-	store.Users[username] = models.LoginData{
+	hashedPassword, err := utils.HashPassword(password)
+	if err != nil {
+		config.Logger.Fatal("password hashing failed: ",
+			zap.Error(err))
+	}
+
+	// Make db call to find the role of the account number
+	// accountNoData := ""
+
+	// Create account struct instance
+	// acc := models.Account{
+	// 	HashedPassword: hashedPassword,
+	// 	Email: email,
+	// 	CreatedAt: time.Now().UTC().Unix(),
+	// 	UpdatedAt: time.Now().UTC().Unix(),
+	// 	Role: role,
+	// 	Status: models.AccountStatus{
+	// 		IsActive: true,
+	// 	},
+	// 	RoleSpecificDataID: ,
+
+	// }
+	// Get the context and pass this to the database functions
+	//ctx := r.Context()
+	// Use context in database operations
+	// err := createDocument(ctx, document)
+	// if err != nil {
+	// 	handleError(w, r, err)
+	// 	return
+	// }
+
+	// TODO: create a document in mongodb using services/createDocument()
+	// remove this
+	store.Users[email] = models.LoginData{
 		HashedPassword: hashedPassword,
 		AccountNo:      accountNo,
 	}
 
+	// remove this
 	// Convert the user struct to JSON
-	jsonData, _ := json.MarshalIndent(store.Users[username], "", "  ")
-	log.Printf("store.Users[%s]: %s", username, string(jsonData))
+	jsonData, _ := json.MarshalIndent(store.Users[email], "", "  ")
+	log.Printf("store.Users[%s]: %s", email, string(jsonData))
 
 	fmt.Fprintln(w, "User Registered Successfully")
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	username := r.FormValue("username")
+	email := r.FormValue("email")
 	password := r.FormValue("password")
 
 	store := models.GetStore() // Use the singleton store
-	user, ok := store.Users[username]
+	user, ok := store.Users[email]
 	if !ok || !utils.CheckPasswordHash(password, user.HashedPassword) {
-		http.Error(w, "Invalid Username or Password", http.StatusUnauthorized)
+		http.Error(w, "Invalid email or Password", http.StatusUnauthorized)
 		return
 	}
 
@@ -74,16 +108,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Store session & CSRF token in the database
 	user.SessionToken = sessionToken
 	user.CSRFToken = csrfToken
-	store.Users[username] = user
-	store.Sessions[sessionToken] = username // Map session token to username
+	store.Users[email] = user
+	store.Sessions[sessionToken] = email // Map session token to email
 
 	log.Printf("Session Token: %s\nCSRF Token: %s\n", user.SessionToken, user.CSRFToken)
 	fmt.Fprintln(w, "Login Successful!")
 }
 
 func Dashboard(w http.ResponseWriter, r *http.Request) {
-	username := r.FormValue("username")
-	fmt.Fprintf(w, "CSRF validation successful! Welcome, %s\n", username)
+	email := r.FormValue("email")
+	fmt.Fprintf(w, "CSRF validation successful! Welcome, %s\n", email)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
@@ -106,12 +140,12 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	// Clear tokens from the database
 	sessionToken, err := r.Cookie("session_token")
 	if err == nil {
-		username := store.Sessions[sessionToken.Value]
+		email := store.Sessions[sessionToken.Value]
 		delete(store.Sessions, sessionToken.Value) // Remove session token
-		user := store.Users[username]
+		user := store.Users[email]
 		user.SessionToken = ""
 		user.CSRFToken = ""
-		store.Users[username] = user
+		store.Users[email] = user
 	}
 
 	fmt.Fprintln(w, "Logged Out Successfully!")
