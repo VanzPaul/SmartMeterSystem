@@ -6,6 +6,7 @@ import (
 
 	"github.com/vanspaul/SmartMeterSystem/models"
 	"github.com/vanspaul/SmartMeterSystem/utils"
+	"go.uber.org/zap"
 )
 
 // ChainMiddleware chains multiple middleware functions together.
@@ -26,7 +27,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// Call the Authorize function to validate the session and CSRF tokens
 		if err := utils.Authorize(r, store.Users, store.Sessions); err != nil {
-			log.Printf("Authentication failed: %v", err)
+			utils.Logger.Error("Authentication failed", zap.Any("Err", err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
@@ -37,7 +38,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 // LoggingMiddleware logs incoming requests.
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Request received: %s %s\n", r.Method, r.URL.Path)
+		utils.Logger.Sugar().Infof("Request received: %s %s\n", r.Method, r.URL.Path)
 		next.ServeHTTP(w, r)
 	})
 }

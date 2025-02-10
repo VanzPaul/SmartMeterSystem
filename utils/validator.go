@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/models"
 	"go.uber.org/zap"
 )
@@ -29,10 +28,10 @@ func ValidateData(data interface{}, collName models.Collection) error {
 
 	// Ensure the data matches the expected struct type
 	if dataValue.Type() != prototypeValue.Type() {
-		config.Logger.Debug("data type mismatch", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
+		Logger.Debug("data type mismatch", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
 		return fmt.Errorf("data type mismatch for collection %s", collName)
 	}
-	config.Logger.Debug("data type mismatch", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
+	Logger.Debug("data type mismatch", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
 
 	// Perform validation using the validator package
 	err := validate.Struct(data)

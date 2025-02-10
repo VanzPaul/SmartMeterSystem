@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/models"
 	"github.com/vanspaul/SmartMeterSystem/utils"
 	"go.uber.org/zap"
@@ -32,7 +31,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
-		config.Logger.Fatal("password hashing failed: ",
+		utils.Logger.Fatal("password hashing failed: ",
 			zap.Error(err))
 	}
 

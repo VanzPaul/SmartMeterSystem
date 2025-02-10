@@ -10,17 +10,18 @@ import (
 
 	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/routes"
+	"github.com/vanspaul/SmartMeterSystem/utils"
 	"go.uber.org/zap"
 )
 
 func main() {
 	// Initialize thread-safe logger
 	config.InitLogger()
-	defer config.Logger.Sync()
+	defer utils.Logger.Sync()
 
 	// Load environment variables
 	if err := config.LoadEnv(); err != nil {
-		config.Logger.Fatal("Failed to load environment variables",
+		utils.Logger.Fatal("Failed to load environment variables",
 			zap.Error(err))
 	}
 
@@ -36,27 +37,27 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		config.Logger.Info("🚀 Server starting on :8080")
+		utils.Logger.Info("🚀 Server starting on :8080")
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			config.Logger.Fatal("Server failed to start",
+			utils.Logger.Fatal("Server failed to start",
 				zap.Error(err))
 		}
 	}()
 
 	// Wait for shutdown signal
 	<-stop
-	config.Logger.Info("🛑 Received shutdown signal")
+	utils.Logger.Info("🛑 Received shutdown signal")
 
 	// Create shutdown context with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// Graceful server shutdown
-	config.Logger.Info("⏳ Shutting down gracefully...")
+	utils.Logger.Info("⏳ Shutting down gracefully...")
 	if err := server.Shutdown(ctx); err != nil {
-		config.Logger.Error("Server shutdown error",
+		utils.Logger.Error("Server shutdown error",
 			zap.Error(err))
 	}
 
-	config.Logger.Info("✅ Server stopped gracefully")
+	utils.Logger.Info("✅ Server stopped gracefully")
 }

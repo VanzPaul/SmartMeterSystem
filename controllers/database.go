@@ -6,6 +6,7 @@ import (
 
 	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/models"
+	"github.com/vanspaul/SmartMeterSystem/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
@@ -44,15 +45,15 @@ func NewMongoDB(ctx context.Context, env *config.DBConfig) (*MongoDB, error) {
 		return nil, fmt.Errorf("failed to connect to MongoDB: %v", err)
 	}
 
-	config.Logger.Debug("Connected to MongoDB Succesfully", zap.String("URI", env.MongoURI), zap.String("DBName", env.DBName))
+	utils.Logger.Debug("Connected to MongoDB Succesfully", zap.String("URI", env.MongoURI), zap.String("DBName", env.DBName))
 
 	// Ping the database to verify the connection
 	if err := client.Ping(ctx, nil); err != nil {
-		config.Logger.Error("failed to ping MongoDB", zap.String("URI", env.MongoURI), zap.String("DBName", env.DBName))
+		utils.Logger.Error("failed to ping MongoDB", zap.String("URI", env.MongoURI), zap.String("DBName", env.DBName))
 		return nil, fmt.Errorf("failed to ping MongoDB: %v", err)
 	}
 
-	config.Logger.Debug("Pinged MongoDB Succesfully")
+	utils.Logger.Debug("Pinged MongoDB Succesfully")
 
 	return &MongoDB{
 		client: client,
