@@ -31,7 +31,7 @@ func ValidateData(data interface{}, collName models.Collection) error {
 		Logger.Debug("data type mismatch", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
 		return fmt.Errorf("data type mismatch for collection %s", collName)
 	}
-	Logger.Debug("data type mismatch", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
+	Logger.Debug("data type matched", zap.String("collection", string(collName)), zap.Any("dataValueType", dataValue.Type()), zap.Any("prototypeValueType", prototypeValue.Type()))
 
 	// Perform validation using the validator package
 	err := validate.Struct(data)

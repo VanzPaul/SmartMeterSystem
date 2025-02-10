@@ -18,7 +18,6 @@ var globalStore *Store
 func GetStore() *Store {
 	if globalStore == nil {
 		globalStore = &Store{
-			Users:    make(map[string]LoginData),
 			Sessions: make(map[string]string),
 		}
 	}

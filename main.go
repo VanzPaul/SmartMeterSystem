@@ -16,8 +16,8 @@ import (
 
 func main() {
 	// Initialize thread-safe logger
-	config.InitLogger()
-	defer utils.Logger.Sync()
+	// config.InitLogger()
+	// defer utils.Logger.Sync()
 
 	// Load environment variables
 	if err := config.LoadEnv(); err != nil {

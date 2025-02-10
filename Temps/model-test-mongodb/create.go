@@ -8,8 +8,8 @@ import (
 	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/controllers"
 	"github.com/vanspaul/SmartMeterSystem/models"
-	"github.com/vanspaul/SmartMeterSystem/models/client"
 	"github.com/vanspaul/SmartMeterSystem/services"
+	"github.com/vanspaul/SmartMeterSystem/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -23,9 +23,9 @@ func main() {
 		// Use standard log if LoadEnv fails before initializing the logger
 		log.Fatalf("Failed to load environment variables: %v", err)
 	}
-	defer config.Logger.Sync()
+	defer utils.Logger.Sync()
 
-	config.Logger.Debug("debug log") // This will now work if DEBUG=true
+	utils.Logger.Debug("debug log") // This will now work if DEBUG=true
 
 	// Rest of your code
 	db, err := controllers.NewMongoDB(ctx, &config.MongoEnv)
@@ -145,40 +145,53 @@ func main() {
 	   	}
 	*/
 
-	meterid, _ := primitive.ObjectIDFromHex("67a9c1f786832b4ee56719e5")
-	accountingId, _ := primitive.ObjectIDFromHex("67a9c60da9c810679b5eb5d5")
+	/* 	meterid, _ := primitive.ObjectIDFromHex("67a9c1f786832b4ee56719e5")
+	   	accountingId, _ := primitive.ObjectIDFromHex("67a9c60da9c810679b5eb5d5")
 
-	var meterSlice []primitive.ObjectID
-	meterSlice = append(meterSlice, meterid)
+	   	var meterSlice []primitive.ObjectID
+	   	meterSlice = append(meterSlice, meterid)
 
-	// Insert meter document
-	consumer := client.Consumer{
-		AccountNumber: "ACC-2023-001",
-		Name:          "John Deere",
-		Address: client.Address{
-			Street:     "kaylaway",
-			City:       "Nasugbu",
-			State:      "Batangas",
-			PostalCode: "4231",
+	   	// Insert meter document
+	   	consumer := client.Consumer{
+	   		AccountNumber: "ACC-2023-001",
+	   		Name:          "John Deere",
+	   		Address: client.Address{
+	   			Street:     "kaylaway",
+	   			City:       "Nasugbu",
+	   			State:      "Batangas",
+	   			PostalCode: "4231",
+	   		},
+	   		Contact: client.Contact{
+	   			Phone: "+639000000000",
+	   			Email: "john.deere@example.com",
+	   		},
+	   		AccountType:  "consumer",
+	   		ConsumerType: "residential",
+	   		MeterIDs:     meterSlice,
+	   		AccountingID: accountingId,
+	   		CreatedAt:    time.Now().Unix(),
+	   		UpdatedAt:    time.Now().Unix(),
+	   	}
+	*/
+	roledataid, _ := primitive.ObjectIDFromHex("67a9ccc963759289dd35928f")
+	account := models.Account{
+		HashedPassword: "wpefojpanfasdfuivabnib",
+		Email:          "johndoe@mail.com",
+		CreatedAt:      time.Now().UTC().Unix(),
+		UpdatedAt:      time.Now().UTC().Unix(),
+		Role:           models.RoleConsumer,
+		Status: models.AccountStatus{
+			IsActive: true,
 		},
-		Contact: client.Contact{
-			Phone: "+639000000000",
-			Email: "john.deere@example.com",
-		},
-		AccountType:  "consumer",
-		ConsumerType: "residential",
-		MeterIDs:     meterSlice,
-		AccountingID: accountingId,
-		CreatedAt:    time.Now().Unix(),
-		UpdatedAt:    time.Now().Unix(),
+		RoleSpecificDataID: roledataid,
 	}
 
-	insertResult, createErr := services.CreateDocument(ctx, db, models.Consumers, &consumer)
+	insertResult, createErr := services.CreateDocument(ctx, db, models.Accounts, &account)
 	if createErr != nil {
-		log.Fatalf("Err creating document %s: %v\n", models.Consumers, createErr)
+		log.Fatalf("Err creating document %s: %v\n", models.Accounts, createErr)
 	}
 	log.Println("Created new Document")
-	config.Logger.Info(insertResult.Hex())
+	utils.Logger.Info(insertResult.Hex())
 
 	// Example usage (commented out for now)
 	// var foundUser bson.M
