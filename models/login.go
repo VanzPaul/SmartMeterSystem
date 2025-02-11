@@ -1,8 +1,7 @@
 package models
 
-// FIXME: remove HashedPassword, AccountNo,
 type LoginData struct {
-	HashedPassword, AccountNo, SessionToken, CSRFToken string
+	SessionToken, CSRFToken string
 }
 
 // Store encapsulates users and sessions data.
@@ -18,6 +17,7 @@ var globalStore *Store
 func GetStore() *Store {
 	if globalStore == nil {
 		globalStore = &Store{
+			Users:    make(map[string]LoginData),
 			Sessions: make(map[string]string),
 		}
 	}

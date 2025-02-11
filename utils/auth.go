@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/vanspaul/SmartMeterSystem/models"
@@ -16,33 +15,35 @@ func Authorize(r *http.Request, users map[string]models.LoginData, sessions map[
 	// Retrieve session token from cookies
 	sessionToken, err := r.Cookie("session_token")
 	if err != nil {
-		log.Println("Session token not found")
+		Logger.Sugar().Debugln("Session token not found")
 		return ErrAuth
 	}
-
+	Logger.Sugar().Debugf("sessionToken: %s\n", sessionToken)
 	// Retrieve username from session token
 	username, ok := sessions[sessionToken.Value]
+	Logger.Sugar().Debugf("username: %s\n", username)
 	if !ok {
-		log.Println("Session token invalid:", sessionToken.Value)
+		Logger.Sugar().Debugln("Session token invalid:", sessionToken.Value)
 		return ErrAuth
 	}
 
 	user, ok := users[username]
+	Logger.Sugar().Debugf("user: %s\n", user)
 	if !ok {
-		log.Println("User not found:", username)
+		Logger.Sugar().Debugln("User not found:", username)
 		return ErrAuth
 	}
 
 	// Validate session token
 	if sessionToken.Value != user.SessionToken {
-		log.Println("Session token mismatch:", sessionToken.Value, "!=", user.SessionToken)
+		Logger.Sugar().Debugln("Session token mismatch:", sessionToken.Value, "!=", user.SessionToken)
 		return ErrAuth
 	}
 
 	// Validate CSRF token
 	csrf := r.Header.Get("X-CSRF-Token")
 	if csrf == "" || csrf != user.CSRFToken {
-		log.Println("CSRF token mismatch:", csrf, "!=", user.CSRFToken)
+		Logger.Sugar().Debugln("CSRF token mismatch:", csrf, "!=", user.CSRFToken)
 		return ErrAuth
 	}
 

@@ -87,13 +87,35 @@ func Register(w http.ResponseWriter, r *http.Request) {
 func Login(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
+	utils.Logger.Sugar().Debugf("email: %s\tpassword: %s\n", email, password)
 
 	store := models.GetStore() // Use the singleton store
-	user, ok := store.Users[email]
-	if !ok || !utils.CheckPasswordHash(password, user.HashedPassword) {
+
+	ctx := r.Context()
+	utils.Logger.Debug("Creating new MongoDB Controller")
+	db, err := controllers.NewMongoDB(ctx, &config.MongoEnv)
+	if err != nil {
+		log.Fatalf("Failed to create MongoDB controller: %v", err)
+	}
+	defer func() {
+		if err := db.Close(ctx); err != nil {
+			log.Printf("Failed to close MongoDB connection: %v", err)
+		}
+	}()
+
+	// Fetch sand check account hashed password
+	var account models.Account
+	filter := bson.M{"email": email}
+	accErrs := db.FindOne(ctx, models.Accounts, filter, &account)
+	if accErrs != nil {
+		utils.Logger.Sugar().Errorf("Error finding account: %v", accErrs)
+		http.Error(w, "Invalid account number", http.StatusBadRequest)
+		return
+	} else if !utils.CheckPasswordHash(password, string(account.HashedPassword)) { // Check if password hash match else return error
 		http.Error(w, "Invalid email or Password", http.StatusUnauthorized)
 		return
 	}
+	utils.Logger.Debug("Password hash matched!")
 
 	// Set session cookie
 	sessionToken := utils.GenerateToken(32)
@@ -113,19 +135,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: false,
 	})
 
-	// Store session & CSRF token in the database
-	user.SessionToken = sessionToken
-	user.CSRFToken = csrfToken
-	store.Users[email] = user
+	// Store session & CSRF token in the in-memory database
+	store.Users[email] = models.LoginData{
+		SessionToken: sessionToken,
+		CSRFToken:    csrfToken,
+	}
+	utils.Logger.Sugar().Debugf("store.Users[%s]: %v", email, store.Users[email])
 	store.Sessions[sessionToken] = email // Map session token to email
 
-	log.Printf("Session Token: %s\nCSRF Token: %s\n", user.SessionToken, user.CSRFToken)
+	utils.Logger.Sugar().Debugf("Session Token: %s\tCSRF Token: %s\n", sessionToken, csrfToken)
 	fmt.Fprintln(w, "Login Successful!")
 }
 
 func Dashboard(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
-	fmt.Fprintf(w, "CSRF validation successful! Welcome, %s\n", email)
+	fmt.Fprintf(w, "CSRF & session validation successful! Welcome, %s\n", email)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
