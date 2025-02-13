@@ -4,7 +4,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// FIXME: Separate Account, Consumer, and Meter into different databases
 // ---Unified Base Account Structure---//
 type Role string
 

@@ -109,13 +109,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	accErrs := db.FindOne(ctx, models.Accounts, filter, &account)
 	if accErrs != nil {
 		utils.Logger.Sugar().Errorf("Error finding account: %v", accErrs)
-		http.Error(w, "Invalid account number", http.StatusBadRequest)
+		http.Error(w, "Invalid Email", http.StatusBadRequest)
 		return
 	} else if !utils.CheckPasswordHash(password, string(account.HashedPassword)) { // Check if password hash match else return error
-		http.Error(w, "Invalid email or Password", http.StatusUnauthorized)
+		http.Error(w, "Invalid Password", http.StatusUnauthorized)
 		return
 	}
-	utils.Logger.Debug("Password hash matched!")
+	utils.Logger.Debug("Eamil and Password hash matched!")
 
 	// Set session cookie
 	sessionToken := utils.GenerateToken(32)

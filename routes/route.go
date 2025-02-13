@@ -14,6 +14,7 @@ func ServeMuxInit() http.Handler {
 	// Public routes (no auth required)
 	baseMux.HandleFunc("POST /register", services.Register)
 	baseMux.HandleFunc("POST /login", services.Login)
+	baseMux.HandleFunc("POST /meter", services.MeterHandler)
 
 	// Protected routes subsystem
 	protectedMux := http.NewServeMux()
