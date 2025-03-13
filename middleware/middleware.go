@@ -19,14 +19,30 @@ func ChainMiddleware(middlewares ...func(http.Handler) http.Handler) func(http.H
 	}
 }
 
-// AuthMiddleware validates the session token and CSRF token using the Authorize function.
-func AuthMiddleware(next http.Handler) http.Handler {
+// Web validates the session token and CSRF token using the Authorize function.
+func WebAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Retrieve the singleton store instance
 		store := models.GetStore()
 
 		// Call the Authorize function to validate the session and CSRF tokens
-		if err := utils.Authorize(r, store.Users, store.Sessions); err != nil {
+		if err := utils.WebAuthorize(r, store.Users, store.Sessions); err != nil {
+			utils.Logger.Error("Authentication failed", zap.Any("Err", err))
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// MeteAuthMiddleware validates the session token and CSRF token using the Authorize function.
+func MeterAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Retrieve the singleton store instance
+		store := models.GetStore()
+
+		// Call the Authorize function to validate the session and CSRF tokens
+		if err := utils.MeterAuthorize(r, store.MeterUsers, store.MeterSessions); err != nil {
 			utils.Logger.Error("Authentication failed", zap.Any("Err", err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return

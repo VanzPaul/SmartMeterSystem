@@ -39,7 +39,7 @@ func ServeMuxInit() http.Handler {
 
 	// Apply auth-specific middleware to protected routes
 	protectedHandler := middleware.ChainMiddleware(
-		middleware.AuthMiddleware,
+		middleware.WebAuthMiddleware,
 	)(protectedMux)
 
 	// Mount protected routes under /client/ path

@@ -18,6 +18,7 @@ const (
 // Meter-related structures
 type Meter struct {
 	MeterID     string      `bson:"meterId"`
+	SN          string      `bson:"sn"`
 	MeterConfig MeterConfig `bson:"meterConfig"`
 	Location    GeoJSON     `bson:"location"`
 	SIM         SIM         `bson:"sim"`
@@ -31,7 +32,6 @@ type MeterConfig struct {
 	Manufacturer string `bson:"manufacturer"`
 	Model        string `bson:"model"`
 	Phase        int    `bson:"phase"`
-	SerialNumber string `bson:"serialNumber"`
 	APIKey       string `bson:"apiKey"`
 	WifiSSID     string `bson:"wifiSSID"`
 	WifiPassword string `bson:"wifiPassword"`

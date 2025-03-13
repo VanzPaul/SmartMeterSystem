@@ -23,3 +23,5 @@ func GetStore() *Store {
 	}
 	return globalStore
 }
+
+// TODO: Add a functionality to store mater users and meter sessions
