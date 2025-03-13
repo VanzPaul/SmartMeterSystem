@@ -1,7 +1,7 @@
 package models
 
 type LoginData struct {
-	SessionToken, CSRFToken string
+	SessionToken, CSRFToken, Role string
 }
 
 // Store encapsulates users and sessions data.

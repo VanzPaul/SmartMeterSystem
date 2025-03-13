@@ -20,17 +20,17 @@ func Authorize(r *http.Request, users map[string]models.LoginData, sessions map[
 	}
 	Logger.Sugar().Debugf("sessionToken: %s\n", sessionToken)
 	// Retrieve username from session token
-	username, ok := sessions[sessionToken.Value]
-	Logger.Sugar().Debugf("username: %s\n", username)
+	email, ok := sessions[sessionToken.Value]
+	Logger.Sugar().Debugf("email: %s\n", email)
 	if !ok {
 		Logger.Sugar().Debugln("Session token invalid:", sessionToken.Value)
 		return ErrAuth
 	}
 
-	user, ok := users[username]
+	user, ok := users[email]
 	Logger.Sugar().Debugf("user: %s\n", user)
 	if !ok {
-		Logger.Sugar().Debugln("User not found:", username)
+		Logger.Sugar().Debugln("User not found:", email)
 		return ErrAuth
 	}
 
@@ -40,10 +40,15 @@ func Authorize(r *http.Request, users map[string]models.LoginData, sessions map[
 		return ErrAuth
 	}
 
-	// Validate CSRF token
+	// Validate CSRF token: first check header; if missing, use the cookie as a fallback.
 	csrf := r.Header.Get("X-CSRF-Token")
+	if csrf == "" {
+		if csrfCookie, err := r.Cookie("csrf_token"); err == nil {
+			csrf = csrfCookie.Value
+		}
+	}
 	if csrf == "" || csrf != user.CSRFToken {
-		Logger.Sugar().Debugln("CSRF token mismatch:", csrf, "!=", user.CSRFToken)
+		Logger.Sugar().Debugf("CSRF token mismatch: %s != %s\n", csrf, user.CSRFToken)
 		return ErrAuth
 	}
 

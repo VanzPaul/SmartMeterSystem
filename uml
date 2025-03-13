@@ -1,0 +1,40 @@
+@startuml
+
+skinparam classHeaderBackgroundColor #ffffcc
+skinparam classBackgroundColor white
+
+interface Account {
++ID: primitive.ObjectID
++HasehdPassword: string
++Email: string
++CreatedAt: int64
++UpdatedAt: int64
++Role: Role
++Status: Status
++RoleSpecificID: primitive.ObjectID
+}
+
+enum Role {
+  +RoleSystemAdmin
+  +RoleFinancialAdmin
+  +RoleHRAdmin
+  +RoleCustomerServiceAdmin
+  +RoleOperationsMonitor
+  +RoleCashier
+  +RoleConsumer
+}
+
+enum AccountStatus {
++IsActive
++Deactivated // Optional
++Reason // Optional
+}
+
+Role -right-> Account
+AccountStatus -right-> Account
+
+}
+@enduml
+
+---------------------------------
+

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="NextInn">
+    <meta name="generator" content="Hugo 0.84.0">
+
+    <title>Consumer Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Date Adapter -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        #latestReading {
+            background: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!-- Navigation Bar -->
+    <main>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="Third navbar example">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">BATELEC I</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarsExample03">
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/client/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/client/account" hx-get="/client/account"
+                                hx-target="#content-area" hx-swap="innerHTML">Account</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/client/balance" hx-get="/client/balance"
+                                hx-target="#content-area" hx-swap="innerHTML">Balance</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown"
+                                aria-expanded="false">Meters</a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdown03">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </main>
+    <div id="content-area" class="container py-5">
+        <h1 class="text-center mb-4">Energy Monitoring</h1>
+        <div id="latestReading">
+            <h2>Latest Reading</h2>
+            <p id="voltage">Voltage: -- V</p>
+            <p id="current">Current: -- A</p>
+            <p id="power">Power: -- W</p>
+            <p id="energy">Energy: -- kWh</p>
+            <p id="timestamp">Timestamp: --</p>
+        </div>
+        <script>
+            function updateLatestReading(data) {
+                if (data.length > 0) {
+                    const latest = data[data.length - 1];
+                    document.getElementById('voltage').textContent = `Voltage: ${latest.voltage.toFixed(2)} V`;
+                    document.getElementById('current').textContent = `Current: ${latest.current.toFixed(2)} A`;
+                    document.getElementById('power').textContent = `Power: ${latest.power.toFixed(2)} W`;
+                    document.getElementById('energy').textContent = `Energy: ${latest.energy.toFixed(6)} kWh`;
+                    document.getElementById('timestamp').textContent = `Timestamp: ${new Date(latest.timestamp).toLocaleString()}`;
+                }
+            }
+
+            // Fetch initial data
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => updateCharts(data))
+                .catch(error => console.error('Error fetching data:', error));
+
+            // Setup SSE for real-time updates
+            const eventSource = new EventSource('/data');
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateCharts(data);
+            };
+        </script>
+    </div>
+</body>
+
+</html>
