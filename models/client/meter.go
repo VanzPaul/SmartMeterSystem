@@ -17,13 +17,24 @@ const (
 
 // Meter-related structures
 type Meter struct {
-	MeterID  string      `bson:"meterId"`
-	Location GeoJSON     `bson:"location"`
-	SIM      SIM         `bson:"sim"`
-	Usage    []Usage     `bson:"usage"`
-	Alerts   Alert       `bson:"alerts"`
-	Commands Commands    `bson:"commands"`
-	Status   MeterStatus `bson:"status"`
+	MeterID     string      `bson:"meterId"`
+	MeterConfig MeterConfig `bson:"meterConfig"`
+	Location    GeoJSON     `bson:"location"`
+	SIM         SIM         `bson:"sim"`
+	Usage       []Usage     `bson:"usage"`
+	Alerts      Alert       `bson:"alerts"`
+	Commands    Commands    `bson:"commands"`
+	Status      MeterStatus `bson:"status"`
+}
+
+type MeterConfig struct {
+	Manufacturer string `bson:"manufacturer"`
+	Model        string `bson:"model"`
+	Phase        int    `bson:"phase"`
+	SerialNumber string `bson:"serialNumber"`
+	APIKey       string `bson:"apiKey"`
+	WifiSSID     string `bson:"wifiSSID"`
+	WifiPassword string `bson:"wifiPassword"`
 }
 
 type GeoJSON struct {
