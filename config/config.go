@@ -1,8 +1,10 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"sync"
 
 	"github.com/vanspaul/SmartMeterSystem/utils"
@@ -28,6 +30,23 @@ var (
 	once sync.Once
 )
 
+// Cache environment variables
+type ServerCacheConfig struct {
+	MaxWebUser      string `env:"MAX_WEBUSERS"`
+	MaxWebSession   string `env:"MAX_SESSIONS"`
+	MaxMeterUser    string `env:"MAX_METERUSERS"`
+	MaxMeterSession string `env:"MAX_METERSESSIONS"`
+}
+
+var ServerCacheEnv ServerCacheConfig
+
+var (
+	MaxWebUsers      int
+	MaxWebSessions   int
+	MaxMeterUsers    int
+	MaxMeterSessions int
+)
+
 // LoadEnv loads environment variables and initializes the logger.
 func LoadEnv() error {
 	if err := godotenv.Load(); err != nil {
@@ -35,10 +54,16 @@ func LoadEnv() error {
 	}
 
 	// Load required variables FIRST
+	// TODO: configure the PORT
 	requiredVars := map[string]*string{
 		"MONGODB_URI":   &MongoEnv.MongoURI,
 		"DATABASE_NAME": &MongoEnv.DBName,
 		"DEBUG":         &LogEnv.Debug,
+		// "PORT":          ,
+		"MAX_WEBUSERS":      &ServerCacheEnv.MaxWebUser,
+		"MAX_WEBSESSIONS":   &ServerCacheEnv.MaxWebSession,
+		"MAX_METERUSERS":    &ServerCacheEnv.MaxMeterUser,
+		"MAX_METERSESSIONS": &ServerCacheEnv.MaxMeterSession,
 	}
 
 	for key, field := range requiredVars {
@@ -50,14 +75,19 @@ func LoadEnv() error {
 	}
 
 	// Initialize logger AFTER variables are loaded
-	InitLogger()
+	initLogger()
+
+	// Initialize cache configuration
+	if err := InitializeCacheConfig(); err != nil {
+		return fmt.Errorf("failed to initialize cache config: %v", err)
+	}
 
 	utils.Logger.Info("Environment variables loaded successfully.")
 	return nil
 }
 
 // InitLogger uses the now-populated LogEnv.Debug
-func InitLogger() {
+func initLogger() {
 	once.Do(func() {
 		debug := LogEnv.Debug == "true"
 		logger, err := utils.NewLogger(debug)
@@ -66,4 +96,30 @@ func InitLogger() {
 		}
 		utils.Logger = logger
 	})
+}
+
+// InitializeCacheConfig converts string values to integers and sets up cache configuration
+func InitializeCacheConfig() error {
+	var err error
+	MaxWebUsers, err = strconv.Atoi(ServerCacheEnv.MaxWebUser)
+	if err != nil {
+		return fmt.Errorf("invalid MAX_WEBUSERS: %v", err)
+	}
+
+	MaxWebSessions, err = strconv.Atoi(ServerCacheEnv.MaxWebSession)
+	if err != nil {
+		return fmt.Errorf("invalid MAX_SESSIONS: %v", err)
+	}
+
+	MaxMeterUsers, err = strconv.Atoi(ServerCacheEnv.MaxMeterUser)
+	if err != nil {
+		return fmt.Errorf("invalid MAX_METERUSERS: %v", err)
+	}
+
+	MaxMeterSessions, err = strconv.Atoi(ServerCacheEnv.MaxMeterSession)
+	if err != nil {
+		return fmt.Errorf("invalid MAX_METERSESSIONS: %v", err)
+	}
+
+	return nil
 }

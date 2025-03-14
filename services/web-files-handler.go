@@ -4,7 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/vanspaul/SmartMeterSystem/models"
+	"github.com/vanspaul/SmartMeterSystem/config"
+	"github.com/vanspaul/SmartMeterSystem/utils"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -77,9 +78,9 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get email from sessions map, and then login data from users map
-	store := models.GetStore()
-	email := store.Sessions[sessionCookie.Value]
-	loginData, ok := store.Users[email]
+	store := utils.GetStore(config.MaxWebUsers, config.MaxWebSessions, config.MaxMeterUsers, config.MaxMeterSessions)
+	email := store.WebSessions[sessionCookie.Value]
+	loginData, ok := store.WebUsers[email]
 	if !ok {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return

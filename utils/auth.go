@@ -3,15 +3,13 @@ package utils
 import (
 	"errors"
 	"net/http"
-
-	"github.com/vanspaul/SmartMeterSystem/models"
 )
 
 // Exported Authorization Error
 var ErrAuth = errors.New("Unauthorized")
 
 // Authorize function validates session and CSRF tokens
-func WebAuthorize(r *http.Request, users map[string]models.LoginData, sessions map[string]string) error {
+func WebAuthorize(r *http.Request, users map[string]LoginData, sessions map[string]string) error {
 	// Retrieve session token from cookies
 	sessionToken, err := r.Cookie("session_token")
 	if err != nil {

@@ -1,5 +1,6 @@
 package repositories
 
+/*
 import (
 	"context"
 	"fmt"
@@ -146,3 +147,4 @@ func CreateAccount(uri, dbName, collName string, account models.Account) (primit
 	fmt.Printf("Inserted document with ID: %v\n", insertResult.InsertedID)
 	return insertedID, err
 }
+*/

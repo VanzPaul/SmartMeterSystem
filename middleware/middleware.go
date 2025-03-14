@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vanspaul/SmartMeterSystem/models"
+	"github.com/vanspaul/SmartMeterSystem/config"
 	"github.com/vanspaul/SmartMeterSystem/utils"
 	"go.uber.org/zap"
 )
@@ -23,10 +23,10 @@ func ChainMiddleware(middlewares ...func(http.Handler) http.Handler) func(http.H
 func WebAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Retrieve the singleton store instance
-		store := models.GetStore()
+		store := utils.GetStore(config.MaxWebUsers, config.MaxWebSessions, config.MaxMeterUsers, config.MaxMeterSessions)
 
 		// Call the Authorize function to validate the session and CSRF tokens
-		if err := utils.WebAuthorize(r, store.Users, store.Sessions); err != nil {
+		if err := utils.WebAuthorize(r, store.WebUsers, store.WebSessions); err != nil {
 			utils.Logger.Error("Authentication failed", zap.Any("Err", err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
@@ -38,15 +38,15 @@ func WebAuthMiddleware(next http.Handler) http.Handler {
 // MeteAuthMiddleware validates the session token and CSRF token using the Authorize function.
 func MeterAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Retrieve the singleton store instance
-		store := models.GetStore()
+		/* // Retrieve the singleton store instance
+		store := utils.GetStore(config.MaxWebUsers, config.MaxWebSessions, config.MaxMeterUsers, config.MaxMeterSessions)
 
 		// Call the Authorize function to validate the session and CSRF tokens
 		if err := utils.MeterAuthorize(r, store.MeterUsers, store.MeterSessions); err != nil {
 			utils.Logger.Error("Authentication failed", zap.Any("Err", err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
-		}
+		} */
 		next.ServeHTTP(w, r)
 	})
 }
