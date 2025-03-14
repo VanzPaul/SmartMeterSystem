@@ -15,10 +15,10 @@ func ServeMuxInit() http.Handler {
 	baseMux.HandleFunc("/", services.Home)
 
 	baseMux.HandleFunc("/register", services.Register)
-	baseMux.HandleFunc("POST /register/submit", services.SubmitRegister)
+	baseMux.HandleFunc("POST /register/submit", services.CreateGeneralAccount)
 
 	baseMux.HandleFunc("/login", services.Login)
-	baseMux.HandleFunc("POST /login/submit", services.SubmitLogin)
+	baseMux.HandleFunc("POST /login/submit", services.SubmitWebLogin)
 
 	// Protected routes subsystem
 	socketMux := http.NewServeMux()

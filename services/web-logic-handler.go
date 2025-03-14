@@ -213,81 +213,12 @@ import (
 	"go.uber.org/zap"
 )
 
-// Register creates a new account
-func SubmitRegister(w http.ResponseWriter, r *http.Request) {
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-	accountNo := r.FormValue("accountNo")
-	if len(email) < 4 || len(password) < 8 {
-		http.Error(w, "Invalid email/password", http.StatusNotAcceptable)
-		return
-	}
-
-	ctx := r.Context()
-	utils.Logger.Debug("Creating new MongoDB Controller")
-	db, err := controllers.NewMongoDB(ctx, &config.MongoEnv)
-	if err != nil {
-		log.Fatalf("Failed to create MongoDB controller: %v", err)
-	}
-	defer func() {
-		if err := db.Close(ctx); err != nil {
-			log.Printf("Failed to close MongoDB connection: %v", err)
-		}
-	}()
-
-	// Check if email already exists
-	var emailData []models.Account
-	emailFilter := bson.M{"email": email}
-	emailfindErr := db.Find(ctx, models.Accounts, emailFilter, &emailData)
-	if emailfindErr != nil {
-		utils.Logger.Error("Checking if email exist error", zap.Any("Error", emailfindErr))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	if len(emailData) != 0 {
-		fmt.Fprintf(w, `<p class="error">Email does not exist.</p>`)
-		return
-	}
-
-	hashedPassword, err := utils.HashPassword(password)
-	if err != nil {
-		utils.Logger.Fatal("password hashing failed: ", zap.Error(err))
-	}
-
-	// Rest of your registration logic
-	var consumer client.Consumer
-	filter := bson.M{"accountNumber": accountNo}
-	findErr := db.FindOne(ctx, models.Consumers, filter, &consumer)
-	if findErr != nil {
-		utils.Logger.Sugar().Errorf("Error finding account: %v", findErr)
-		http.Error(w, "Invalid account number", http.StatusBadRequest)
-		return
-	}
-
-	account := models.Account{
-		HashedPassword: hashedPassword,
-		Email:          email,
-		CreatedAt:      time.Now().UTC().Unix(),
-		UpdatedAt:      time.Now().UTC().Unix(),
-		Role:           models.Role(consumer.AccountType),
-		Status: models.AccountStatus{
-			IsActive: true,
-		},
-		RoleSpecificDataID: consumer.ID,
-	}
-
-	insertResult, createErr := CreateDocument(ctx, db, models.Accounts, &account)
-	if createErr != nil {
-		log.Fatalf("Err creating document %s: %v\n", models.Accounts, createErr)
-	}
-	utils.Logger.Sugar().Debugf("Insert Successful: %s", insertResult.String())
-
-	w.Header().Set("HX-Redirect", "/login")
-	w.WriteHeader(http.StatusOK)
-}
+/*************************************************************************************************************/
+/*----------------------------------------------  UTILITIES  ------------------------------------------------*/
+/*************************************************************************************************************/
 
 // Login authenticates a user
-func SubmitLogin(w http.ResponseWriter, r *http.Request) {
+func SubmitWebLogin(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	utils.Logger.Sugar().Debugf("email: %s\tpassword: %s\n", email, password)
@@ -392,3 +323,109 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintln(w, "Logged Out Successfully!")
 }
+
+/*************************************************************************************************************/
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/*------------------------------------  API LOGIC FOR CREATING DOCUMENTS  -----------------------------------*/
+/*************************************************************************************************************/
+
+// Register creates a new account
+func CreateGeneralAccount(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+	accountNo := r.FormValue("accountNo")
+	if len(email) < 4 || len(password) < 8 {
+		http.Error(w, "Invalid email/password", http.StatusNotAcceptable)
+		return
+	}
+
+	ctx := r.Context()
+	utils.Logger.Debug("Creating new MongoDB Controller")
+	db, err := controllers.NewMongoDB(ctx, &config.MongoEnv)
+	if err != nil {
+		log.Fatalf("Failed to create MongoDB controller: %v", err)
+	}
+	defer func() {
+		if err := db.Close(ctx); err != nil {
+			log.Printf("Failed to close MongoDB connection: %v", err)
+		}
+	}()
+
+	// Check if email already exists
+	var emailData []models.Account
+	emailFilter := bson.M{"email": email}
+	emailfindErr := db.Find(ctx, models.Accounts, emailFilter, &emailData)
+	if emailfindErr != nil {
+		utils.Logger.Error("Checking if email exist error", zap.Any("Error", emailfindErr))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	if len(emailData) != 0 {
+		fmt.Fprintf(w, `<p class="error">Email does not exist.</p>`)
+		return
+	}
+
+	hashedPassword, err := utils.HashPassword(password)
+	if err != nil {
+		utils.Logger.Fatal("password hashing failed: ", zap.Error(err))
+	}
+
+	// Rest of your registration logic
+	var consumer client.Consumer
+	filter := bson.M{"accountNumber": accountNo}
+	findErr := db.FindOne(ctx, models.Consumers, filter, &consumer)
+	if findErr != nil {
+		utils.Logger.Sugar().Errorf("Error finding account: %v", findErr)
+		http.Error(w, "Invalid account number", http.StatusBadRequest)
+		return
+	}
+
+	account := models.Account{
+		HashedPassword: hashedPassword,
+		Email:          email,
+		CreatedAt:      time.Now().UTC().Unix(),
+		UpdatedAt:      time.Now().UTC().Unix(),
+		Role:           models.Role(consumer.AccountType),
+		Status: models.AccountStatus{
+			IsActive: true,
+		},
+		RoleSpecificDataID: consumer.ID,
+	}
+
+	insertResult, createErr := CreateDocument(ctx, db, models.Accounts, &account)
+	if createErr != nil {
+		log.Fatalf("Err creating document %s: %v\n", models.Accounts, createErr)
+	}
+	utils.Logger.Sugar().Debugf("Insert Successful: %s", insertResult.String())
+
+	w.Header().Set("HX-Redirect", "/login")
+	w.WriteHeader(http.StatusOK)
+}
+
+func CreateMeterAccount(w http.ResponseWriter, r *http.Request) {
+	sn := r.FormValue("sn")
+	manufacturer := r.FormValue("manufacturer")
+	model := r.FormValue("model")
+	phase := r.FormValue("phase")
+	sim := r.FormValue("sim")
+
+	if len(sn) <= 13 {
+		http.Error(w, "Invalid serial number", http.StatusNotAcceptable)
+		return
+	} else if len(manufacturer) > 30 {
+		http.Error(w, "Manufacturer is too long", http.StatusNotAcceptable)
+		return
+	} else if len(model) > 30 {
+		http.Error(w, "Model is too long", http.StatusNotAcceptable)
+		return
+	}
+}
+
+func CreateConsumerAccount(w http.ResponseWriter, r *http.Request) {
+	// Implement logic to create a new consumer account
+}
+
+/*************************************************************************************************************/
+/*************************************************************************************************************/

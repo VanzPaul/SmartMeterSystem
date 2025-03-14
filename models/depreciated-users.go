@@ -1,4 +1,4 @@
-package models
+/* package models
 
 import (
 	"time"
@@ -81,3 +81,4 @@ func NewFinancialAdmin(id int, username, password, email string, budgetAccess bo
 		BudgetAccess: budgetAccess,
 	}
 }
+*/
