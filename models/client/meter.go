@@ -17,24 +17,25 @@ const (
 
 // Meter-related structures
 type Meter struct {
-	MeterID     string      `bson:"meterId"`
-	SN          string      `bson:"sn"`
-	MeterConfig MeterConfig `bson:"meterConfig"`
-	Location    GeoJSON     `bson:"location"`
-	SIM         SIM         `bson:"sim"`
-	Usage       []Usage     `bson:"usage"`
-	Alerts      Alert       `bson:"alerts"`
-	Commands    Commands    `bson:"commands"`
-	Status      MeterStatus `bson:"status"`
+	MeterID       string      `bson:"meterId"`
+	SNID          string      `bson:"snid"`
+	MeterConfig   MeterConfig `bson:"meterConfig"`
+	TransformerID string      `bson:"transformerid"`
+	Location      GeoJSON     `bson:"location"`
+	Usage         []Usage     `bson:"usage"`
+	Alerts        Alert       `bson:"alerts"`
+	Commands      Commands    `bson:"commands"`
+	Status        MeterStatus `bson:"status"`
 }
 
 type MeterConfig struct {
+	SN           string `bson:"sn"`
 	Manufacturer string `bson:"manufacturer"`
 	Model        string `bson:"model"`
-	Phase        int    `bson:"phase"`
+	Phase        string `bson:"phase"`
 	APIKey       string `bson:"apiKey"`
-	WifiSSID     string `bson:"wifiSSID"`
-	WifiPassword string `bson:"wifiPassword"`
+	Wifi         Wifi   `bson:"wifi"`
+	SIM          SIM    `bson:"sim"`
 }
 
 type GeoJSON struct {
@@ -99,4 +100,9 @@ type MeterStatus struct {
 	LastSeen       int64   `bson:"lastSeen"`
 	GridConnection bool    `bson:"gridConnection"`
 	BatteryLevel   float64 `bson:"batteryLevel"`
+}
+
+type Wifi struct {
+	SSID     string `bson:"ssid"`
+	Password string `bson:"password"`
 }

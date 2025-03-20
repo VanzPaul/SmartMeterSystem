@@ -8,18 +8,10 @@ import (
 	"github.com/vanspaul/SmartMeterSystem/utils"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("/home/xrrt/Documents/GoProjects/SmartMeterSystem/templates/home.html")
-	if err != nil {
-		http.Error(w, "Template error", http.StatusInternalServerError)
-		return
-	}
-	if err := tmpl.Execute(w, nil); err != nil {
-		http.Error(w, "Execution error", http.StatusInternalServerError)
-	}
-}
+/*************************************************************************************************************/
+/*-------------------------------------------  General Web Files  -------------------------------------------*/
+/*************************************************************************************************************/
 
-// HTMX
 func Login(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("/home/xrrt/Documents/GoProjects/SmartMeterSystem/templates/login.html")
 	if err != nil {
@@ -41,6 +33,25 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Execution error", http.StatusInternalServerError)
 	}
 }
+
+func Home(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("/home/xrrt/Documents/GoProjects/SmartMeterSystem/templates/home.html")
+	if err != nil {
+		http.Error(w, "Template error", http.StatusInternalServerError)
+		return
+	}
+	if err := tmpl.Execute(w, nil); err != nil {
+		http.Error(w, "Execution error", http.StatusInternalServerError)
+	}
+}
+
+/*************************************************************************************************************/
+/*-----------------------------------------------------------------------------------------------------------*/
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/*-------------------------------------------  Consumer Web Files  ------------------------------------------*/
+/*************************************************************************************************************/
 
 // Consumer Account and Balance pages
 func ConsumerAccount(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +77,7 @@ func ConsumerBalance(w http.ResponseWriter, r *http.Request) {
 }
 
 // SubmitLogin submits the login form
-func Dashboard(w http.ResponseWriter, r *http.Request) {
+func ConsumerDashboard(w http.ResponseWriter, r *http.Request) {
 	// Set Cache-Control header at the start, before any writes
 	w.Header().Set("Cache-Control", "public, max-age=300") // 300 seconds = 5 minutes
 
@@ -105,3 +116,19 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Execution error", http.StatusInternalServerError)
 	}
 }
+
+/*************************************************************************************************************/
+/*-----------------------------------------------------------------------------------------------------------*/
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/*-------------------------------------------  Field Admin Web Files  ---------------------------------------*/
+/*************************************************************************************************************/
+
+func FieldAdminDashboard(w http.ResponseWriter, r *http.Request) {
+	// TODO: finish this
+}
+
+/*************************************************************************************************************/
+/*-----------------------------------------------------------------------------------------------------------*/
+/*************************************************************************************************************/

@@ -1,0 +1,5 @@
+/*
+[ ] 1. Create API endpoint for creating meter
+[ ] 2. Create an API websocket endpoint to smart meters to connect
+[ ] 3. Add api-key header authentication middleware for meters connecting
+*/

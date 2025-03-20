@@ -1,5 +1,6 @@
-/* package models
+package models
 
+/*
 import (
 	"time"
 )
@@ -36,9 +37,9 @@ type CustomerServiceAdmin struct {
 	SupportLevel int
 }
 
-type OperationsMonitor struct {
+type FieldAdmin struct {
 	User
-	MonitorLevel int
+	FieldAdminn int
 }
 
 type Cashier struct {

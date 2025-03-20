@@ -47,6 +47,13 @@ var (
 	MaxMeterSessions int
 )
 
+// Meter evironment variables
+type MeterConfig struct {
+	SecretKey string `env:"SECRET_KEY"`
+}
+
+var MeterEnv MeterConfig
+
 // LoadEnv loads environment variables and initializes the logger.
 func LoadEnv() error {
 	if err := godotenv.Load(); err != nil {
@@ -59,6 +66,7 @@ func LoadEnv() error {
 		"MONGODB_URI":   &MongoEnv.MongoURI,
 		"DATABASE_NAME": &MongoEnv.DBName,
 		"DEBUG":         &LogEnv.Debug,
+		"SECRET_KEY":    &MeterEnv.SecretKey,
 		// "PORT":          ,
 		"MAX_WEBUSERS":      &ServerCacheEnv.MaxWebUser,
 		"MAX_WEBSESSIONS":   &ServerCacheEnv.MaxWebSession,

@@ -29,12 +29,16 @@ func ServeMuxInit() http.Handler {
 	// Protected routes subsystem
 	protectedMux := http.NewServeMux()
 
-	// General purpose dynamic dashboard
-	protectedMux.HandleFunc("/dashboard", services.Dashboard)
-	// Register new routes for account and balance pages for consumers:
-	protectedMux.HandleFunc("/account", services.ConsumerAccount)
-	protectedMux.HandleFunc("/balance", services.ConsumerBalance)
+	// Routes for consumer
+	protectedMux.HandleFunc("/consumer/dashboard", services.ConsumerDashboard)
+	protectedMux.HandleFunc("/consumer/account", services.ConsumerAccount)
+	protectedMux.HandleFunc("/consumer/balance", services.ConsumerBalance)
 
+	// Routes for Field Administrator
+	// REMINDER: replace with protected mux
+	baseMux.HandleFunc("POST /fieldadmin/newmeter", services.CreateMeterAccount)
+
+	// Routes for
 	protectedMux.HandleFunc("/logout", services.Logout)
 
 	// Apply auth-specific middleware to protected routes
@@ -45,14 +49,14 @@ func ServeMuxInit() http.Handler {
 	// Mount protected routes under /client/ path
 	baseMux.Handle("/client/", http.StripPrefix("/client", protectedHandler))
 
-	// Apply auth-specific middleware to websocket routes
+	/* // Apply auth-specific middleware to websocket routes
 	socketdHandler := middleware.ChainMiddleware(
-	// middleware.AuthMiddleware,
-	// REMINDER: add middleware for the websockets  here
+	middleware.AuthMiddleware,
+	// TODO:: add middleware for mete websockets websockets  here
 	)(socketMux)
 
 	// Mount WebSocket routes under /socket/ path
-	baseMux.Handle("/v1/", http.StripPrefix("/v1", socketdHandler))
+	baseMux.Handle("/v1/", http.StripPrefix("/v1", socketdHandler)) */
 
 	// Apply GLOBAL middleware to ALL routes
 	globalHandler := middleware.ChainMiddleware(
