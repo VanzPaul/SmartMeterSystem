@@ -8,6 +8,23 @@ import (
 	"net/http"
 )
 
+func (s *Server) applyMiddleware(handler http.Handler, middlewares ...func(http.Handler) http.Handler) http.Handler {
+	for _, middleware := range middlewares {
+		handler = middleware(handler)
+	}
+	return handler
+}
+
+func (s *Server) loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// LoggeLog the request
+		s.GetLogger().Sugar().Infof("%s\t%s\t%s", s.GetDefaultRouteVersion(), r.URL, r.Method)
+
+		// Proceed with the next handler
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set CORS headers

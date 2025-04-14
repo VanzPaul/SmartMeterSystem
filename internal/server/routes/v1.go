@@ -53,12 +53,11 @@ func (c *V1ConsumerRoute) HandleV1() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.NotFound().Render(r.Context(), w)
 	})
 
 	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
 
 		// Inside your handler function
 		userType := r.URL.Query().Get("user_type")
@@ -67,7 +66,7 @@ func (c *V1ConsumerRoute) HandleV1() http.Handler {
 	})
 
 	mux.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.ConsumerDashboardWebPage().Render(r.Context(), w)
 	})
 
@@ -78,65 +77,62 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.NotFound().Render(r.Context(), w)
 	})
 
 	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+		switch r.Method {
+		case "GET":
+			userType := r.URL.Query().Get("user_type")
+			web.LoginWebPage(c.Deps.GetDefaultRouteVersion(), userType).Render(r.Context(), w)
+		case "POST":
+			w.Header().Set("HX-Redirect", "/v1/employee/sysadmin/dashboard") // REMINDER: Make the redirect Dynamic
+			w.WriteHeader(http.StatusOK)
+		}
 
-		// Inside your handler function
-		userType := r.URL.Query().Get("user_type")
-
-		web.LoginWebPage(c.Deps.GetDefaultRouteVersion(), userType).Render(r.Context(), w)
-	})
-
-	mux.HandleFunc("/login/submit", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
-		w.Header().Set("HX-Redirect", "/v1/employee/sysadmin/dashboard") // REMINDER: Make the redirect Dynamic
-		w.WriteHeader(http.StatusOK)
 	})
 
 	// System Admin Logout Route
 	mux.HandleFunc("/sysadmin/logout", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		w.Header().Set("HX-Redirect", "/home")
 		w.WriteHeader(http.StatusOK)
 	})
 
 	// System Admin Dashboard Routes
 	mux.HandleFunc("/sysadmin/dashboard", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.SystemAdminEmployeeDashboardWebPage().Render(r.Context(), w)
 	})
 
 	// System Admin Account Routes
 	mux.HandleFunc("/sysadmin/accounts", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.SystemAdminEmployeeAccountsWebPage().Render(r.Context(), w)
 	})
 	mux.HandleFunc("/sysadmin/accounts/meter-form", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.NewMeterAccountForm().Render(r.Context(), w)
 	})
 	mux.HandleFunc("/sysadmin/accounts/consumer-form", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.NewConsumerAccountForm().Render(r.Context(), w)
 	})
 	mux.HandleFunc("/sysadmin/accounts/employee-form", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.NewEmployeeAccountForm().Render(r.Context(), w)
 	})
 
 	// System Admin Consumer Routes
 	mux.HandleFunc("/sysadmin/consumer", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		web.SystemAdminEmployeeConsumerWebPage().Render(r.Context(), w)
 	})
 
 	// System Admin Accounting Routes
 	mux.HandleFunc("/sysadmin/accounting", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		// web.SystemAdminEmployeeAccountingWebPage().Render(r.Context(), w)
 		web.SystemAdminEmployeeAccountingWebPage(
 			web.AccountingRatesTableFormType.Display,
@@ -292,7 +288,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 
 	// System Admin Accounting Routes
 	mux.HandleFunc("/sysadmin/accounting/update-rates-form", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		// web.SystemAdminEmployeeAccountingWebPage().Render(r.Context(), w)
 		web.SystemAdminEmployeeAccountingTable(
 			web.AccountingRatesTableFormType.FormRates,
@@ -434,8 +430,6 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 			}
 		}()
 
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
-
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -464,7 +458,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	})
 
 	mux.HandleFunc("/sysadmin/accounting/update-erc-form", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
+
 		// web.SystemAdminEmployeeAccountingWebPage().Render(r.Context(), w)
 		web.SystemAdminEmployeeAccountingTable(
 			web.AccountingRatesTableFormType.FormERC,
@@ -599,7 +593,6 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	})
 
 	mux.HandleFunc("/sysadmin/accounting/submit-update-erc-form", func(w http.ResponseWriter, r *http.Request) {
-		c.Deps.GetLogger().Sugar().Infof("%s\t%s\t%s", c.Deps.GetDefaultRouteVersion(), r.URL, r.Method)
 
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

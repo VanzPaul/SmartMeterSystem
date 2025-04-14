@@ -91,6 +91,10 @@ func (s *Server) GetDefaultRouteVersion() string {
 func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
 
+	middlewareGroup := []func(http.Handler) http.Handler{
+		s.loggingMiddleware,
+	}
+
 	// Create versioned routes with server dependencies injected
 	v1Routes := &routes.V1Routes{
 		Consumer: routes.V1ConsumerRoute{Deps: s},
@@ -102,9 +106,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.Handle("/", templ.Handler(web.NotFound()))
 
 	// Register v1 routes under /v1/
-	mux.Handle("/v1/", http.StripPrefix("/v1", v1Routes.V1Handler()))
+	mux.Handle("/v1/", http.StripPrefix("/v1", s.applyMiddleware(v1Routes.V1Handler(), middlewareGroup...)))
 	// Register v2 routes under /v2/
-	mux.Handle("/v2/", http.StripPrefix("/v2", v2Routes.V2Handler()))
+	mux.Handle("/v2/", http.StripPrefix("/v2", s.applyMiddleware(v2Routes.V2Handler(), middlewareGroup...)))
 
 	// Static files and other routes
 	fileServer := http.FileServer(http.FS(web.Files))
