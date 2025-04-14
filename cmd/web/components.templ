@@ -1,0 +1,1565 @@
+package web
+
+import ( 
+    "encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+/********************************************************************/
+/*********************** General Templ ******************************/
+/********************************************************************/
+templ Base() {
+	<!DOCTYPE html>
+	<html lang="en" class="h-screen">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+             <!-- Fav Icon -->
+            <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon_io/apple-touch-icon.png">
+            <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon_io/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon_io/favicon-16x16.png">
+            <link rel="manifest" href="/assets/favicon_io/site.webmanifest">
+
+			<title>Go Blueprint Hello</title>
+			<link href="/assets/css/output.css" rel="stylesheet"/>
+			<script src="/assets/js/htmx.min.js"></script>
+		</head>
+		<body class="bg-gray-100">
+			{ children... }
+		</body>
+	</html>
+}
+
+templ HomeWebPage(defaultRouteVersion string) {
+    @Base() {
+        <div class="font-sans bg-gray-100 min-h-screen m-0 p-0 text-center
+                    text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+            <header class="bg-yellow-500 text-white py-5 px-10">
+                <h1 class="font-bold">Welcome to BATELEC I</h1>
+                <p class="mt-2">Power Utility Company in Batangas</p>
+            </header>
+            
+            <main class="mx-5 my-8">
+                <p class="mb-6">Your trusted partner in energy solutions.</p>
+                
+                <div class="space-x-4">
+                    <!-- Add query parameter for consumer -->
+                    <a href={ templ.URL("/" + defaultRouteVersion + "/consumer/login?user_type=consumer") } class="button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-40 inline-block">
+                        Login as Consumer
+                    </a>
+                    
+                    <!-- Add query parameter for employee -->
+                    <a href={ templ.URL("/" + defaultRouteVersion + "/employee/login?user_type=employee") } class="button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-40 inline-block">
+                        Login as Employee
+                    </a>
+                </div>
+            </main>
+        </div>
+    }
+}
+
+templ LoginWebPage(defaultRouteVersion, clientType string) {
+    @Base() {
+        <div class="min-h-screen bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center">
+            <div class="max-w-md w-full space-y-8">
+                <div class="text-center">
+                    <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">
+                        { strings.ToUpper(clientType) } LOGIN
+                    </h1>
+                </div>
+                
+                <div class="bg-white bg-opacity-90 rounded-2xl shadow-2xl p-8 space-y-6 border border-green-100">
+                    <form hx-post={ "/" + defaultRouteVersion + "/" + clientType + "/login/submit"} 
+                          hx-target="#error-message" 
+                          hx-swap="innerHTML"
+                          class="space-y-6">
+                          
+                        <div class="space-y-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700">
+                                Email Address
+                            </label>
+                            <input type="email" 
+                                   id="email" 
+                                   name="email" 
+                                   required
+                                   class="block w-full px-4 py-3 border border-gray-300 
+                                          rounded-lg focus:ring-2 focus:ring-green-500 
+                                          focus:border-transparent placeholder-gray-400 
+                                          transition-all duration-200">
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="password" class="block text-sm font-medium text-gray-700">
+                                Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       id="password" 
+                                       name="password" 
+                                       required
+                                       class="block w-full px-4 py-3 border border-gray-300 
+                                              rounded-lg focus:ring-2 focus:ring-green-500 
+                                              focus:border-transparent placeholder-gray-400 
+                                              transition-all duration-200">
+                                <button type="button" 
+                                        class="absolute inset-y-0 right-0 px-4 text-sm 
+                                               text-green-600 hover:text-green-700 
+                                               flex items-center">
+                                    Show
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input id="remember-me" name="remember-me" type="checkbox"
+                                       class="h-4 w-4 text-green-600 focus:ring-green-500 
+                                              border-gray-300 rounded">
+                                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                                    Remember me
+                                </label>
+                            </div>
+                            
+                            <a href="#" 
+                               class="text-sm font-medium text-green-600 hover:text-green-700 
+                                      hover:underline">
+                                Forgot your password?
+                            </a>
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full bg-gradient-to-r from-green-600 to-green-700 
+                                       hover:from-green-700 hover:to-green-800 text-white 
+                                       font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg 
+                                       transition-all duration-200 ease-in-out transform 
+                                       hover:-translate-y-0.5 focus:outline-none 
+                                       focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                            Login
+                        </button>
+                    </form>
+                    
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="h-px bg-gray-300 flex-grow"></span>
+                        <span class="text-gray-600 text-sm">or</span>
+                        <span class="h-px bg-gray-300 flex-grow"></span>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="/register" 
+                           class="text-green-600 hover:text-green-700 font-medium 
+                                  underline transition-colors duration-200">
+                            Create a new account
+                        </a>
+                    </div>
+                    
+                    <div id="error-message" class="text-red-600 text-sm text-center mt-3 flex items-center justify-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+templ NotFound() {
+    @Base() {
+        <main class="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+            <div class="text-center">
+                <p class="text-base font-semibold text-indigo-600">404</p>
+                <h1 class="mt-4 text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">Page not found</h1>
+                <p class="mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">Sorry, we couldn’t find the page you’re looking for.</p>
+                <div class="mt-10 flex items-center justify-center gap-x-6">
+                    <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go back home</a>
+                    <a href="#" class="text-sm font-semibold text-gray-900">Contact support <span aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+        </main>
+    }
+}
+
+/********************************************************************/
+/********************************************************************/
+/********************************************************************/
+
+/********************************************************************/
+/*********************** Consumer Templ *****************************/
+/********************************************************************/
+
+templ ConsumerDashboardWebPage() {
+    @Base() {
+        <div class="bg-yellow-500 px-4 py-3 flex justify-between items-center relative
+                    text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+            <div class="text-white font-semibold">BATELEC I</div>
+            <div class="hidden md:flex space-x-4">
+                <a href="#" class="text-white hover:underline">Home</a>
+                <a href="#" class="text-white hover:underline">Profile</a>
+                <a href="#" class="text-white hover:underline">Billing</a>
+                <a href="#" class="text-white hover:underline">Support</a>
+                <a href="#" class="text-white hover:underline">Logout</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-green-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <div id="mobile-menu" class="md:hidden hidden absolute top-full left-0 w-full bg-yellow-500 p-4 space-y-4">
+                <a href="#" class="block text-white hover:underline">Home</a>
+                <a href="#" class="block text-white hover:underline">Profile</a>
+                <a href="#" class="block text-white hover:underline">Billing</a>
+                <a href="#" class="block text-white hover:underline">Support</a>
+                <a href="#" class="block text-white hover:underline">Logout</a>
+            </div>
+        </div>
+        <script>
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            });
+        </script>
+    }
+}
+/********************************************************************/
+/********************************************************************/
+/********************************************************************/
+
+/********************************************************************/
+/*********************** Consumer Templ *****************************/
+/********************************************************************/
+
+// System Admin Base
+templ SystemAdminEmployeeBaseWebPage() {
+    @Base() {
+        <div>
+            <!-- Navbar -->
+            <div class="bg-yellow-500 px-4 py-3 flex justify-between items-center relative
+                        text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+                <div class="text-white font-semibold">BATELEC I</div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-4">
+                    <a href="dashboard" class="block text-white hover:underline">Dashboard</a>
+                    <a href="consumer" class="block text-white hover:underline">Consumer</a>
+                    <a href="accounts" class="block text-white hover:underline">Accounts</a>
+                    <a href="accounting" class="block text-white hover:underline">Accounting</a>
+                    <button onclick="showLogoutModal()" 
+                            class="block text-white hover:underline focus:outline-none">
+                        Logout
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden text-green-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="md:hidden hidden absolute top-full left-0 w-full bg-yellow-500 p-4 space-y-4">
+                    <a href="dashboard" class="block text-white hover:underline">Dashboard</a>
+                    <a href="consumer" class="block text-white hover:underline">Consumer</a>
+                    <a href="accounts" class="block text-white hover:underline">Accounts</a>
+                    <a href="accounting" class="block text-white hover:underline">Accounting</a>
+                    <button onclick="showLogoutModal()" 
+                            class="block w-full text-left text-white hover:underline focus:outline-none">
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Confirmation Modal -->
+            <div id="logout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg p-6 space-y-4 max-w-md">
+                    <h3 class="text-lg font-semibold text-gray-800">Confirm Logout</h3>
+                    <p class="text-gray-600">Are you sure you want to log out?</p>
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="hideLogoutModal()" 
+                                class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                            Cancel
+                        </button>
+                        <button hx-get="/v1/employee/sysadmin/logout" 
+                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            Yes, Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="p-0">
+                { children... }
+            </div>
+
+            <!-- Scripts -->
+            <script>
+                // Mobile menu toggle
+                document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                    document.getElementById('mobile-menu').classList.toggle('hidden');
+                });
+
+                // Logout modal functions
+                function showLogoutModal() {
+                    document.getElementById('logout-modal').classList.remove('hidden');
+                }
+
+                function hideLogoutModal() {
+                    document.getElementById('logout-modal').classList.add('hidden');
+                }
+            </script>
+        </div>
+    }
+}
+
+//<---------------- Dashboard Section ---------------->//
+templ SystemAdminEmployeeDashboardWebPage() {
+    @SystemAdminEmployeeBaseWebPage() {
+        <div>Dashboard Section</div>
+    }
+}
+//<-------------------------------------------------->//
+
+//<---------------- Accounts Section ---------------->//
+templ SystemAdminEmployeeAccountsWebPage() {
+    @SystemAdminEmployeeBaseWebPage() {
+        <div class="container mx-auto p-6 max-w-4xl">
+            <!-- Overview Section -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Overview</h2>
+                <div class="bg-gray-100 rounded-lg h-48 flex items-center justify-center">
+                    <p class="text-gray-500">Account statistics and metrics will appear here</p>
+                </div>
+            </div>
+
+            <!-- Create Account Section -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Create Account</h2>
+                
+                <!-- Account Type Selector -->
+                <div class="flex space-x-4 mb-8">
+                    <button hx-get="accounts/meter-form" 
+                            hx-target="#account-form-container" 
+                            hx-swap="innerHTML"
+                            class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2">
+                        Meter
+                    </button>
+                    <button hx-get="accounts/consumer-form" 
+                            hx-target="#account-form-container" 
+                            hx-swap="innerHTML"
+                            class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2">
+                        Consumer
+                    </button>
+                    <button hx-get="accounts/employee-form" 
+                            hx-target="#account-form-container" 
+                            hx-swap="innerHTML"
+                            class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2">
+                        Employee
+
+                    </button>
+                </div>
+
+                <!-- Dynamic Form Container -->
+                <div id="account-form-container">
+                    <!-- Initial empty state -->
+                    <p class="text-gray-500 text-center py-4">
+                        Please select an account type to begin
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+templ NewMeterAccountForm() {
+    <form hx-post="/admin/accounts/meter" 
+        hx-target="#form-response" 
+        hx-swap="innerHTML"
+        class="space-y-6">
+
+        // Horizontal line        
+        <div class="w-full h-px bg-gray-300 mb-4"></div>
+
+        // Serial Number Group
+        <div class="grid grid-cols-6 gap-10 mb-8">
+        
+            <!-- SNID (Row 1, Column 1) -->
+            <div class="col-span-2">
+                <label for="consumer-snid" class="block text-sm font-medium text-gray-700 mb-2">
+                    SNID
+                </label>
+                <input type="number" id="consumer-snid" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                    placeholder="SNID">
+            </div>
+
+            <!-- SN (Row 1, Column 2-3) -->
+            <div class="col-span-2">
+                <label for="meter-sn" class="block text-sm font-medium text-gray-700 mb-2">
+                    SN
+                </label>
+                <input type="text" id="meter-sn" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400" 
+                    placeholder="SN">
+            </div>
+
+        </div>
+
+        // Horizontal dashed-line
+        <div class="w-full border-t border-dashed border-gray-300"></div>
+
+        // Installation and GeoLocation Group
+        <div class="grid grid-cols-4 gap-10 mb-8">
+
+            <div>
+                <label for="meter-installation-date" class="block text-sm font-medium text-gray-700 mb-2">
+                    Installation Date
+                </label>
+                <input type="date" id="meter-installation-date" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400">
+            </div>
+
+            <div>
+                <label for="meter-transformer-id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Transformer ID
+                </label>
+                <input type="number" id="consumer-transformer-id" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                    placeholder="Transformer ID">
+            </div>
+
+        </div>
+
+        // Horizontal dashed-line
+        <div class="w-full border-t border-dashed border-gray-300"></div>
+
+        <div class="grid grid-cols-2 gap-10 mb-8">
+
+            <div>
+                <label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+                    Geolocation
+                </label>
+
+                <div class="grid grid-cols-2 gap-5">
+
+                    <input type="number" id="meter-latitude" 
+                        class="block w-full px-4 py-3 border border-gray-300 
+                                rounded-lg focus:ring-green-500 focus:border-green-500 
+                                placeholder-gray-400 placeholder:text-sm
+                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                        placeholder="Latitude">
+                    <input type="number" id="meter-longitude" 
+                        class="block w-full px-4 py-3 border border-gray-300 
+                                rounded-lg focus:ring-green-500 focus:border-green-500 
+                                placeholder-gray-400 placeholder:text-sm
+                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                        placeholder="Longitude">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        // Horizontal line        
+        <div class="w-full h-px bg-gray-300 mb-4"></div>
+
+        <div class="flex justify-end">
+            <button type="submit" 
+                    class="px-6 py-3 bg-green-600 hover:bg-green-700 
+                        text-white font-medium rounded-lg 
+                        transition-all shadow-md hover:shadow-lg 
+                        focus:outline-none focus:ring-2 focus:ring-green-500">
+                Create Meter Account
+            </button>
+        </div>
+        
+        <div id="form-response"></div>
+    </form>
+}
+
+templ NewConsumerAccountForm() {
+    <form hx-post="/admin/accounts/meter" 
+        hx-target="#form-response" 
+        hx-swap="innerHTML"
+        class="space-y-6">
+
+        // Horizontal line        
+        <div class="w-full h-px bg-gray-300 mb-4"></div>
+
+        // Consumer Name group
+        <div class="mb-8 grid grid-cols-4 gap-4">
+
+            <!-- First Name (Row 1, Column 1) -->
+            <div>
+                <label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700"> First Name </label>
+                <input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name" />
+            </div>
+
+            <!-- Middle Name (Row 1, Column 2) -->
+            <div>
+                <label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700"> Middle Name </label>
+                <input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name" />
+            </div>
+
+            <!-- Last Name (Row 1, Column 3) -->
+            <div>
+                <label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700"> Last Name </label>
+                <input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name" />
+            </div>
+
+            <!-- Suffix (Row 1, Column 4) -->
+            <div>
+                <label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700"> Suffix </label>
+                <input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)" />
+            </div>
+
+            <!-- Birth Date (Row 1, Column 5) -->
+            <div>
+                <label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700"> Birth Date </label>
+                <input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" />
+            </div>
+        </div>
+
+        // Horizontal dashed-line
+        <div class="w-full border-t border-dashed border-gray-300"></div>
+
+        // Consumer Address group
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <!-- Province (Row 1, Column 1) -->
+            <div>
+                <label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
+                    Province
+                </label>
+                <input type="text" id="consumer-province" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="Province">
+            </div>
+
+            <!-- Postal Code (Row 1, Column 2) -->
+            <div>
+                <label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+                    Postal Code
+                </label>
+                <input type="number" id="consumer-postal-code" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                    placeholder="Postal Code">
+            </div>
+
+            <!-- Municipality (Row 1, Column 3) -->
+            <div>
+                <label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
+                    City/Municipality
+                </label>
+                <input type="text" id="consumer-city-municipality" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="City/Municipality">
+            </div>
+
+            <!-- Barangay (Row 2, Column 1) -->
+            <div>
+                <label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
+                    Barangay
+                </label>
+                <input type="text" id="consumer-barangay" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="Barangay">
+            </div>
+
+            <!-- Street Address (Row 2, Columns 2-3) -->
+            <div class="col-span-2">
+                <label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
+                    House or Building Number, Street Name
+                </label>
+                <input type="text" id="consumer-house-street" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="House/Building Number, Street Name">
+            </div>
+        </div>
+
+        // Horizontal dashed-line
+        <div class="w-full border-t border-dashed border-gray-300"></div>
+
+        // Contact Info Group
+        <div class="grid grid-cols-3 gap-4 mb-8">
+
+            <div>
+                <label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                </label>
+                <input type="number" id="consumer-phone-number" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                    placeholder="Phone Number">
+            </div>
+
+        </div>
+        
+        // Horizontal Line
+        <div class="w-full h-px bg-gray-300 mb-4"></div>
+
+        <div class="flex justify-end">
+            <button type="submit" 
+                    class="px-6 py-3 bg-green-600 hover:bg-green-700 
+                        text-white font-medium rounded-lg 
+                        transition-all shadow-md hover:shadow-lg 
+                        focus:outline-none focus:ring-2 focus:ring-green-500">
+                Create Consumer Account
+            </button>
+        </div>
+        
+        <div id="form-response"></div>
+    </form>
+}
+
+templ NewEmployeeAccountForm() {
+    <form hx-post="/admin/accounts/meter" 
+        hx-target="#form-response" 
+        hx-swap="innerHTML"
+        class="space-y-6">
+        
+        // Horizontal line        
+        <div class="w-full h-px bg-gray-300 mb-4"></div>
+
+        // Consumer Name group
+        <div class="mb-8 grid grid-cols-4 gap-4">
+
+            <!-- First Name (Row 1, Column 1) -->
+            <div>
+                <label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700"> First Name </label>
+                <input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name" />
+            </div>
+
+            <!-- Middle Name (Row 1, Column 2) -->
+            <div>
+                <label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700"> Middle Name </label>
+                <input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name" />
+            </div>
+
+            <!-- Last Name (Row 1, Column 3) -->
+            <div>
+                <label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700"> Last Name </label>
+                <input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name" />
+            </div>
+
+            <!-- Suffix (Row 1, Column 4) -->
+            <div>
+                <label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700"> Suffix </label>
+                <input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)" />
+            </div>
+
+            <!-- Birth Date (Row 1, Column 5) -->
+            <div>
+                <label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700"> Birth Date </label>
+                <input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" />
+            </div>
+        </div>
+
+        // Horizontal dashed-line
+        <div class="w-full border-t border-dashed border-gray-300"></div>
+
+        // Consumer Address group
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <!-- Province (Row 1, Column 1) -->
+            <div>
+                <label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
+                    Province
+                </label>
+                <input type="text" id="consumer-province" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="Province">
+            </div>
+
+            <!-- Postal Code (Row 1, Column 2) -->
+            <div>
+                <label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+                    Postal Code
+                </label>
+                <input type="number" id="consumer-postal-code" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                    placeholder="Postal Code">
+            </div>
+
+            <!-- Municipality (Row 1, Column 3) -->
+            <div>
+                <label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
+                    City/Municipality
+                </label>
+                <input type="text" id="consumer-city-municipality" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="City/Municipality">
+            </div>
+
+            <!-- Barangay (Row 2, Column 1) -->
+            <div>
+                <label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
+                    Barangay
+                </label>
+                <input type="text" id="consumer-barangay" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="Barangay">
+            </div>
+
+            <!-- Street Address (Row 2, Columns 2-3) -->
+            <div class="col-span-2">
+                <label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
+                    House or Building Number, Street Name
+                </label>
+                <input type="text" id="consumer-house-street" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm" 
+                    placeholder="House/Building Number, Street Name">
+            </div>
+        </div>
+
+        // Horizontal dashed-line
+        <div class="w-full border-t border-dashed border-gray-300"></div>
+
+        // Contact Info and Account Type Group
+        <div class="grid grid-cols-3 gap-4 mb-8">
+
+            <!-- Phone Number (Row 1, Columns 1) -->
+            <div>
+                <label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                </label>
+                <input type="number" id="consumer-phone-number" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                    placeholder="Phone Number">
+            </div>
+
+            <!-- Account Type (Row 1, Columns 2) -->
+            <div>
+                <label for="consumer-account-type" class="block text-sm font-medium text-gray-700 mb-2">
+                    Account Type
+                </label>
+                <select id="consumer-account-type" 
+                    class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            text-gray-700 placeholder-gray-400 placeholder:text-sm">
+                    <option value="" disabled selected hidden class="text-gray-400">Account Type</option>
+                    <option value="cashier">Cashier</option>
+                    <option value="field-admin">Field Admin</option>
+                    <option value="finance-admin">Finance Admin</option>
+                    <option value="hr-admin">HR Admin</option>
+                    <option value="customer-admin">Customer Admin</option>
+                </select>
+            </div>
+
+        </div>
+        
+        // Horizontal Line
+        <div class="w-full h-px bg-gray-300 mb-4"></div>
+
+        <div class="flex justify-end">
+            <button type="submit" 
+                    class="px-6 py-3 bg-green-600 hover:bg-green-700 
+                        text-white font-medium rounded-lg 
+                        transition-all shadow-md hover:shadow-lg 
+                        focus:outline-none focus:ring-2 focus:ring-green-500">
+                Create Employee Account
+            </button>
+        </div>
+        
+        <div id="form-response"></div>
+    </form>
+}
+//<-------------------------------------------------->//
+
+//<---------------- Consumer Section ---------------->//
+type ConsumerList struct {
+    ConsumerID  string
+    ConsumerName string
+    AccountType string
+    Status string
+}
+
+var customerList = []ConsumerList{
+    {
+        ConsumerID: "C001",
+        ConsumerName: "John Doe",
+        AccountType: "residentail",
+        Status: "active",
+    },
+    {
+        ConsumerID: "C002",
+        ConsumerName: "John Deer",
+        AccountType: "residentail",
+        Status: "active",
+    },
+}
+
+templ SystemAdminEmployeeConsumerWebPage() {
+    @SystemAdminEmployeeBaseWebPage() {
+        
+        <div class="container mx-auto max-w-3xl p-6">
+            <div class="bg-white rounded-lg shadow-md p-2">
+                <div>
+                    <div class="text-2xl font-semibold text-gray-800 m-4 text-left">Consumers</div>
+                    <form>
+                        <div class="max-w-lg mx-auto">
+                            <div class="relative w-full">
+                                <div class="relative w-full">
+                                    <input type="search" 
+                                        class="block p-2.5 w-full z-20 text-sm text-gray-800 rounded-lg
+                                            border-s-gray-200 border-s-2 border bg-gray-50
+                                            border-gray-300 focus:ring-gray-300 focus:border-gray-300" 
+                                        placeholder="Search Consumers" required />
+                                    <button type="submit" 
+                                            class="absolute top-0 end-0
+                                             p-2.5 text-sm font-medium h-full 
+                                                text-white bg-green-600 hover:bg-green-700 rounded-e-lg
+                                                border border-green-700 focus:ring-4 focus:outline-none
+                                                focus:ring-green-300">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                        </svg>
+                                        <span class="sr-only">Search</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-100 rounded-lg items-center text-center justify-center h-auto p-4 m-4">
+                            for _, item := range customerList {
+                                <div class="flex space-x-3">
+                                    <div>{ item.ConsumerID }</div>
+                                    <div>{ item.ConsumerName }</div>
+                                    <div>{ item.AccountType }</div>
+                                    <div>{ item.Status }</div>
+                                </div>
+                            }
+                        </div>
+                    </form>
+                </div>
+                
+
+            </div>
+        </div>
+    }
+}
+//<-------------------------------------------------->//
+
+//<---------------- Accounting Section ---------------->//
+//<---------------- Accounting Section ---------------->//
+templ SystemAdminEmployeeAccountingWebPage(
+    accountingRatesTableFormType string,
+    accountingRatesTable AccountingRatesTable) {
+    @SystemAdminEmployeeBaseWebPage() {
+        <head>
+            <!-- Load HTMX and json-enc extension -->
+            <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+            <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        </head>
+        <style>
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+            .animate-spin {
+                animation: spin 1s linear infinite;
+            }
+            /* Hide spinner by default */
+            .htmx-indicator {
+                display: none;
+            }
+            /* Show spinner when HTMX adds htmx-request class to parent */
+            .htmx-request .htmx-indicator {
+                display: inline-block;
+            }
+        </style>
+        
+        <div class="container mx-auto max-w-fit p-6 sm:p-9 md:p-12 lg:p-15 xl:p-28 text-xs sm:text-xs md:text-base lg:text-base xl:text-base">
+
+            <!-- Dialog Structure -->
+            <dialog id="loadingDialog" class="bg-transparent backdrop:bg-black/50">
+                <div class="bg-white/90 rounded-lg p-8 text-center">
+                    <div class="animate-spin inline-block size-8 border-[3px] border-current border-t-transparent text-green-600 rounded-full" role="status" aria-label="loading"></div>
+                    <p class="mt-4 text-gray-600">Processing your request...</p>
+                </div>
+            </dialog>
+
+            <!-- Modified updateRatesDialog -->
+            <dialog id="updateRatesDialog" class="w-full max-w-fit p-0 bg-transparent backdrop:bg-black/50"
+                    hx-on:htmx:after-swap="initRateCalculator()">
+                <div class="bg-white rounded-lg shadow-xl p-6 relative">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="dialogTitle" class="text-xl font-semibold"></h3>
+                        <button 
+                            onclick="document.getElementById('updateRatesDialog').close()"
+                            class="text-gray-500 hover:text-gray-700 transition-colors">
+                            ✕
+                        </button>
+                    </div>
+
+                    <form id="ratesForm"                    
+                          hx-post="accounting/submit-update-rates-form"
+                          hx-trigger="submit"
+                          hx-swap="none"
+                          hx-ext="json-enc"
+                          class="max-h-[80vh] overflow-y-auto border-2 border-solid border-slate-500 shadow-sm"
+                          hx-on::before-request="
+                              document.getElementById('updateRatesDialog').close();
+                              document.getElementById('loadingDialog').showModal();
+                          "
+                          hx-on::after-request="
+                              if(event.detail.successful) {
+                                  document.getElementById('loadingDialog').close();
+                              } else {
+                                  document.getElementById('loadingDialog').close();
+                                  document.getElementById('updateRatesDialog').showModal();
+                              }
+                          ">
+                        <div id="ratesDialogContent">
+                            <!-- HTMX form content will be loaded here -->
+                        </div>
+                        <div class="flex justify-end m-6 gap-2">
+                            <button
+                                type="submit"
+                                class="px-6 py-3 rounded-xl bg-green-600 text-white 
+                                       hover:bg-green-700 focus:outline-none focus:ring-4 
+                                       focus:ring-green-500/50 transition-all duration-150
+                                       shadow-lg hover:shadow-xl active:scale-[0.98]
+                                       disabled:opacity-70 disabled:cursor-not-allowed">
+                                <span class="inline-flex items-center">
+                                    <span>Submit</span>
+                                    <svg id="spinner" class="htmx-indicator ml-2 h-5 w-5 animate-spin" 
+                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" 
+                                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
+
+            <!-- Modified updateERCDialog -->
+            <dialog id="updateERCDialog" class="w-full max-w-fit p-0 bg-transparent backdrop:bg-black/50"
+                    hx-on:htmx:after-swap="initRateCalculator()">
+                <div class="bg-white rounded-lg shadow-xl p-6 relative">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="dialogTitle" class="text-xl font-semibold"></h3>
+                        <button 
+                            onclick="document.getElementById('updateERCDialog').close()"
+                            class="text-gray-500 hover:text-gray-700 transition-colors">
+                            ✕
+                        </button>
+                    </div>
+
+                    <form id="ratesForm"                    
+                          hx-post="accounting/submit-update-erc-form"
+                          hx-trigger="submit"
+                          hx-swap="none"
+                          hx-ext="json-enc"
+                          class="max-h-[80vh] overflow-y-auto border-2 border-solid border-slate-500 shadow-sm"
+                          hx-on::before-request="
+                              document.getElementById('updateERCDialog').close();
+                              document.getElementById('loadingDialog').showModal();
+                          "
+                          hx-on::after-request="
+                              if(event.detail.successful) {
+                                  document.getElementById('loadingDialog').close();
+                              } else {
+                                  document.getElementById('loadingDialog').close();
+                                  document.getElementById('updateERCDialog').showModal();
+                              }
+                          ">
+                        <div id="ercDialogContent">
+                            <!-- HTMX form content will be loaded here -->
+                        </div>
+                        <div class="flex justify-end mt-4 gap-2">
+                            <button
+                                type="submit"
+                                class="px-6 py-3 rounded-xl bg-green-600 text-white 
+                                       hover:bg-green-700 focus:outline-none focus:ring-4 
+                                       focus:ring-green-500/50 transition-all duration-150
+                                       shadow-lg hover:shadow-xl active:scale-[0.98]
+                                       disabled:opacity-70 disabled:cursor-not-allowed">
+                                <span class="inline-flex items-center">
+                                    <span>Submit</span>
+                                    <svg id="spinner" class="htmx-indicator ml-2 h-5 w-5 animate-spin" 
+                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" 
+                                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
+
+            <!-- Table Section -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Update</h2>
+
+                <!-- Option Selector -->
+                <div class="flex space-x-4 mb-2">
+                    <button 
+                        hx-get="accounting/update-rates-form"
+                        hx-target="#ratesDialogContent"
+                        hx-swap="innerHTML"
+                        onclick="
+                            document.getElementById('dialogTitle').textContent = 'Update Rates';
+                            showDialog('updateRatesDialog', 'Update Rates');
+                        "
+                        class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                               hover:bg-green-200 focus:outline-none focus:ring-2 
+                               focus:ring-green-500 transition-all active:ring-2">
+                        Rates
+                    </button>
+                    <button 
+                        hx-get="accounting/update-erc-form"
+                        hx-target="#ercDialogContent"
+                        hx-swap="innerHTML"
+                        onclick="
+                            document.getElementById('dialogTitle').textContent = 'Update ERC';
+                            showDialog('updateERCDialog', 'Update ERC')
+                        "
+                        class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                               hover:bg-green-200 focus:outline-none focus:ring-2 
+                               focus:ring-green-500 transition-all active:ring-2">
+                        ERC
+                    </button>
+                </div>
+                <script>
+                    function showDialog(dialogId, title) {
+                        const dialog = document.getElementById(dialogId);
+                        dialog.querySelector('#dialogTitle').textContent = title;
+                        dialog.showModal();
+                    }
+                </script>
+            </div>
+
+            <!-- Table Section -->
+            <div class="bg-white rounded-lg shadow-md mb-8 font-serif p-4 sm:p-5 md:p-12 lg:p-15 xl:p-18">
+                <div class="col-span-2 text-center text-2xl font-extrabold mb-4 textg-black">Electric Utility Rates</div>
+
+                <div class="border-2 border-solid border-black shadow-sm">
+                    <!-- Table content will be loaded here -->
+                    @SystemAdminEmployeeAccountingTable(
+                        accountingRatesTableFormType,
+                        accountingRatesTable)
+                </div>
+            </div>
+        </div>
+    }
+}
+
+var AccountingRatesTableFormType = struct {
+    Display  string
+    FormRates string
+    FormERC   string
+}{
+    Display:   "display",
+    FormRates: "form-rates",
+    FormERC:   "form-erc",
+}
+
+type AccountingRatesTable struct {
+    Date                          string `json:"date,omitempty"`
+    Particulars                   string `json:"particulars"`
+    // Unit                          string `json:"unit"`
+    Rates                         string `json:"rates,,omitempty"`
+    ERC                           string `json:"erc,,omitempty"`
+    AccountingRatesTableRowGroup []AccountingRatesTableRowGroup `json:"row-group"`
+}
+
+type AccountingRatesTableRowGroup struct {
+    Particulars string `json:"particulars"`
+    Unit        string `json:"unit,omitempty"`
+    Rates       string `json:"rates,omitempty"`
+    ERC         string `json:"erc,omitempty"`
+    SubRowGroup []SubRowGroup `json:"sub-row-group"`
+}
+
+type SubRowGroup struct {
+    Particulars string `json:"particulars"`
+    Unit        string `json:"unit"`
+    Rates       string `json:"rates,omitempty"`
+    ERC         string `json:"erc,omitempty"`
+}
+
+func (art *AccountingRatesTable) UnmarshalJSON(data []byte) error {
+	type Alias AccountingRatesTable
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(art),
+	}
+
+	// First unmarshal normally to get simple fields
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Now handle the flattened structure
+	var raw map[string]interface{}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+
+	// Track row groups by index
+	rowGroups := make(map[int]AccountingRatesTableRowGroup)
+
+	for key, value := range raw {
+		if strings.HasPrefix(key, "row-group[") {
+			parts := strings.SplitN(key, "].", 2)
+			if len(parts) != 2 {
+				continue
+			}
+
+			// Extract index
+			indexStr := strings.TrimPrefix(parts[0], "row-group[")
+			index, err := strconv.Atoi(indexStr)
+			if err != nil {
+				return err
+			}
+
+			// Get or create row group
+			rg, exists := rowGroups[index]
+			if !exists {
+				rg = AccountingRatesTableRowGroup{}
+			}
+
+			// Handle sub fields
+			fieldPath := parts[1]
+			switch {
+			case strings.HasPrefix(fieldPath, "sub-row-group["):
+				subParts := strings.SplitN(fieldPath, "].", 2)
+				if len(subParts) != 2 {
+					continue
+				}
+
+				// Extract sub index
+				subIndexStr := strings.TrimPrefix(subParts[0], "sub-row-group[")
+				subIndex, err := strconv.Atoi(subIndexStr)
+				if err != nil {
+					return err
+				}
+
+				// Ensure subrow group exists
+				for len(rg.SubRowGroup) <= subIndex {
+					rg.SubRowGroup = append(rg.SubRowGroup, SubRowGroup{})
+				}
+
+				// Set subrow group field
+				field := subParts[1]
+				switch field {
+				case "particulars":
+					rg.SubRowGroup[subIndex].Particulars = value.(string)
+				case "unit":
+					rg.SubRowGroup[subIndex].Unit = value.(string)
+				case "rates":
+					rg.SubRowGroup[subIndex].Rates = value.(string)
+				case "erc":
+					rg.SubRowGroup[subIndex].ERC = value.(string)
+				}
+			default:
+				// Handle top-level row group fields
+				switch fieldPath {
+				case "particulars":
+					rg.Particulars = value.(string)
+				case "unit":
+					rg.Unit = value.(string)
+				case "rates":
+					rg.Rates = value.(string)
+				case "erc":
+					rg.ERC = value.(string)
+				}
+			}
+
+			rowGroups[index] = rg
+		}
+	}
+
+	// Convert map to ordered slice
+	maxIndex := 0
+	for index := range rowGroups {
+		if index > maxIndex {
+			maxIndex = index
+		}
+	}
+
+	art.AccountingRatesTableRowGroup = make([]AccountingRatesTableRowGroup, maxIndex+1)
+	for index, rg := range rowGroups {
+		art.AccountingRatesTableRowGroup[index] = rg
+	}
+
+	return nil
+}
+
+templ SystemAdminEmployeeAccountingTable(
+    accountingRatesTableFormType string,
+    accountingRatesTable AccountingRatesTable) {
+    // Determine grid configuration based on form type
+    {{ gridClass := "grid grid-cols-4" }}  // Default for forms
+    if accountingRatesTableFormType == AccountingRatesTableFormType.Display {
+        {{ gridClass = "grid grid-cols-5" }} // For Display
+    }
+
+    // Date input for rates form
+    if accountingRatesTableFormType == AccountingRatesTableFormType.FormRates {
+        <div class="flex justify-end gap-4 m-4">
+            <div class="w-full max-w-[8rem]">
+                <label for="billing-date" class="mb-1 block text-sm font-medium text-gray-700">
+                    Billing Date
+                </label>
+                <!-- Date input -->
+                <input 
+                    type="date" 
+                    id="billing-date" 
+                    name="date"
+                    class="w-full rounded-md border border-gray-300 px-3 py-0.5 text-sm shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                    required
+                    value={ accountingRatesTable.Date }
+                >
+            </div>
+        </div>
+    }
+
+    <!-- Table Structure -->
+    <div class="space-y-4">
+        <!-- Header Separator -->
+        <div class="w-full h-0.5 bg-gray-400"></div>
+
+        <!-- Table Header -->
+        <div class={ gridClass + " text-center font-bold " }>
+            <div class="col-span-2">PARTICULARS</div>
+            <div class="">UNIT</div>
+            switch accountingRatesTableFormType {
+                case AccountingRatesTableFormType.Display:
+                    <div class="">RATES</div>
+                    <div class="">ERC</div>
+                case AccountingRatesTableFormType.FormRates:
+                    <div class="">RATES</div>
+                case AccountingRatesTableFormType.FormERC:
+                    <div class="">ERC</div>
+            }
+        </div>
+
+        <!-- Content Separator -->
+        <div class="w-full h-0.5 bg-gray-400"></div>
+
+        <!-- Main Content -->
+        <div class="p-2 pb-2 xl:p-4 space-y-4">
+            <!-- Header Row with data attributes -->
+            <div class={ gridClass + " items-center py-1 font-medium" } data-header-row>
+                <div class="col-span-3 text-left pl-2" data-header-particulars>
+                    <input 
+                        type="text" 
+                        readonly 
+                        name="particulars"
+                        value={accountingRatesTable.Particulars}
+                        class="bg-transparent border-none focus:ring-0 focus:border-none text-left"
+                    >
+                </div>
+
+                switch accountingRatesTableFormType {
+                    case AccountingRatesTableFormType.Display:
+                        <div class="text-center">{ accountingRatesTable.Rates }</div>
+                        <div class="text-center">{ accountingRatesTable.ERC }</div>
+                    case AccountingRatesTableFormType.FormRates:
+                        <div class="text-center font-medium justify-center">
+                            <input 
+                                type="text" 
+                                readonly 
+                                name="rates"
+                                value={accountingRatesTable.Rates}
+                                class="header-parent-rate-value bg-transparent border-none focus:ring-0 focus:border-none text-center"
+                            >
+                        </div>
+                    case AccountingRatesTableFormType.FormERC:
+                        <div class="text-center font-medium justify-center">
+                            <input 
+                                type="text" 
+                                readonly 
+                                name="erc"
+                                value={accountingRatesTable.ERC}
+                                class="header-parent-rate-value bg-transparent border-none focus:ring-0 focus:border-none text-center"
+                            >
+                        </div>
+                }
+            </div>
+
+            <!-- Dynamic Rows -->
+            for index, item := range accountingRatesTable.AccountingRatesTableRowGroup {
+                <div class="space-y-2 group" data-group={ item.Particulars }>
+
+                    <!-- Parent Row -->
+                    <div class={ gridClass + " items-center py-1 font-medium" }>
+                        switch accountingRatesTableFormType {
+                            case AccountingRatesTableFormType.Display:
+                                <div class="col-span-3 text-left pl-4">{ item.Particulars }</div>
+                                // <div class="text-center">{ item.Unit }</div>
+                                <div class="text-center">{ item.Rates }</div>
+                                <div class="text-center">{ item.ERC }</div>
+
+                            case AccountingRatesTableFormType.FormRates:
+                                <div class="col-span-3 text-left pl-4">
+                                    <input 
+                                        type="text" 
+                                        readonly 
+                                        name={ fmt.Sprintf("row-group[%d].particulars", index) }
+                                        value={item.Particulars}
+                                        class="bg-transparent border-none focus:ring-0"
+                                    >
+                                </div>
+                                // <div class="text-center">
+                                //     <input
+                                //         type="text"
+                                //         readonly
+                                //         name={ fmt.Sprintf("row-group[%d].unit", index) }
+                                //         value={item.Unit}
+                                //         class="bg-transparent border-none focus:ring-0"
+                                //     >
+                                // </div>
+                                <div class="text-center">
+                                    <input
+                                        type="text"
+                                        readonly
+                                        name={ fmt.Sprintf("row-group[%d].rates", index) }
+                                        value={item.Rates}
+                                        class="parent-rate-value bg-transparent border-none focus:ring-0 text-center"
+                                    >
+                                </div>
+
+                            case AccountingRatesTableFormType.FormERC:
+                                 <div class="col-span-2 text-left pl-4">
+                                    <input 
+                                        type="text" 
+                                        readonly 
+                                        name={ fmt.Sprintf("row-group[%d].particulars", index) }
+                                        value={item.Particulars}
+                                        class="bg-transparent border-none focus:ring-0"
+                                    >
+                                </div>
+                                <div class="text-center">
+                                    <input
+                                        type="text"
+                                        readonly
+                                        name={ fmt.Sprintf("row-group[%d].unit", index) }
+                                        value={item.Unit}
+                                        class="bg-transparent border-none focus:ring-0"
+                                    >
+                                </div>
+                                <div class="text-center">
+                                    <input
+                                        type="text"
+                                        readonly
+                                        name={ fmt.Sprintf("row-group[%d].erc", index) }
+                                        value={item.ERC}
+                                        class="parent-rate-value bg-transparent border-none focus:ring-0 text-center"
+                                    >
+                                </div>
+                        }
+                    </div>
+
+                    <!-- Sub Items -->
+                    for subIndex, subitem := range item.SubRowGroup {
+                        <div class={ gridClass + " items-center py-1  text-slate-600" }>
+
+                            switch accountingRatesTableFormType {
+                                case AccountingRatesTableFormType.Display:
+                                    <div class="col-span-2 text-left pl-8">{ subitem.Particulars }</div>
+                                    <div class="text-center">{ subitem.Unit }</div>
+                                    <div class="text-center">{ subitem.Rates }</div>
+                                    <div class="text-center">{ subitem.ERC }</div>
+                                case AccountingRatesTableFormType.FormRates:
+                                    <div class="col-span-2 text-left pl-8">
+                                        <input
+                                            type="hidden"
+                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].particulars", index, subIndex)}
+                                            value={subitem.Particulars}
+                                        >
+                                        { subitem.Particulars }
+                                    </div>
+                                    <div class="text-center">
+                                        <input
+                                            type="hidden"
+                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].unit", index, subIndex)}
+                                            value={subitem.Unit}
+                                        >
+                                        { subitem.Unit }
+                                    </div>
+                                    <div class="text-center">
+                                        <input 
+                                            type="number"
+                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].rates", index, subIndex)}
+                                            class="subitem-input w-32 px-2 py-1 border rounded-lg text-center"
+                                            step="0.0001"
+                                            value={subitem.Rates}
+                                            required
+                                        >
+                                    </div>
+
+                                case AccountingRatesTableFormType.FormERC:
+                                    <div class="col-span-2 text-left pl-8">
+                                        <input
+                                            type="hidden"
+                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].particulars", index, subIndex)}
+                                            value={subitem.Particulars}
+                                        >
+                                        { subitem.Particulars }
+                                    </div>
+                                    <div class="text-center">
+                                        <input
+                                            type="hidden"
+                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].unit", index, subIndex)}
+                                            value={subitem.Unit}
+                                        >
+                                        { subitem.Unit }
+                                    </div>
+                                    <div class="text-center">
+                                        <input 
+                                            type="number"
+                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].rates", index, subIndex)}
+                                            class="subitem-input w-32 px-2 py-1 border rounded-lg text-center"
+                                            step="0.0001"
+                                            value={subitem.ERC}
+                                            required
+                                        >
+                                    </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Rate Calculator for Forms -->
+    if accountingRatesTableFormType == AccountingRatesTableFormType.FormRates || accountingRatesTableFormType == AccountingRatesTableFormType.FormERC {
+        <script>
+            // Single event delegation for all input events
+            document.addEventListener('input', function(e) {
+                if (!e.target.matches('.subitem-input')) return;
+                
+                const groupDiv = e.target.closest('[data-group]');
+                const inputs = groupDiv.querySelectorAll('.subitem-input');
+                const sum = Array.from(inputs).reduce((acc, input) => 
+                    acc + (parseFloat(input.value) || 0), 0);
+                
+                // Update parent rate input
+                const parentRateInput = groupDiv.querySelector('.parent-rate-value');
+                if (parentRateInput) {
+                    parentRateInput.value = sum.toFixed(4);
+                }
+                
+                // Update header rate input
+                const allRates = Array.from(document.querySelectorAll('.parent-rate-value'));
+                const headerRate = allRates.reduce((acc, input) => 
+                    acc + (parseFloat(input.value) || 0), 0);
+                
+                const headerRateInput = document.querySelector('.header-parent-rate-value');
+                if (headerRateInput) {
+                    headerRateInput.value = headerRate.toFixed(4);
+                }
+            });
+
+            // Initialize with existing values
+            document.querySelectorAll('.subitem-input').forEach(input => {
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+        </script>
+
+        <script>
+            document.addEventListener('submit', function(e) {
+                if (!e.target.matches('#ratesForm')) return;
+                e.preventDefault();
+                
+                // Get header values from the table structure
+                const headerRow = document.querySelector('.grid.items-center.py-1');
+                const particulars = headerRow.querySelector('.col-span-2').textContent.trim();
+                const unit = headerRow.querySelector('div:nth-child(2)').textContent.trim();
+                
+                // Build the complete JSON structure
+                const formData = {
+                    date: document.getElementById('billing-date').value,
+                    particulars: particulars,
+                    unit: unit,
+                    rates: document.querySelector('.header-parent-rate-value').textContent,
+                    erc: "", // Empty for rates form
+                    "row-group": Array.from(document.querySelectorAll('[data-group]')).map(group => ({
+                        particulars: group.dataset.group,
+                        unit: group.querySelector('div:nth-child(2)').textContent.trim(),
+                        rates: group.querySelector('.parent-rate-value').textContent,
+                        "sub-row-group": Array.from(group.querySelectorAll('.subitem-input')).map(input => ({
+                            particulars: input.dataset.subgroup,
+                            unit: input.closest('.grid').querySelector('div:nth-child(2)').textContent.trim(),
+                            rates: input.value,
+                            erc: "" // Empty for rates form
+                        }))
+                    }))
+                };
+
+                // Debugging: Log the final JSON structure
+                console.log('Submitting JSON:', JSON.stringify(formData, null, 2));
+
+                // Send via HTMX with proper JSON headers
+                htmx.ajax('POST', 'accounting/submit-update-rates-form', {
+                    target: '#dialogContent',
+                    swap: 'none',
+                    values: formData,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            });
+        </script>
+    }
+}
+
+//<-------------------------------------------------->//
+
+/********************************************************************/
+/********************************************************************/
+/********************************************************************/

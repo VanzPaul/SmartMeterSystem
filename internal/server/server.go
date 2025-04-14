@@ -1,29 +1,69 @@
+/*
+ * @file internal/server/server.go
+ * @brief this file contains the server interface
+ */
+
 package server
 
 import (
+	"SmartMeterSystem/cmd/web"
+	"SmartMeterSystem/internal"
+	"SmartMeterSystem/internal/server/routes"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/a-h/templ"
+	"go.uber.org/zap"
+)
 
-	"SmartMeterSystem/internal/database"
+type Role string
+
+const (
+	RoleSystemAdmin          Role = "system_admin"
+	RoleFinancialAdmin       Role = "financial_admin"
+	RoleHRAdmin              Role = "hr_admin"
+	RoleCustomerServiceAdmin Role = "customer_service_admin"
+	RoleFieldAdmin           Role = "field_admin"
+	RoleCashier              Role = "cashier"
+	RoleConsumer             Role = "consumer"
+)
+
+type ClientType string
+
+const (
+	ConsumerType ClientType = "consumer"
+	EmployeeType ClientType = "employee"
 )
 
 type Server struct {
-	port int
-
-	db database.Service
+	port                int
+	logger              *zap.Logger
+	defaultRouteVersion string
+	clienttype          string
 }
 
+// NewServer creates a new HTTP server instance
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	NewServer := &Server{
-		port: port,
+	defaultRouteVersion := os.Getenv("DEFAULT_ROUTE_VERSION")
+	if defaultRouteVersion == "" {
+		defaultRouteVersion = "v1"
+	}
 
-		db: database.New(),
+	logger, loggerErr := internal.NewLogger()
+	if loggerErr != nil {
+		panic(loggerErr)
+	}
+
+	// Create the Server instance
+	NewServer := &Server{
+		port:                port,
+		logger:              logger,
+		defaultRouteVersion: defaultRouteVersion,
+		clienttype:          "",
 	}
 
 	// Declare Server config
@@ -36,4 +76,40 @@ func NewServer() *http.Server {
 	}
 
 	return server
+}
+
+// Implement ServerDeps interface from routes package
+func (s *Server) GetLogger() *zap.Logger {
+	return s.logger
+}
+
+func (s *Server) GetDefaultRouteVersion() string {
+	return s.defaultRouteVersion
+}
+
+// RegisterRoutes sets up all HTTP routes with dependencies injected
+func (s *Server) RegisterRoutes() http.Handler {
+	mux := http.NewServeMux()
+
+	// Create versioned routes with server dependencies injected
+	v1Routes := &routes.V1Routes{
+		Consumer: routes.V1ConsumerRoute{Deps: s},
+		Meter:    routes.V1MeterRoute{Deps: s},
+		Employee: routes.V1EmployeeRoute{Deps: s},
+	}
+	v2Routes := &routes.V2Routes{} // Assuming V2Routes follows similar pattern
+
+	mux.Handle("/", templ.Handler(web.NotFound()))
+
+	// Register v1 routes under /v1/
+	mux.Handle("/v1/", http.StripPrefix("/v1", v1Routes.V1Handler()))
+	// Register v2 routes under /v2/
+	mux.Handle("/v2/", http.StripPrefix("/v2", v2Routes.V2Handler()))
+
+	// Static files and other routes
+	fileServer := http.FileServer(http.FS(web.Files))
+	mux.Handle("/assets/", fileServer)
+	mux.HandleFunc("/home", s.HomeWebPage)
+
+	return s.corsMiddleware(mux)
 }
