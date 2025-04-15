@@ -2546,3 +2546,146 @@
 {"level":"info","ts":1744646568.8696852,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
 {"level":"info","ts":1744646575.206481,"msg":"v1\t/employee/login/submit\tPOST"}
 {"level":"info","ts":1744646575.3617728,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744646681.4753053,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744646730.9194138,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744646738.1414554,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744646738.2709687,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744646742.60189,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744646743.7859151,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744646746.7861242,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744646747.6893365,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744646748.498368,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744646750.5155056,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1744647196.5010037,"msg":"v1\t/employee/sysadmin/logout\tGET"}
+{"level":"info","ts":1744647196.5490565,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744648022.8209188,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744648367.8473303,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744648383.1401112,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744648384.2172823,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744648390.7478251,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744648390.7705145,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744648429.4069142,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744648452.2036002,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744648453.8594568,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744648461.587844,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744648808.3051107,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744648832.1073124,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744648836.9821978,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744648838.040559,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744648838.1018884,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744648991.4069407,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744648997.1398568,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744649090.6391168,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744649092.957667,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744649094.7366614,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744649829.3144474,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744649834.36222,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744649899.8364918,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744649906.328089,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744649908.7439857,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744649910.4460897,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744649911.3645885,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744649980.1745062,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744649989.653412,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744649991.6283338,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744650048.2322416,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744650051.3026721,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744650064.3211625,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744650089.0426164,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744650096.1970317,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744650109.8952243,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744650169.744646,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744650173.4619284,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744650175.3980057,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744650624.2175279,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744650629.750647,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744650631.181206,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744650632.4762928,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744650633.0438793,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744650748.5328562,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744650781.9634645,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744650791.2660441,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744651398.0577962,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651399.3672516,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651528.0994625,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651529.7116344,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651533.2581742,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744651590.5294294,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651602.3976386,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651612.401882,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744651642.475879,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651680.641862,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651687.5368104,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744651716.0455818,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744651762.9019277,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744651764.7162645,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744651771.394133,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744651771.4733143,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744651773.0357802,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744651779.2197988,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744651780.5601819,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744651781.231842,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744651820.5161183,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744651828.497561,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744651836.713627,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744651836.7146082,"msg":"Server exiting"}
+{"level":"info","ts":1744651847.366693,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651860.1942027,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651862.9529188,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744651864.3701172,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744651864.9866345,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744651865.4178343,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744651883.1203806,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651884.2968745,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744651900.243867,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651924.6596773,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651983.5403395,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744651984.5666485,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744652029.5556026,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744652031.1260679,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744652036.2718842,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744652036.404656,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744652059.656076,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744652067.6761246,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744652113.70214,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744652118.038106,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744652119.7507582,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744652139.9213216,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744652157.615779,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744652160.785692,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744652161.5354254,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744652294.3271787,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744652298.6094682,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744652300.4267833,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744652301.3383873,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744652307.9104187,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744652310.4255369,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744652791.022305,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744652799.0578792,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744652852.0380576,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744653804.834921,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744653820.0173059,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744653827.8183727,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744653829.5852284,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744653831.4037912,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744653833.147142,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744654455.3616505,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744654458.3834615,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744654460.3158638,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744654461.3112648,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744654461.9903998,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744654789.150613,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744654824.059624,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744654826.574227,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744654828.1331456,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1744654828.8377583,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1744654829.3250353,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1744699414.8084729,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1744699424.29627,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744699429.5268004,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1744699432.8240824,"msg":"v1\t/employee/sysadmin/accounting/update-rates-form\tGET"}
+{"level":"info","ts":1744699440.5976562,"msg":"v1\t/employee/sysadmin/accounting/submit-update-rates-form\tPOST"}
+{"level":"info","ts":1744699440.5995843,"msg":"Received valid payload: {Date:2025-04-15 Particulars:RESIDENTIAL Rates:9.1572 ERC: AccountingRatesTableRowGroup:[{Particulars:Generation Charges Unit: Rates:5.6092 ERC: SubRowGroup:[{Particulars:Generation Energy Charge Unit:PhP/kWh Rates:5.6092 ERC:} {Particulars:Other Generation Rate Adjustment Unit:PhP/kWh Rates:0.0000 ERC:}]} {Particulars:Transmission Charges (NCCP) Unit: Rates:0.6853 ERC: SubRowGroup:[{Particulars:Transmission Demand Charge Unit:PhP/kW Rates:0.0000 ERC:} {Particulars:Transmission System Charge Unit:PhP/kWh Rates:0.6853 ERC:}]} {Particulars:System Loss Charge Unit: Rates:0.9344 ERC: SubRowGroup:[{Particulars:System Loss Charge Unit:PhP/kWh Rates:0.9344 ERC:}]} {Particulars:Distribution Charges Unit: Rates:0.4613 ERC: SubRowGroup:[{Particulars:Distribution Demand Charge Unit:PhP/kW Rates:0.0000 ERC:} {Particulars:Distribution System Charge Unit:PhP/kWh Rates:0.4613 ERC:}]} {Particulars:Supply Charges Unit: Rates:0.5376 ERC: SubRowGroup:[{Particulars:Supply Retail Customer Charge Unit:PhP/Cust/Mo Rates:0.0000 ERC:} {Particulars:Supply System Charge Unit:PhP/kWh Rates:0.5376 ERC:}]} {Particulars:VAT Unit: Rates:0.7472 ERC: SubRowGroup:[{Particulars:Generation Unit:PhP/kWh Rates:0.6376 ERC:} {Particulars:Transmission Unit:PhP/kWh Rates:0.1096 ERC:}]} {Particulars:Universal Charge Unit: Rates:0.1822 ERC: SubRowGroup:[{Particulars:Missionary Electrification Unit:PhP/kWh Rates:0.1822 ERC:}]}]}"}
+{"level":"info","ts":1744699450.1826038,"msg":"v1\t/employee/sysadmin/accounting/update-erc-form\tGET"}
+{"level":"info","ts":1744699453.3413496,"msg":"v1\t/employee/sysadmin/accounting/submit-update-erc-form\tPOST"}
+{"level":"info","ts":1744699453.3433406,"msg":"Received valid payload: {Date: Particulars:RESIDENTIAL Rates: ERC:9.9298 AccountingRatesTableRowGroup:[{Particulars:Generation Charges Unit: Rates: ERC:5.6092 SubRowGroup:[{Particulars:Generation Energy Charge Unit:PhP/kWh Rates:5.6092 ERC:} {Particulars:Other Generation Rate Adjustment Unit:PhP/kWh Rates:0.0000 ERC:}]} {Particulars:Transmission Charges (NCCP) Unit: Rates: ERC:0.6853 SubRowGroup:[{Particulars:Transmission Demand Charge Unit:PhP/kW Rates:0.0000 ERC:} {Particulars:Transmission System Charge Unit:PhP/kWh Rates:0.6853 ERC:}]} {Particulars:System Loss Charge Unit: Rates: ERC:0.9344 SubRowGroup:[{Particulars:System Loss Charge Unit:PhP/kWh Rates:0.9344 ERC:}]} {Particulars:Distribution Charges Unit: Rates: ERC:0.4613 SubRowGroup:[{Particulars:Distribution Demand Charge Unit:PhP/kW Rates:0.0000 ERC:} {Particulars:Distribution System Charge Unit:PhP/kWh Rates:0.4613 ERC:}]} {Particulars:Supply Charges Unit: Rates: ERC:0.5376 SubRowGroup:[{Particulars:Supply Retail Customer Charge Unit:PhP/Cust/Mo Rates:0.0000 ERC:} {Particulars:Supply System Charge Unit:PhP/kWh Rates:0.5376 ERC:}]} {Particulars:VAT Unit: Rates: ERC:0.7472 SubRowGroup:[{Particulars:Generation Unit:PhP/kWh Rates:0.6376 ERC:} {Particulars:Transmission Unit:PhP/kWh Rates:0.1096 ERC:}]} {Particulars:Universal Charge Unit: Rates: ERC:0.1822 SubRowGroup:[{Particulars:Missionary Electrification Unit:PhP/kWh Rates:0.1822 ERC:}]}]}"}
