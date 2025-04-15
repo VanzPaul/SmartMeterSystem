@@ -2689,3 +2689,32 @@
 {"level":"info","ts":1744699450.1826038,"msg":"v1\t/employee/sysadmin/accounting/update-erc-form\tGET"}
 {"level":"info","ts":1744699453.3413496,"msg":"v1\t/employee/sysadmin/accounting/submit-update-erc-form\tPOST"}
 {"level":"info","ts":1744699453.3433406,"msg":"Received valid payload: {Date: Particulars:RESIDENTIAL Rates: ERC:9.9298 AccountingRatesTableRowGroup:[{Particulars:Generation Charges Unit: Rates: ERC:5.6092 SubRowGroup:[{Particulars:Generation Energy Charge Unit:PhP/kWh Rates:5.6092 ERC:} {Particulars:Other Generation Rate Adjustment Unit:PhP/kWh Rates:0.0000 ERC:}]} {Particulars:Transmission Charges (NCCP) Unit: Rates: ERC:0.6853 SubRowGroup:[{Particulars:Transmission Demand Charge Unit:PhP/kW Rates:0.0000 ERC:} {Particulars:Transmission System Charge Unit:PhP/kWh Rates:0.6853 ERC:}]} {Particulars:System Loss Charge Unit: Rates: ERC:0.9344 SubRowGroup:[{Particulars:System Loss Charge Unit:PhP/kWh Rates:0.9344 ERC:}]} {Particulars:Distribution Charges Unit: Rates: ERC:0.4613 SubRowGroup:[{Particulars:Distribution Demand Charge Unit:PhP/kW Rates:0.0000 ERC:} {Particulars:Distribution System Charge Unit:PhP/kWh Rates:0.4613 ERC:}]} {Particulars:Supply Charges Unit: Rates: ERC:0.5376 SubRowGroup:[{Particulars:Supply Retail Customer Charge Unit:PhP/Cust/Mo Rates:0.0000 ERC:} {Particulars:Supply System Charge Unit:PhP/kWh Rates:0.5376 ERC:}]} {Particulars:VAT Unit: Rates: ERC:0.7472 SubRowGroup:[{Particulars:Generation Unit:PhP/kWh Rates:0.6376 ERC:} {Particulars:Transmission Unit:PhP/kWh Rates:0.1096 ERC:}]} {Particulars:Universal Charge Unit: Rates: ERC:0.1822 SubRowGroup:[{Particulars:Missionary Electrification Unit:PhP/kWh Rates:0.1822 ERC:}]}]}"}
+{"level":"info","ts":1744710858.364119,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744710888.7179284,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744710890.74115,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744710902.5557036,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744710902.5774443,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744710907.333359,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744710908.5483322,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1744710909.551179,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1744710912.2921386,"msg":"v1\t/employee/sysadmin/logout\tGET"}
+{"level":"info","ts":1744710912.3099952,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744711296.8436124,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744711299.7251773,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744711299.7256875,"msg":"Server exiting"}
+{"level":"info","ts":1744713508.4497147,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744713518.8423238,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744713553.3429577,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744713553.345535,"msg":"Server exiting"}
+{"level":"info","ts":1744714417.9192007,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744714498.6703155,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714507.6691191,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744714507.670321,"msg":"Server exiting"}
+{"level":"info","ts":1744714539.325675,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744714542.586623,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714543.4450977,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714543.626881,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714543.7831113,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714543.9455411,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714544.0907016,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744714544.2776713,"msg":"v1\t/home\tGET"}
