@@ -811,38 +811,55 @@ templ NewEmployeeAccountForm() {
 }
 //<-------------------------------------------------->//
 
-//<---------------- Consumer Section ---------------->//
+//*<---------------- Consumer Section ---------------->*//
 type ConsumerList struct {
-    ConsumerID  string
+    ConsumerID   string
     ConsumerName string
-    AccountType string
-    Status string
+    ConsumerType string
+    Status       string
 }
 
-var customerList = []ConsumerList{
-    {
-        ConsumerID: "C001",
-        ConsumerName: "John Doe",
-        AccountType: "residentail",
-        Status: "active",
-    },
-    {
-        ConsumerID: "C002",
-        ConsumerName: "John Deer",
-        AccountType: "residentail",
-        Status: "active",
-    },
+var ConsumerAccountTypeData = struct {
+    Residential string
+    Commercial string
+    Industrial string
+}{
+    Residential: "residential",
+    Commercial: "commercial",
+    Industrial: "industrial",
 }
 
-templ SystemAdminEmployeeConsumerWebPage() {
+var ConsumerAccountStatusData = struct {
+    Active string
+    Inactive string
+}{
+    Active: "active",
+    Inactive: "inactive",
+}
+
+// var AccountType = struct {
+//     Cashier string
+//     FieldAdmin string
+//     FinanceAdmin string
+//     HRAdmin string
+//     CustomerAdmin string
+// }{
+//     Cashier: "cashier",
+//     FieldAdmin: "field-admin",
+//     FinanceAdmin: "finance-admin",
+//     HRAdmin: "hr-admin",
+//     CustomerAdmin: "customer-admin",
+// }
+
+templ SystemAdminEmployeeConsumerWebPage(consumerlist []ConsumerList) {
     @SystemAdminEmployeeBaseWebPage() {
         
-        <div class="container mx-auto max-w-3xl p-6">
+        <div class=" p-6">
             <div class="bg-white rounded-lg shadow-md p-2">
                 <div>
                     <div class="text-2xl font-semibold text-gray-800 m-4 text-left">Consumers</div>
                     <form>
-                        <div class="max-w-lg mx-auto">
+                        <div class="max-w-lg mx-auto mb-10">
                             <div class="relative w-full">
                                 <div class="relative w-full">
                                     <input type="search" 
@@ -865,23 +882,77 @@ templ SystemAdminEmployeeConsumerWebPage() {
                             </div>
                         </div>
 
-                        <div class="bg-gray-100 rounded-lg items-center text-center justify-center h-auto p-4 m-4">
-                            for _, item := range customerList {
-                                <div class="flex space-x-3">
-                                    <div>{ item.ConsumerID }</div>
-                                    <div>{ item.ConsumerName }</div>
-                                    <div>{ item.AccountType }</div>
-                                    <div>{ item.Status }</div>
-                                </div>
-                            }
+                        <div id="consumer-info-container" class="bg-gray-50 rounded-lg items-center text-center justify-center h-auto p-1 m-0.5">
+                            <!-- Consumer Information Container -->
+                            @ConsumerListContainer(consumerlist)
                         </div>
                     </form>
                 </div>
-                
-
             </div>
         </div>
     }
+}
+
+templ ConsumerListContainer(consumerlist []ConsumerList) {
+    for _, item := range consumerlist {
+        <button hx-get="consumer/consumer-info"
+                hx-target="#consumer-info-container"
+                hx-swap="innerHTML"
+                class="flex items-center w-full shadow-sm p-2 rounded-lg bg-white mb-2
+                    hover:bg-slate-200 transition-all duration-200 ease-in-out
+                    focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <div 
+                if item.Status == ConsumerAccountStatusData.Active {
+                    class="bg-green-500 rounded-lg p-2 h-5 w-5 mr-4 shrink-0"
+                } else {
+                    class="bg-red-500 rounded-lg p-2 h-5 w-5 mr-4 shrink-0"
+                }>
+            </div>
+            
+            <div class="flex flex-1 gap-4">
+                <div class="flex-1 text-left font-medium truncate">{ item.ConsumerID }</div>
+                <div class="flex-1 text-left truncate">{ item.ConsumerName }</div>
+                <div class="flex-1 text-left truncate">{ item.ConsumerType }</div>
+            </div>
+        </button>
+    }
+}
+
+templ ConsumerInformationContainer() {
+    <header>
+        <script src="https://go-echarts.github.io/go-echarts-assets/assets/echarts.min.js"></script>
+        <script src="https://go-echarts.github.io/go-echarts-assets/assets/themes/westeros.js"></script>
+    </header>
+    <script>
+        document.addEventListener('htmx:afterSwap', function(evt) {
+            // Reinitialize charts after HTMX content load
+            if(typeof echarts !== 'undefined') {
+                echarts.init(document.getElementById('energy-chart-container'), "westeros")
+                    .setOption(/* your chart options */);
+            }
+        });
+    </script>
+    <div class="m-2">
+        <div class="flex space-x-5 place-items-center">
+            <button hx-get="consumer/consumer-list"
+                    hx-target="#consumer-info-container"
+                    hx-swap="innerHTML"
+                    class="text-5xl pb-1
+                           hover:text-green-500 transition-all">
+                &larr;
+            </button>
+            <p class="text-2xl">Consumer Information</p>
+        </div>
+        <div>
+            <div id="energy-chart" 
+                 hx-get="consumer/consumer-chart"
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                <!-- Loading indicator -->
+                <div class="text-center py-4">Loading chart...</div>
+            </div>
+        </div>
+    </div>
 }
 //<-------------------------------------------------->//
 

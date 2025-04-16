@@ -8,10 +8,15 @@ import (
 	"SmartMeterSystem/cmd/web"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-echarts/go-echarts/v2/types"
 )
 
 // V1 Route Groups
@@ -99,8 +104,11 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	// sysadminRoute := http.NewServeMux()
 	sysadminRouteStruct := struct {
 		dashboard http.HandlerFunc
-		consumer  http.HandlerFunc
-		accounts  struct {
+		consumer  struct {
+			consumer    http.HandlerFunc
+			information http.HandlerFunc
+		}
+		accounts struct {
 			accounts http.HandlerFunc
 			forms    http.HandlerFunc
 		}
@@ -118,13 +126,125 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 			}
 		},
-		consumer: func(w http.ResponseWriter, r *http.Request) {
-			switch r.Method {
-			case "GET":
-				web.SystemAdminEmployeeConsumerWebPage().Render(r.Context(), w)
-			default:
-				http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			}
+		consumer: struct {
+			consumer    http.HandlerFunc
+			information http.HandlerFunc
+		}{
+			consumer: func(w http.ResponseWriter, r *http.Request) {
+				switch r.Method {
+				case "GET":
+					web.SystemAdminEmployeeConsumerWebPage(
+						[]web.ConsumerList{
+							{
+								ConsumerID:   "C001",
+								ConsumerName: "John Doe",
+								ConsumerType: web.ConsumerAccountTypeData.Residential,
+								Status:       web.ConsumerAccountStatusData.Active,
+							},
+							{
+								ConsumerID:   "C002",
+								ConsumerName: "John Deer",
+								ConsumerType: web.ConsumerAccountTypeData.Residential,
+								Status:       web.ConsumerAccountStatusData.Inactive,
+							},
+						},
+					).Render(r.Context(), w)
+				default:
+					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+				}
+			},
+			information: func(w http.ResponseWriter, r *http.Request) {
+				// Extract the part after "/sysadmin/consumer/"
+				pathPart := strings.TrimPrefix(r.URL.Path, "/sysadmin/consumer/")
+				// Split to handle nested paths, take the first segment
+				formType := strings.SplitN(pathPart, "/", 2)[0]
+
+				switch r.Method {
+				case "GET":
+					switch formType {
+					case "consumer-list":
+						web.ConsumerListContainer(
+							[]web.ConsumerList{
+								{
+									ConsumerID:   "C001",
+									ConsumerName: "John Doe",
+									ConsumerType: web.ConsumerAccountTypeData.Residential,
+									Status:       web.ConsumerAccountStatusData.Active,
+								},
+								{
+									ConsumerID:   "C002",
+									ConsumerName: "John Deer",
+									ConsumerType: web.ConsumerAccountTypeData.Residential,
+									Status:       web.ConsumerAccountStatusData.Inactive,
+								},
+							},
+						).Render(r.Context(), w)
+					case "consumer-info":
+						web.ConsumerInformationContainer().Render(r.Context(), w)
+					// In your handler for "consumer-chart"
+					case "consumer-chart":
+						w.Header().Set("Content-Type", "text/html")
+
+						// 1. Create the chart instance
+						line := charts.NewLine()
+						line.SetGlobalOptions(
+							charts.WithInitializationOpts(opts.Initialization{
+								Theme:   types.ThemeWesteros,
+								ChartID: "energy-chart-container", // Fixed container ID
+								Width:   "900px",
+								Height:  "500px",
+							}),
+							charts.WithTitleOpts(opts.Title{
+								Title:    "Energy Consumption Chart",
+								Subtitle: "Consumer energy usage patterns",
+							}),
+						)
+
+						// 2. Add data to the chart
+						line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
+							AddSeries("Usage", generateRandomData()).
+							SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: true}))
+
+						// 3. Create custom renderer
+						line.Renderer = NewMyOwnRender(line, line.Validate)
+
+						// 4. Create template for HTMX response
+						tmpl := `{{.Element}}
+						<script type="text/javascript">
+							"use strict";
+							{{.Script}}
+							let option_{{.ChartID}} = {{.Option}};
+							echarts.init(document.getElementById('{{.DivID}}'), "westeros")
+								.setOption(option_{{.ChartID}});
+						</script>`
+
+						// 5. Execute the template with chart snippets
+						t := template.Must(template.New("chart").Parse(tmpl))
+						snippets := line.RenderSnippet()
+
+						data := struct {
+							Element template.HTML
+							Script  template.HTML
+							Option  template.HTML
+							DivID   string
+							ChartID string
+						}{
+							Element: template.HTML(snippets.Element),
+							Script:  template.HTML(snippets.Script),
+							Option:  template.HTML(snippets.Option),
+							DivID:   "energy-chart-container",
+							ChartID: "energyChart", // Unique chart ID
+						}
+
+						// 6. Render the template
+						err := t.Execute(w, data)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+						}
+
+					}
+				}
+			},
 		},
 		accounts: struct {
 			accounts http.HandlerFunc
@@ -676,7 +796,8 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	// System Admin Dashboard Routes
 	mux.HandleFunc("/sysadmin/dashboard", sysadminRouteStruct.dashboard)
 	// System Admin Consumer Routes
-	mux.HandleFunc("/sysadmin/consumer", sysadminRouteStruct.consumer)
+	mux.HandleFunc("/sysadmin/consumer", sysadminRouteStruct.consumer.consumer)
+	mux.HandleFunc("/sysadmin/consumer/", sysadminRouteStruct.consumer.information)
 	// System Admin Account Routes
 	mux.HandleFunc("/sysadmin/accounts", sysadminRouteStruct.accounts.accounts)
 	mux.HandleFunc("/sysadmin/accounts/", sysadminRouteStruct.accounts.forms)
