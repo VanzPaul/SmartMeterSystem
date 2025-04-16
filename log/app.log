@@ -2718,3 +2718,285 @@
 {"level":"info","ts":1744714543.9455411,"msg":"v1\t/home\tGET"}
 {"level":"info","ts":1744714544.0907016,"msg":"v1\t/home\tGET"}
 {"level":"info","ts":1744714544.2776713,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744715383.1193714,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744715383.1225233,"msg":"Server exiting"}
+{"level":"info","ts":1744775762.6084213,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744775765.325651,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744775765.3631566,"msg":"Server exiting"}
+{"level":"info","ts":1744776141.122199,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744776144.683773,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1744776203.0101717,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1744776215.8658292,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1744776215.8992994,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744776224.0023835,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744776225.687984,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744777033.4189284,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777035.0894673,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777036.8049045,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777038.5249958,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777040.2632482,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777041.8910115,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777043.6751382,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777045.4605298,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777047.2542167,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777049.0118542,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777050.7464683,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777052.4776495,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777054.25767,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777055.9953752,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777057.7087147,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777059.506766,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777061.195692,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777062.8964632,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777064.6738338,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777066.4078233,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777068.0755944,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777069.7781026,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777071.6013634,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777076.001283,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777077.4370723,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777284.2524035,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777387.7918675,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1744777387.7946382,"msg":"Server exiting"}
+{"level":"info","ts":1744777860.2623906,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744777970.3818188,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778135.2747958,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778194.518861,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778204.4861689,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778792.8835526,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778814.5918436,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778822.0028696,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778824.7235386,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778825.2043934,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778825.431703,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778825.6367419,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778834.791882,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778914.2378156,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778915.980583,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778918.9045537,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778934.8132925,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778937.2110033,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778954.8605456,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778956.7027278,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778979.9593456,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778982.6682844,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744778996.142707,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744778997.5430481,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779006.545659,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779013.9033458,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779014.0810328,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779031.480986,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779031.6642997,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779050.2643926,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779052.7223942,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779077.1342306,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779077.3751206,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779206.2018983,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779211.9339917,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779277.8100832,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779285.2012618,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779305.4125464,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779311.96735,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779312.4674544,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779326.2131014,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779327.5155342,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779403.574595,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779403.7597642,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744779437.3143587,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744779438.502232,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780105.248416,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780110.2367368,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780130.1644278,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780130.78632,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780211.464083,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780214.837984,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780314.9967327,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780317.7475514,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780365.9996037,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780366.773932,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780445.806255,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780607.3737676,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780613.9596977,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780615.5497308,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780617.2155216,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780785.9241595,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780788.9393253,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780808.0027218,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780811.9371147,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780834.570806,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780836.1692195,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780843.6950364,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780845.325232,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744780975.7182186,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744780979.7420218,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781015.084809,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781016.1282403,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781084.460016,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781103.5730238,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781133.9987333,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781135.419015,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781136.673152,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781213.9679296,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781215.3977132,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781230.3429382,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781231.1310086,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781248.2845106,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781249.6819851,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781316.3353248,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781320.2843037,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781424.951036,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781430.73157,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781467.8477755,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781469.1097875,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781495.6654804,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781686.084054,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781691.0741653,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781703.562133,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781708.2607245,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781709.6358924,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781739.1949642,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781763.1272333,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781764.7167878,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781789.8547683,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781790.7148244,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781826.4678428,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781827.1286404,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781847.31097,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781848.2016556,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781868.6908693,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781869.8941405,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781901.8993008,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781903.8205574,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781959.5707707,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781960.4287186,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744781986.7653575,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744781988.477376,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744782007.5334268,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744782009.078982,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744782020.084425,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744782026.794437,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744783377.447967,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744783381.0720904,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744783396.1379762,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744783876.7200482,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744783879.4582844,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744783963.7394636,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744783965.1269372,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744783995.9920928,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744785465.2177124,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792298.659868,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792399.9025238,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792417.5856159,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792465.156322,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792472.702399,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792474.3695433,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792477.2682016,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792479.1552877,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792606.723904,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792611.4213526,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792613.3676198,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792635.2557673,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792636.1706338,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792637.3955524,"msg":"v1\t/employee/sysadmin/consumer-info\tGET"}
+{"level":"info","ts":1744792663.145786,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792694.9964938,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792696.6254535,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792744.3599803,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744792753.8347502,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744792755.909283,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793374.2721157,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793383.877653,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793385.962715,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793453.8748648,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793457.0264893,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793458.1228032,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793479.500804,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793480.478269,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793481.939204,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793635.4497423,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793640.3991234,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793642.722683,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793663.5369773,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793667.0104403,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793668.087381,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793757.068931,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793794.7229776,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793796.8285856,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793812.118434,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793837.3219063,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793840.1082325,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793841.7486627,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793860.5208566,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793862.3333375,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793863.4744186,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793889.145492,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793890.5195384,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793892.6717696,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744793921.798979,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744793924.093597,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744793925.6055918,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794088.278903,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794090.1097965,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794091.916886,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794139.7275612,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794143.143485,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794144.2905853,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794404.5499794,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794406.094969,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794407.3344238,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794446.4813273,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794452.9278345,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794454.0313914,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794455.4929228,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794480.461759,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794483.884484,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794485.6184878,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794487.2278876,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1744794488.7544746,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794667.24767,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1744794708.8379095,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794710.6876848,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794723.1808827,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794724.645216,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794745.8692245,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794748.6972458,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794774.5797768,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794775.5687366,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794791.032369,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744794792.8545911,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1744794822.8266747,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794823.8853664,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794841.7503955,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794845.0010188,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794868.0613868,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794869.2673001,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794887.672288,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744794889.3343854,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744794899.6194603,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744795801.5092685,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744795915.910505,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744797395.354054,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744797493.9913044,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744797907.7226806,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744797998.672344,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744798006.755141,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744798009.0832922,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744798009.1155121,"msg":"v1\t/employee/sysadmin/consumer/consumer-chaart\tGET"}
+{"level":"info","ts":1744798031.7185116,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744798036.0628328,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744798037.4600146,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744798037.4883301,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1744798466.687972,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744798471.0508037,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744798595.7151327,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744799189.3203998,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744799251.5022433,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1744799253.865621,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1744799255.0725787,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744799256.9086628,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744799256.939096,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1744799419.8764753,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1744799421.6082108,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1744799421.702955,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1744799895.9805949,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1744799949.8345761,"msg":"Server is running at http://192.168.1.16:8080\n"}

@@ -109,21 +109,15 @@ endif
 
 watch:
 ifeq ($(DETECTED_OS),Windows)
-	@where air >nul 2>&1 && ( \
-		air -c .air.windows.toml & \
-		echo Watching... \
-	) || ( \
-		echo Go's 'air' is not installed. & \
-		set /p choice="Install? [Y/n] " & \
-		if /i "!choice!" neq "n" ( \
-			go install github.com/air-verse/air@latest & \
-			air -c air.windows.toml & \
-			echo Watching... \
-		) else ( \
-			echo Installation aborted & \
-			exit 1 \
-		) \
-	)
+	@powershell -ExecutionPolicy Bypass -Command "if (Get-Command air -ErrorAction SilentlyContinue) { \
+		air; \
+		Write-Output 'Watching...'; \
+	} else { \
+		Write-Output 'Installing air...'; \
+		go install github.com/air-verse/air@latest; \
+		air; \
+		Write-Output 'Watching...'; \
+	}"
 else
 	@if command -v air > /dev/null; then \
 		air; \
