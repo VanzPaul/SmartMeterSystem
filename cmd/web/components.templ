@@ -26,6 +26,7 @@ templ Base() {
 			<title>Go Blueprint Hello</title>
 			<link href="/assets/css/output.css" rel="stylesheet"/>
 			<script src="/assets/js/htmx.min.js"></script>
+            <script src="/assets/js/echarts.min.js"></script>
 		</head>
 		<body class="bg-gray-100">
 			{ children... }
@@ -919,19 +920,6 @@ templ ConsumerListContainer(consumerlist []ConsumerList) {
 }
 
 templ ConsumerInformationContainer() {
-    <header>
-        <script src="https://go-echarts.github.io/go-echarts-assets/assets/echarts.min.js"></script>
-        <script src="https://go-echarts.github.io/go-echarts-assets/assets/themes/westeros.js"></script>
-    </header>
-    <script>
-        document.addEventListener('htmx:afterSwap', function(evt) {
-            // Reinitialize charts after HTMX content load
-            if(typeof echarts !== 'undefined') {
-                echarts.init(document.getElementById('energy-chart-container'), "westeros")
-                    .setOption(/* your chart options */);
-            }
-        });
-    </script>
     <div class="m-2">
         <div class="flex space-x-5 place-items-center">
             <button hx-get="consumer/consumer-list"
@@ -943,15 +931,228 @@ templ ConsumerInformationContainer() {
             </button>
             <p class="text-2xl">Consumer Information</p>
         </div>
-        <div>
-            <div id="energy-chart" 
-                 hx-get="consumer/consumer-chart"
-                 hx-trigger="load"
-                 hx-swap="innerHTML">
-                <!-- Loading indicator -->
-                <div class="text-center py-4">Loading chart...</div>
+
+        <!-- Energy Chart -->
+        <div class="w-full max-w-4xl">
+            <!-- Chart container (existing code remains the same) -->
+            <div id="energy-chart" class="w-full h-[60vh] min-h-[300px]"></div>
+            <script>
+                (function() {
+                    var chartDom = document.getElementById('energy-chart');
+                    var myChart = echarts.init(chartDom);
+                
+                    // Separate datasets for each chart
+                    const data1 = [["2000-06-05",116],["2000-06-06",129],["2000-06-07",135],["2000-06-08",86],["2000-06-09",73],["2000-06-10",85],["2000-06-11",73],["2000-06-12",68],["2000-06-13",92],["2000-06-14",130],["2000-06-15",245],["2000-06-16",139],["2000-06-17",115],["2000-06-18",111],["2000-06-19",309],["2000-06-20",206],["2000-06-21",137],["2000-06-22",128],["2000-06-23",85],["2000-06-24",94],["2000-06-25",71],["2000-06-26",106],["2000-06-27",84],["2000-06-28",93],["2000-06-29",85],["2000-06-30",73],["2000-07-01",83],["2000-07-02",125],["2000-07-03",107],["2000-07-04",82],["2000-07-05",44],["2000-07-06",72],["2000-07-07",106],["2000-07-08",107],["2000-07-09",66],["2000-07-10",91],["2000-07-11",92],["2000-07-12",113],["2000-07-13",107],["2000-07-14",131],["2000-07-15",111],["2000-07-16",64],["2000-07-17",69],["2000-07-18",88],["2000-07-19",77],["2000-07-20",83],["2000-07-21",111],["2000-07-22",57],["2000-07-23",55],["2000-07-24",60]];
+                    const data2 = [["2000-06-05",116],["2000-06-06",129],["2000-06-07",135],["2000-06-08",86],["2000-06-09",73],["2000-06-10",85],["2000-06-11",73],["2000-06-12",68],["2000-06-13",92],["2000-06-14",130],["2000-06-15",245],["2000-06-16",139],["2000-06-17",115],["2000-06-18",111],["2000-06-19",309],["2000-06-20",206],["2000-06-21",137],["2000-06-22",128],["2000-06-23",85],["2000-06-24",94],["2000-06-25",71],["2000-06-26",106],["2000-06-27",84],["2000-06-28",93],["2000-06-29",85],["2000-06-30",73],["2000-07-01",83],["2000-07-02",125],["2000-07-03",107],["2000-07-04",82],["2000-07-05",44],["2000-07-06",72],["2000-07-07",106],["2000-07-08",107],["2000-07-09",66],["2000-07-10",91],["2000-07-11",92],["2000-07-12",113],["2000-07-13",107],["2000-07-14",131],["2000-07-15",111],["2000-07-16",64],["2000-07-17",69],["2000-07-18",88],["2000-07-19",77],["2000-07-20",83],["2000-07-21",111],["2000-07-22",57],["2000-07-23",55],["2000-07-24",60]];
+                
+                    // Process datasets
+                    const processData = (data) => {
+                        const dates = data.map(item => item[0]);
+                        const values = data.map(item => item[1]);
+                        const maxValue = Math.max(...values);
+                        return { dates, values, max: maxValue + (maxValue * 0.2) }; // 20% buffer
+                    };
+                
+                    const chart1 = processData(data1);
+                    const chart2 = processData(data2);
+                
+                    option = {
+                        visualMap: [
+                            { // Chart 1 Y-axis gradient
+                                show: false,
+                                type: 'continuous',
+                                seriesIndex: 0,
+                                min: 0,
+                                max: chart1.max
+                            },
+                            { // Chart 2 X-axis gradient
+                                show: false,
+                                type: 'continuous',
+                                seriesIndex: 1,
+                                dimension: 0,
+                                min: 0,
+                                max: chart2.dates.length - 1
+                            },
+                            { // Chart 2 Y-axis gradient
+                                show: false,
+                                type: 'continuous',
+                                seriesIndex: 1,
+                                dimension: 1,
+                                min: 0,
+                                max: chart2.max
+                            }
+                        ],
+                        title: [
+                            { left: 'center', text: '30 Day Energy Consumption' },
+                            { top: '50%', left: 'center', text: '24 Hour Energy Consumption' }
+                        ],
+                        tooltip: { trigger: 'axis' },
+                        xAxis: [
+                            { data: chart1.dates },
+                            { data: chart2.dates, gridIndex: 1 }
+                        ],
+                        yAxis: [
+                            { max: chart1.max },
+                            { gridIndex: 1, max: chart2.max }
+                        ],
+                        grid: [
+                            { bottom: '60%' },
+                            { top: '60%' }
+                        ],
+                        series: [
+                            {
+                                type: 'line',
+                                showSymbol: false,
+                                data: chart1.values
+                            },
+                            {
+                                type: 'line',
+                                showSymbol: false,
+                                data: chart2.values,
+                                xAxisIndex: 1,
+                                yAxisIndex: 1
+                            }
+                        ]
+                    };
+                
+                    try {
+                        myChart.setOption(option);
+                        
+                        // Enhanced resize handler
+                        const resizeHandler = () => {
+                            myChart.resize({
+                                width: 'auto',
+                                height: 'auto'
+                            });
+                        };
+                        
+                        // Add event listeners
+                        window.addEventListener('resize', resizeHandler);
+                        
+                        // Initial resize to ensure proper rendering
+                        setTimeout(resizeHandler, 0);
+                        
+                        // Cleanup on script re-execution (optional)
+                        window.onunload = () => {
+                            window.removeEventListener('resize', resizeHandler);
+                        };
+                    } catch (error) {
+                        console.error('Chart error:', error);
+                    }
+
+                })();
+            </script>
+
+            <!-- Live Updates Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6 px-4">
+                <!-- Last Updated Card -->
+                <div class="flex items-center bg-green-50 rounded-lg border border-green-200 p-3 md:p-4 shadow-sm">
+                    <div class="flex-1 flex items-center gap-3">
+                        <span class="text-sm md:text-base text-green-700 font-medium">Last Updated:</span>
+                        <span id="last-updated" class="text-2xl md:text-3xl font-semibold text-green-900">0</span>
+                        <span class="text-sm text-green-600">minutes ago</span>
+                    </div>
+                </div>
+
+                <!-- Live Power Card -->
+                <div class="flex items-center bg-blue-50 rounded-lg border border-blue-200 p-3 md:p-4 shadow-sm">
+                    <div class="flex-1 flex items-center gap-3">
+                        <span class="text-sm md:text-base text-blue-700 font-medium">Live Power:</span>
+                        <span id="live-power" class="text-2xl md:text-3xl font-semibold text-blue-900">0</span>
+                        <span class="text-sm text-blue-600">W</span>
+                    </div>
+                </div>
+
+                <!-- Total Energy Card -->
+                <div class="flex items-center bg-purple-50 rounded-lg border border-purple-200 p-3 md:p-4 shadow-sm">
+                    <div class="flex-1 flex items-center gap-3">
+                        <span class="text-sm md:text-base text-purple-700 font-medium">Total Energy:</span>
+                        <span id="total-energy" class="text-2xl md:text-3xl font-semibold text-purple-900">0</span>
+                        <span class="text-sm text-purple-600">kWh</span>
+                    </div>
+                </div>
+
+                <script>
+                    // Function to update live mtetrics
+                    function updateMetrics({ minutes, power, energy }) {
+                        document.querySelector('#last-updated').textContent = minutes;
+                        document.querySelector('#live-power').textContent = power;
+                        document.querySelector('#total-energy').textContent = energy;
+                    }
+                </script>
             </div>
+
+            <!-- Balance Section -->
+            <div class="mt-8 px-4">
+                <!-- Balance Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+                    <div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
+                        <div class="flex-1 flex items-center gap-3">
+                            <span class="text-sm md:text-base text-amber-700 font-medium">Account Balance:</span>
+                            <span class="text-2xl md:text-3xl font-semibold text-amber-900">$500.00</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
+                        <div class="flex-1 flex items-center gap-3">
+                            <span class="text-sm md:text-base text-amber-700 font-medium">Due Balance:</span>
+                            <span class="text-2xl md:text-3xl font-semibold text-amber-900">$120.00</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
+                        <div class="flex-1 flex items-center gap-3">
+                            <span class="text-sm md:text-base text-amber-700 font-medium">Last Payment:</span>
+                            <span class="text-lg font-semibold text-amber-900">2023-11-15</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Balance Breakdown Table -->
+                <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-700">Balance Breakdown</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bill ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount Due</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Months Overdue</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Interest</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-4 py-3 text-sm text-gray-900 font-medium">#101</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2023-10-05</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">$50.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">3</td>
+                                    <td class="px-4 py-3 text-sm text-red-600">$7.50</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Delinquent</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 text-sm text-gray-900 font-medium">#102</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2023-11-05</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">$70.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2</td>
+                                    <td class="px-4 py-3 text-sm text-yellow-600">$7.00</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2.5 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Overdue</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
+
     </div>
 }
 //<-------------------------------------------------->//

@@ -8,15 +8,10 @@ import (
 	"SmartMeterSystem/cmd/web"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/go-echarts/go-echarts/v2/charts"
-	"github.com/go-echarts/go-echarts/v2/opts"
-	"github.com/go-echarts/go-echarts/v2/types"
 )
 
 // V1 Route Groups
@@ -185,62 +180,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 					case "consumer-chart":
 						w.Header().Set("Content-Type", "text/html")
 
-						// 1. Create the chart instance
-						line := charts.NewLine()
-						line.SetGlobalOptions(
-							charts.WithInitializationOpts(opts.Initialization{
-								Theme:   types.ThemeWesteros,
-								ChartID: "energy-chart-container", // Fixed container ID
-								Width:   "900px",
-								Height:  "500px",
-							}),
-							charts.WithTitleOpts(opts.Title{
-								Title:    "Energy Consumption Chart",
-								Subtitle: "Consumer energy usage patterns",
-							}),
-						)
-
-						// 2. Add data to the chart
-						line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
-							AddSeries("Usage", generateRandomData()).
-							SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: true}))
-
-						// 3. Create custom renderer
-						line.Renderer = NewMyOwnRender(line, line.Validate)
-
-						// 4. Create template for HTMX response
-						tmpl := `{{.Element}}
-						<script type="text/javascript">
-							"use strict";
-							{{.Script}}
-							let option_{{.ChartID}} = {{.Option}};
-							echarts.init(document.getElementById('{{.DivID}}'), "westeros")
-								.setOption(option_{{.ChartID}});
-						</script>`
-
-						// 5. Execute the template with chart snippets
-						t := template.Must(template.New("chart").Parse(tmpl))
-						snippets := line.RenderSnippet()
-
-						data := struct {
-							Element template.HTML
-							Script  template.HTML
-							Option  template.HTML
-							DivID   string
-							ChartID string
-						}{
-							Element: template.HTML(snippets.Element),
-							Script:  template.HTML(snippets.Script),
-							Option:  template.HTML(snippets.Option),
-							DivID:   "energy-chart-container",
-							ChartID: "energyChart", // Unique chart ID
-						}
-
-						// 6. Render the template
-						err := t.Execute(w, data)
-						if err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-						}
+						// Lopgic Here
 
 					}
 				}
