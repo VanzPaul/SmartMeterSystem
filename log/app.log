@@ -3678,3 +3678,53 @@
 {"level":"info","ts":1745640619.1081386,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
 {"level":"info","ts":1745660641.6661966,"msg":"shutting down gracefully, press Ctrl+C again to force"}
 {"level":"info","ts":1745660641.674927,"msg":"Server exiting"}
+{"level":"info","ts":1745815219.05014,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815223.727988,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815225.203714,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815641.980772,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815645.854652,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815647.5343556,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815661.359487,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815662.3817596,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815663.8635452,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815692.9993958,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815694.4398758,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815695.7870257,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815714.3023932,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815718.2793427,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815720.3559167,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815894.2547588,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815896.6630979,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816082.9172666,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816088.1927187,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816090.304497,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816276.2643366,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816281.5028114,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816283.1376507,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816773.365267,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816778.4146895,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816780.0619078,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816830.1091106,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816831.4361362,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816833.85431,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816869.8276355,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816871.3684053,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816872.6848235,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816883.023705,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816883.7561133,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816885.0107973,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816935.625403,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745816937.13537,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816941.6470785,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745816945.7897396,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745818183.5901408,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1745818183.5926554,"msg":"Server exiting"}
+{"level":"info","ts":1745828963.1661634,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745829054.9061482,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745829057.5572085,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745829059.137622,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745829092.4065137,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745829095.7016172,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745829097.3674803,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745829828.59109,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1745829828.6021378,"msg":"Server exiting"}
