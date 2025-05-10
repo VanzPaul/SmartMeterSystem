@@ -3000,3 +3000,762 @@
 {"level":"info","ts":1744799421.702955,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
 {"level":"info","ts":1744799895.9805949,"msg":"Server is running at http://192.168.1.16:8080\n"}
 {"level":"info","ts":1744799949.8345761,"msg":"Server is running at http://192.168.1.16:8080\n"}
+{"level":"info","ts":1745502213.1475692,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745502315.5023398,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1745502318.2973993,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1745502374.2852328,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1745502374.3039443,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1745502377.9043832,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745502379.5273495,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745502379.577777,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745502488.0502622,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745502516.0289958,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745502517.5568132,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745502517.5995796,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745502597.5072737,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745502604.8871648,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745502607.2176998,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745502607.262881,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745502758.9988096,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745502762.6701186,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745502764.471782,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745502764.5186262,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745502801.166309,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745502804.0825887,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745502805.4129534,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745502805.450712,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745502964.2878723,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745502967.6001143,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745502970.417797,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745502970.4507225,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745503376.7245412,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745504874.0643067,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745504875.605111,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745504875.6476212,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745505511.2125306,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745505518.7897015,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1745505529.388264,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1745505530.2628787,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1745505531.1739995,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1745505543.8597543,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1745505546.0707068,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745505553.4297967,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745505553.463268,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745505555.5670788,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745505556.9089823,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745505556.9521623,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745505561.4975727,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745505591.0777085,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745505591.123963,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745505905.7054899,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745505912.452222,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745505914.1069808,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745505914.1381552,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745505954.2802763,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745506571.3833864,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745506578.923028,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745506581.6450562,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745506581.6885827,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745506781.9483125,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745506802.2041185,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745506805.2135575,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745506805.256999,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507001.5233903,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507040.8899677,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507050.8294795,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507052.0851927,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507052.1260293,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507565.0029268,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507567.9285917,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507569.3476326,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507569.3906329,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507639.8587327,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507642.1590984,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507643.8982031,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507643.939688,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507711.605938,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507714.1072934,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507715.52705,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507715.5607061,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507790.0752976,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507791.7057128,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507793.6178687,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507793.6639426,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507853.0513172,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507854.8732767,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507856.5444078,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507856.5774555,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745507912.5842295,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745507919.9365745,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745507920.9466605,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745507920.996338,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508088.3861165,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508093.027591,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508094.8941402,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508094.9360545,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508127.338812,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508128.9209175,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508130.8469837,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508130.8821962,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508154.9193292,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508156.3469102,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508157.7702513,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508157.8125622,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508210.1454124,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508211.6433094,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508212.6870956,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508212.7268434,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508237.1564941,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508246.2252238,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508247.259805,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508247.296434,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508340.1574168,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508345.4137826,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508347.297863,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508347.3437493,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508418.318724,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508427.5922577,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508429.2423007,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508429.2777696,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745508487.5962515,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745508488.134746,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745508489.1599193,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745508489.2187672,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509196.7810378,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509202.7860997,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509204.772359,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509204.8169777,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509326.6638439,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509330.8725672,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509332.672868,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509332.7074716,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509356.6348572,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509397.3353438,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509415.4646285,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509418.2780423,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509419.8338616,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509419.8786082,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509495.384696,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509498.7363446,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509500.1741436,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509500.2181027,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509537.958102,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509544.099066,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509545.4158173,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509545.4616115,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509784.0152502,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509788.8512502,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509790.322102,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509790.3812196,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509880.1227717,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509880.2640865,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509883.7994897,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509883.8383477,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745509917.1816351,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745509921.954903,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745509923.3785515,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745509923.4251509,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510266.8008418,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510271.1379707,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510273.4431908,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510273.4835677,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510321.5194762,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510324.0758212,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510325.8810687,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510325.9213297,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510440.6382184,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510444.8407588,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510446.8641787,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510446.907604,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510512.8399184,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510514.9412634,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510516.2414553,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510516.2859964,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510539.578021,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510541.0187871,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510542.7463324,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510542.788641,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510585.7248297,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510587.438612,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510588.8888094,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510588.9327343,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510602.723737,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510608.0295198,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510609.4107914,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510609.4515746,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510641.7691693,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510647.2994757,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510648.9294949,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510648.9628503,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510823.8355362,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510847.3368802,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510848.6611145,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510848.7004654,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745510916.0153754,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745510917.879887,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745510919.066836,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745510919.1097188,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511100.6578052,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511101.2616296,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511102.3722923,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511102.4478195,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511150.250126,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511157.1016681,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511182.802075,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511187.1989884,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511188.6055133,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511188.6457236,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511247.3440135,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511248.562089,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511249.4039047,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511249.4485247,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511295.3671038,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511302.7659125,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511303.7429283,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511303.7792013,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511353.0424492,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511357.4570804,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511358.5975156,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511358.634364,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511383.360335,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511418.979949,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511420.08784,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511420.1929247,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511421.337888,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511421.3718212,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511437.460682,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511439.4862804,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511440.675119,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511440.7648249,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511471.3760602,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511472.6422074,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511473.6457548,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511473.684048,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511491.1785727,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511492.2391984,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511493.3204906,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511493.36349,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511523.3663673,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511533.050431,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511534.1501606,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511534.2021172,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511567.9935298,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511571.4662538,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511572.969902,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511573.0067718,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511658.8011804,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745511661.730711,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511661.761593,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745511770.0587883,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745511934.5518875,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745511935.7134292,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745511935.7528245,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745512282.1092544,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745512284.1972065,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745512286.0326257,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745512286.0702934,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745512986.5063007,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745512987.653879,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745512987.6815882,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745513010.1294181,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745513093.6391213,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745513095.0948498,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745513095.12642,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745513255.9531639,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745513309.269131,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745513310.5958717,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745513310.6245189,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745513359.0967984,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745513373.0447161,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745513374.88687,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745513374.9177897,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745514504.2044451,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745514505.2321684,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745514505.2627003,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745514592.7443268,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745514600.4967675,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745514602.0879588,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745514602.122395,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745514639.3534486,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745514658.089188,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745514660.0607903,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745514660.089984,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745514796.6250875,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745514798.7709975,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745514799.9370997,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745514799.9796612,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745514848.858279,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745514850.4110415,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745514851.446932,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745514851.477137,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745514863.5886707,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745514865.5598345,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745514866.459983,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745514866.4932888,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745515706.6280856,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745515804.3930404,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745515812.88226,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745515814.171304,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745515814.2010791,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516031.242841,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745516051.9255092,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745516053.216127,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745516053.243562,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516117.5164115,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745516127.459337,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745516136.1070287,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745516137.972327,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745516138.0004048,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516176.8555698,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745516184.8571625,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745516185.8803873,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745516185.9109323,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516204.173049,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745516205.3394477,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745516205.3682518,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516207.2685006,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516689.5936923,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745516780.4825993,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745516782.1087096,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745516782.163387,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745516871.705503,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745516876.1788504,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745516878.219025,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745516878.2623568,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745517153.984973,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745517160.7998228,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745517162.5359201,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745517162.566757,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745518096.7322793,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745518104.221928,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745518106.0452888,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745518106.0852897,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745518482.4709895,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745518488.3540032,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745518490.444146,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745518490.4812078,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745518799.1740828,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745518825.1341257,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745518827.4860256,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745518827.5302048,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745519526.4240117,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745519531.627966,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745519533.526428,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745519533.5683722,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745519588.5135796,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745519593.4959836,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745519595.670531,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745519595.7071245,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745519917.6986723,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745519923.3698552,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745519925.2346208,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745519925.2811532,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745519932.0137193,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745519934.5084748,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745519934.54159,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745520106.4800625,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520109.2717185,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745520112.235155,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745520112.2688773,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745520151.3845394,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520155.4603488,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745520157.566897,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745520157.6112964,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745520196.8311393,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520200.2232256,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745520201.7935867,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745520201.834543,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745520226.1444385,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520228.261154,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745520229.7343707,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745520229.7796764,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745520326.9780626,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520328.0897717,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520340.1385782,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520343.8563402,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745520345.1708148,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745520345.213099,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745520387.9470482,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745520389.6017194,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745520391.2700636,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745520391.303425,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521186.6764178,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745521192.3943565,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521193.4854991,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521193.5345592,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521247.7305675,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1745521268.5684025,"msg":"v1\t/employee/consumer\tGET"}
+{"level":"info","ts":1745521286.1520066,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521288.428089,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521288.6409469,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521388.0748951,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745521393.1416504,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521395.2872684,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521395.3326316,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521412.1447632,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521414.122409,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521414.2448242,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521777.3548338,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745521785.5844295,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521787.9829004,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521788.0351598,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521831.0651011,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521834.0345588,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521834.2265446,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745521984.8329976,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745521991.5521853,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745521993.7022297,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745521993.7498703,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745522042.51214,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745522047.3953176,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745522049.1285822,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745522049.1653426,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745522245.6859856,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745522248.9916954,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745522250.6359894,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745522250.6728852,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745522333.6183639,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745522336.3199308,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745522337.9306056,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745522337.967129,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745530853.449457,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745530854.881973,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745530854.919591,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745531915.1401772,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745531922.0613534,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745531923.8343737,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745531924.023836,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745532227.6518044,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745533520.6814942,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745533521.9916553,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745533522.0371146,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745535543.199178,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745535548.372981,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745535549.835061,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745535549.8703728,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745536654.3277164,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745536830.7771258,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745536833.0580401,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745536834.705236,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745536834.7481852,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745538173.357982,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538176.0502753,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745538178.0427876,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745538178.089276,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745538331.61786,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538376.3809214,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538383.08967,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538475.716245,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538502.0943637,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538506.0341103,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745538508.1730785,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745538934.868043,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745538941.1091158,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745538943.153166,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745538958.1418793,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745538959.7118347,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539093.2435615,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539174.5034955,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539176.0662858,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539177.6214583,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539200.700032,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539203.790152,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539205.2163057,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539233.1176386,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539241.5905108,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539247.526347,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539311.3564117,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539316.711084,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539320.0446033,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539321.5720453,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539435.3635235,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539441.2249856,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539442.643168,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539495.5954304,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539498.6750338,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539500.135155,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539531.3064635,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539540.6573622,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539541.8624134,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539681.4149628,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539688.3867812,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539690.0795894,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539733.7301893,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539736.294987,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539738.881256,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539757.8945847,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539759.7661963,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539761.4317214,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539797.7342582,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539799.918908,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539801.3849099,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539844.4395194,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539856.4159615,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539858.2220595,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745539951.3832564,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745539960.6137807,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745539962.0805762,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745542575.999292,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745542578.3583272,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745548425.1081815,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745548462.2691264,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745548464.6433303,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745550270.3926606,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745550272.539707,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745550274.3241065,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745550323.1618028,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745550331.0199924,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745550333.8053105,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745550465.9249396,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745551556.9843593,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745551558.6690838,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745551742.8826177,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745551747.0559936,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745553362.4395578,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745553467.14175,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745553480.7487605,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745553482.263854,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745553614.1508317,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745553616.8148382,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745553618.4781492,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745553657.5213947,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745553711.5734613,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745553752.2608094,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745553753.5250607,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745553804.5816035,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745553808.9792063,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745557013.8013628,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745557017.6541586,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745557018.5740545,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745557029.726905,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745557041.0904348,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745557042.8790622,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745557252.9660451,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745557926.377647,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745557926.5080128,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745557928.0947075,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745557965.5444741,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745557972.2178018,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745557973.861637,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745557989.1640081,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558019.2623248,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558020.4506927,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558157.3840358,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558163.7543921,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558165.3582582,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558352.3322997,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558354.396665,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558356.0584064,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558418.088035,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558426.7120914,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558428.4015782,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558474.530303,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558475.426137,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558476.589601,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558522.7526948,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558538.5309377,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558539.9209175,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558636.1142972,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558638.659314,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558640.3346715,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745558685.7200797,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558952.0124028,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745558954.4776707,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745558956.7679627,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559090.9449265,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559095.0967877,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559097.3458838,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559208.989301,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559210.6691198,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559212.457171,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559403.8591475,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559420.278364,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559423.9844506,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559495.7540176,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559617.658971,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559618.9603744,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559659.2343001,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559691.7087567,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559693.3188987,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559768.7358353,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559861.4876306,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559862.581375,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745559928.30283,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745559948.634771,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745559950.4442675,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560011.8217292,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560011.9571733,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560013.8732324,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560054.3172874,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560189.3693473,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560190.6124654,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560225.2243268,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560229.912976,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560231.5530615,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560254.2452083,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560271.4656339,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560273.0908105,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560448.4079144,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560451.9294355,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560453.788666,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560493.0160823,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560497.9072437,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560502.58201,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560924.9638908,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745560943.2356403,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745560944.7596748,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745560975.5902743,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745563713.7917159,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745563715.681595,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745563774.702056,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745564049.5639167,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745564052.0227346,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745564107.558757,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745564116.1890492,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745564118.118227,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745569122.290787,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745569653.923429,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745569653.9693518,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745569655.9707978,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745597910.3470945,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745597942.1137311,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745597970.794692,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745598318.5272262,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745627773.1221445,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628049.8952239,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628079.2824147,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628087.0749836,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628102.6420422,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628131.7046561,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628244.0078876,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628253.2433512,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745628254.7697418,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745628254.8042173,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745628259.791717,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745628260.7887964,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745628260.8552725,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745628262.3637433,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745628328.1589746,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745628633.1789675,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1745628633.3112206,"msg":"Server exiting"}
+{"level":"info","ts":1745629297.068626,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745629306.8947794,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629307.8959026,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745629504.2166271,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745629505.7897294,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745629554.2901652,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629556.1833792,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745629611.474709,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745629617.3495936,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629618.7096097,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745629618.7373433,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629738.2202468,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745629740.212938,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629742.0647821,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745629813.3394432,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745629814.7743201,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629816.001473,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745629816.0305128,"msg":"v1\t/employee/sysadmin/consumer/consumer-chart\tGET"}
+{"level":"info","ts":1745629821.1683047,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745629984.3815129,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745629995.2987986,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745629997.1703663,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745630600.5090322,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745630663.2905705,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745630838.5810406,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745630840.0888834,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745630885.4995701,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1745630889.1107152,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745630891.5144837,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1745630893.3364997,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1745631256.6163712,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745631257.9065895,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745632441.5145366,"msg":"Server is running at http://192.168.8.37:8080\n"}
+{"level":"info","ts":1745633378.3789883,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745633380.046227,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745640051.986637,"msg":"Server is running at http://192.168.1.55:8080\n"}
+{"level":"info","ts":1745640617.3732736,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745640619.1081386,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745660641.6661966,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1745660641.674927,"msg":"Server exiting"}
+{"level":"info","ts":1745815219.05014,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815223.727988,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815225.203714,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815641.980772,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815645.854652,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815647.5343556,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815661.359487,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815662.3817596,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815663.8635452,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815692.9993958,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815694.4398758,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815695.7870257,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815714.3023932,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745815718.2793427,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815720.3559167,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745815894.2547588,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745815896.6630979,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816082.9172666,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816088.1927187,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816090.304497,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816276.2643366,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816281.5028114,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816283.1376507,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816773.365267,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816778.4146895,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816780.0619078,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816830.1091106,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816831.4361362,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816833.85431,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816869.8276355,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816871.3684053,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816872.6848235,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816883.023705,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745816883.7561133,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745816885.0107973,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816935.625403,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745816937.13537,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745816941.6470785,"msg":"v1\t/employee/sysadmin/consumer/consumer-list\tGET"}
+{"level":"info","ts":1745816945.7897396,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745818183.5901408,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1745818183.5926554,"msg":"Server exiting"}
+{"level":"info","ts":1745828963.1661634,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745829054.9061482,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745829057.5572085,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745829059.137622,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745829092.4065137,"msg":"Server is running at http://192.168.1.87:8080\n"}
+{"level":"info","ts":1745829095.7016172,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1745829097.3674803,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1745829828.59109,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1745829828.6021378,"msg":"Server exiting"}
+{"level":"info","ts":1746867501.6916966,"msg":"Server is running at http://192.168.0.120:8080\n"}
+{"level":"info","ts":1746867527.5599227,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1746867529.2029874,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1746867533.5249686,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1746867533.5423987,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746867537.536303,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746867628.53097,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746867629.5928185,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746867691.7800972,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746867710.6027987,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746868555.2321858,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868557.6423583,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1746868558.6888225,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1746868559.497568,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1746868911.5202577,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868912.3149295,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1746868914.674996,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868958.51169,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868961.0343063,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1746868961.7366474,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1746868962.1607723,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1746868962.7041829,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1746868966.5632994,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746869129.2029727,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746869135.4394493,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746869341.9550107,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746869342.748398,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746869344.3468263,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746869346.7600448,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746869610.9635105,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1746869610.9640214,"msg":"Server exiting"}

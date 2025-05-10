@@ -8,15 +8,10 @@ import (
 	"SmartMeterSystem/cmd/web"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/go-echarts/go-echarts/v2/charts"
-	"github.com/go-echarts/go-echarts/v2/opts"
-	"github.com/go-echarts/go-echarts/v2/types"
 )
 
 // V1 Route Groups
@@ -103,8 +98,11 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 
 	// sysadminRoute := http.NewServeMux()
 	sysadminRouteStruct := struct {
-		dashboard http.HandlerFunc
-		consumer  struct {
+		dashboard struct {
+			dashboard   http.HandlerFunc
+			information http.HandlerFunc
+		}
+		consumer struct {
 			consumer    http.HandlerFunc
 			information http.HandlerFunc
 		}
@@ -118,13 +116,73 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 		}
 		logout http.HandlerFunc
 	}{
-		dashboard: func(w http.ResponseWriter, r *http.Request) {
-			switch r.Method {
-			case "GET":
-				web.SystemAdminEmployeeDashboardWebPage().Render(r.Context(), w)
-			default:
-				http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			}
+		dashboard: struct {
+			dashboard   http.HandlerFunc
+			information http.HandlerFunc
+		}{
+			dashboard: func(w http.ResponseWriter, r *http.Request) {
+				switch r.Method {
+				case "GET":
+					web.SystemAdminEmployeeDashboardWebPage().Render(r.Context(), w)
+				default:
+					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+				}
+			},
+			information: func(w http.ResponseWriter, r *http.Request) {
+				// Extract the part after "/sysadmin/consumer/"
+				pathPart := strings.TrimPrefix(r.URL.Path, "/sysadmin/dashboard/")
+				// Split to handle nested paths, take the first segment
+				formType := strings.SplitN(pathPart, "/", 2)[0]
+
+				switch r.Method {
+				case "GET":
+					switch formType {
+					case "meter-list":
+						smartmeters := []web.SmartMeter{
+							{
+								ID:        "SM001",
+								Name:      "Smart Meter 1",
+								Location:  "Calatagan",
+								Latitude:  13.838432,
+								Longitude: 120.632360,
+								Status:    "active",
+							},
+							{
+								ID:        "SM002",
+								Name:      "Smart Meter 2",
+								Location:  "Calatagan",
+								Latitude:  13.839147,
+								Longitude: 120.632257,
+								Status:    "active",
+							},
+							{
+								ID:        "SM003",
+								Name:      "Meter 3",
+								Location:  "Calatagan",
+								Latitude:  13.838002,
+								Longitude: 120.632220,
+								Status:    "inactive",
+							},
+							{
+								ID:        "SM002",
+								Name:      "Meter 4",
+								Location:  "Calatagan",
+								Latitude:  13.837288,
+								Longitude: 120.632164,
+								Status:    "inactive",
+							},
+						}
+						w.Header().Set("Content-Type", "application/json")
+						if err := json.NewEncoder(w).Encode(smartmeters); err != nil {
+							http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
+							fmt.Println("Error:", err)
+						}
+
+					default:
+						http.Error(w, "Not Found", http.StatusNotFound)
+					}
+				}
+			},
 		},
 		consumer: struct {
 			consumer    http.HandlerFunc
@@ -185,62 +243,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 					case "consumer-chart":
 						w.Header().Set("Content-Type", "text/html")
 
-						// 1. Create the chart instance
-						line := charts.NewLine()
-						line.SetGlobalOptions(
-							charts.WithInitializationOpts(opts.Initialization{
-								Theme:   types.ThemeWesteros,
-								ChartID: "energy-chart-container", // Fixed container ID
-								Width:   "900px",
-								Height:  "500px",
-							}),
-							charts.WithTitleOpts(opts.Title{
-								Title:    "Energy Consumption Chart",
-								Subtitle: "Consumer energy usage patterns",
-							}),
-						)
-
-						// 2. Add data to the chart
-						line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
-							AddSeries("Usage", generateRandomData()).
-							SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: true}))
-
-						// 3. Create custom renderer
-						line.Renderer = NewMyOwnRender(line, line.Validate)
-
-						// 4. Create template for HTMX response
-						tmpl := `{{.Element}}
-						<script type="text/javascript">
-							"use strict";
-							{{.Script}}
-							let option_{{.ChartID}} = {{.Option}};
-							echarts.init(document.getElementById('{{.DivID}}'), "westeros")
-								.setOption(option_{{.ChartID}});
-						</script>`
-
-						// 5. Execute the template with chart snippets
-						t := template.Must(template.New("chart").Parse(tmpl))
-						snippets := line.RenderSnippet()
-
-						data := struct {
-							Element template.HTML
-							Script  template.HTML
-							Option  template.HTML
-							DivID   string
-							ChartID string
-						}{
-							Element: template.HTML(snippets.Element),
-							Script:  template.HTML(snippets.Script),
-							Option:  template.HTML(snippets.Option),
-							DivID:   "energy-chart-container",
-							ChartID: "energyChart", // Unique chart ID
-						}
-
-						// 6. Render the template
-						err := t.Execute(w, data)
-						if err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-						}
+						// Lopgic Here
 
 					}
 				}
@@ -794,7 +797,8 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	})
 
 	// System Admin Dashboard Routes
-	mux.HandleFunc("/sysadmin/dashboard", sysadminRouteStruct.dashboard)
+	mux.HandleFunc("/sysadmin/dashboard", sysadminRouteStruct.dashboard.dashboard)
+	mux.HandleFunc("/sysadmin/dashboard/", sysadminRouteStruct.dashboard.information)
 	// System Admin Consumer Routes
 	mux.HandleFunc("/sysadmin/consumer", sysadminRouteStruct.consumer.consumer)
 	mux.HandleFunc("/sysadmin/consumer/", sysadminRouteStruct.consumer.information)

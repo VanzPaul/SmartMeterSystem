@@ -43,12 +43,13 @@ else
 endif
 
 tailwind-install:
+ifeq ($(DETECTED_OS),Windows)
 	@if not exist "$(TAILWIND_BIN)" ( \
 		curl -sL "$(TAILWIND_URL)" -o "$(TAILWIND_BIN)" \
 	)
-ifeq ($(DETECTED_OS),Windows)
 	@attrib +x "$(TAILWIND_BIN)" >nul 2>&1
 else
+	@if [ ! -f "$(TAILWIND_BIN)" ]; then curl -sL "$(TAILWIND_URL)" -o "$(TAILWIND_BIN)"; fi
 	@chmod +x "$(TAILWIND_BIN)"
 endif
 
