@@ -317,11 +317,174 @@ templ SystemAdminEmployeeBaseWebPage() {
 }
 
 //<---------------- Dashboard Section ---------------->//
-templ SystemAdminEmployeeDashboardWebPage() {
-    @SystemAdminEmployeeBaseWebPage() {
-        <div>Dashboard Section</div>
-    }
+type SmartMeter struct {
+	ID        string  `json:"ID"`
+	Name      string  `json:"Name"`
+	Location  string  `json:"Location"`
+	Latitude  float64 `json:"Latitude"`
+	Longitude float64 `json:"Longitude"`
+	Status    string  `json:"Status"`
 }
+
+templ SystemAdminEmployeeDashboardWebPage() {
+	@SystemAdminEmployeeBaseWebPage() {
+		<div class="flex flex-col h-full w-full p-4 gap-4">
+			<h1 class="text-2xl font-bold">Smart Meter Map</h1>
+			<!-- Filter Controls -->
+			<div class="flex gap-4 items-center p-3 bg-gray-50 rounded-lg">
+				<label class="flex items-center gap-2">
+					<input
+						type="checkbox"
+						id="showAll"
+						checked
+						class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 peer"
+					/>
+					<span class="text-sm font-medium">Show All</span>
+				</label>
+				<label class="flex items-center gap-2">
+					<input
+						type="checkbox"
+						id="showActive"
+						class="rounded border-gray-300 text-green-600 focus:ring-green-500 peer"
+					/>
+					<span class="text-sm font-medium">Active</span>
+				</label>
+				<label class="flex items-center gap-2">
+					<input
+						type="checkbox"
+						id="showInactive"
+						class="rounded border-gray-300 text-red-600 focus:ring-red-500 peer"
+					/>
+					<span class="text-sm font-medium">Inactive</span>
+				</label>
+			</div>
+			<!-- Map Container -->
+			<div id="map" class="w-full min-h-[400px] rounded-lg shadow-lg"></div>
+		</div>
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+		<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+		<script>
+            // Custom markers
+            const greenIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            const redIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            let map;
+            let markers = [];
+
+            function initMap() {
+                map = L.map('map').setView([0, 0], 2);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+            }
+
+            async function loadMeters() {
+                try {
+                    const response = await fetch('dashboard/meter-list');
+                    const smartMeters = await response.json();
+                    
+                    // Clear existing markers
+                    markers.forEach(marker => map.removeLayer(marker));
+                    markers = [];
+
+                    // Add new markers
+                    smartMeters.forEach(meter => {
+                        const marker = L.marker([meter.Latitude, meter.Longitude], {
+                            icon: meter.Status.toLowerCase() === 'active' ? greenIcon : redIcon
+                        }).bindPopup(`
+                            <div class="p-2">
+                                <h3 class="font-bold">${meter.Name}</h3>
+                                <p>Location: ${meter.Location}</p>
+                                <p>ID: ${meter.ID}</p>
+                                <p class="font-semibold ${meter.Status.toLowerCase() === 'active' ? 'text-green-600' : 'text-red-600'}">
+                                    Status: ${meter.Status}
+                                </p>
+                            </div>
+                        `).addTo(map);
+                        
+                        marker.status = meter.Status.toLowerCase();
+                        markers.push(marker);
+                    });
+
+                    updateMapView();
+                } catch (error) {
+                    console.error('Error loading meter data:', error);
+                }
+            }
+
+            function updateMapView() {
+                const bounds = new L.LatLngBounds();
+                const filter = document.querySelector('input[type="checkbox"]:checked')?.id || 'showAll';
+
+                markers.forEach(marker => {
+                    const shouldShow = filter === 'showAll' || 
+                        (filter === 'showActive' && marker.status === 'active') || 
+                        (filter === 'showInactive' && marker.status === 'inactive');
+                    
+                    if (shouldShow) {
+                        marker.addTo(map);
+                        bounds.extend(marker.getLatLng());
+                    } else {
+                        map.removeLayer(marker);
+                    }
+                });
+
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds.pad(0.1));
+                }
+            }
+
+            // Add exclusive checkbox behavior
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        // Uncheck all other checkboxes
+                        document.querySelectorAll('input[type="checkbox"]').forEach(other => {
+                            if (other !== e.target) other.checked = false;
+                        });
+                    } else {
+                        // Ensure at least one remains checked
+                        e.target.checked = true;
+                    }
+                    updateMapView();
+                });
+            });
+
+            // Initialize map and load data
+            initMap();
+            loadMeters();
+
+            // Add filter controls event listeners
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.id === 'showAll' && e.target.checked) {
+                        document.getElementById('showActive').checked = false;
+                        document.getElementById('showInactive').checked = false;
+                    } else {
+                        document.getElementById('showAll').checked = false;
+                    }
+                    updateMapView();
+                });
+            });
+        </script>
+	}
+}
+
 //<-------------------------------------------------->//
 
 //<---------------- Accounts Section ---------------->//

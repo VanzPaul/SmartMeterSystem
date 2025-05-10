@@ -98,8 +98,11 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 
 	// sysadminRoute := http.NewServeMux()
 	sysadminRouteStruct := struct {
-		dashboard http.HandlerFunc
-		consumer  struct {
+		dashboard struct {
+			dashboard   http.HandlerFunc
+			information http.HandlerFunc
+		}
+		consumer struct {
 			consumer    http.HandlerFunc
 			information http.HandlerFunc
 		}
@@ -113,13 +116,73 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 		}
 		logout http.HandlerFunc
 	}{
-		dashboard: func(w http.ResponseWriter, r *http.Request) {
-			switch r.Method {
-			case "GET":
-				web.SystemAdminEmployeeDashboardWebPage().Render(r.Context(), w)
-			default:
-				http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			}
+		dashboard: struct {
+			dashboard   http.HandlerFunc
+			information http.HandlerFunc
+		}{
+			dashboard: func(w http.ResponseWriter, r *http.Request) {
+				switch r.Method {
+				case "GET":
+					web.SystemAdminEmployeeDashboardWebPage().Render(r.Context(), w)
+				default:
+					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+				}
+			},
+			information: func(w http.ResponseWriter, r *http.Request) {
+				// Extract the part after "/sysadmin/consumer/"
+				pathPart := strings.TrimPrefix(r.URL.Path, "/sysadmin/dashboard/")
+				// Split to handle nested paths, take the first segment
+				formType := strings.SplitN(pathPart, "/", 2)[0]
+
+				switch r.Method {
+				case "GET":
+					switch formType {
+					case "meter-list":
+						smartmeters := []web.SmartMeter{
+							{
+								ID:        "SM001",
+								Name:      "Smart Meter 1",
+								Location:  "Calatagan",
+								Latitude:  13.838432,
+								Longitude: 120.632360,
+								Status:    "active",
+							},
+							{
+								ID:        "SM002",
+								Name:      "Smart Meter 2",
+								Location:  "Calatagan",
+								Latitude:  13.839147,
+								Longitude: 120.632257,
+								Status:    "active",
+							},
+							{
+								ID:        "SM003",
+								Name:      "Meter 3",
+								Location:  "Calatagan",
+								Latitude:  13.838002,
+								Longitude: 120.632220,
+								Status:    "inactive",
+							},
+							{
+								ID:        "SM002",
+								Name:      "Meter 4",
+								Location:  "Calatagan",
+								Latitude:  13.837288,
+								Longitude: 120.632164,
+								Status:    "inactive",
+							},
+						}
+						w.Header().Set("Content-Type", "application/json")
+						if err := json.NewEncoder(w).Encode(smartmeters); err != nil {
+							http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
+							fmt.Println("Error:", err)
+						}
+
+					default:
+						http.Error(w, "Not Found", http.StatusNotFound)
+					}
+				}
+			},
 		},
 		consumer: struct {
 			consumer    http.HandlerFunc
@@ -734,7 +797,8 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	})
 
 	// System Admin Dashboard Routes
-	mux.HandleFunc("/sysadmin/dashboard", sysadminRouteStruct.dashboard)
+	mux.HandleFunc("/sysadmin/dashboard", sysadminRouteStruct.dashboard.dashboard)
+	mux.HandleFunc("/sysadmin/dashboard/", sysadminRouteStruct.dashboard.information)
 	// System Admin Consumer Routes
 	mux.HandleFunc("/sysadmin/consumer", sysadminRouteStruct.consumer.consumer)
 	mux.HandleFunc("/sysadmin/consumer/", sysadminRouteStruct.consumer.information)

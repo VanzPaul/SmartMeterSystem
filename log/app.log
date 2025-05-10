@@ -3728,3 +3728,34 @@
 {"level":"info","ts":1745829097.3674803,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
 {"level":"info","ts":1745829828.59109,"msg":"shutting down gracefully, press Ctrl+C again to force"}
 {"level":"info","ts":1745829828.6021378,"msg":"Server exiting"}
+{"level":"info","ts":1746867501.6916966,"msg":"Server is running at http://192.168.0.120:8080\n"}
+{"level":"info","ts":1746867527.5599227,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1746867529.2029874,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1746867533.5249686,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1746867533.5423987,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746867537.536303,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746867628.53097,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746867629.5928185,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746867691.7800972,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746867710.6027987,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746868555.2321858,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868557.6423583,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1746868558.6888225,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1746868559.497568,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1746868911.5202577,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868912.3149295,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1746868914.674996,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868958.51169,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746868961.0343063,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1746868961.7366474,"msg":"v1\t/employee/sysadmin/accounts/consumer-form\tGET"}
+{"level":"info","ts":1746868962.1607723,"msg":"v1\t/employee/sysadmin/accounts/employee-form\tGET"}
+{"level":"info","ts":1746868962.7041829,"msg":"v1\t/employee/sysadmin/accounts/meter-form\tGET"}
+{"level":"info","ts":1746868966.5632994,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746869129.2029727,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746869135.4394493,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746869341.9550107,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746869342.748398,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746869344.3468263,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746869346.7600448,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746869610.9635105,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1746869610.9640214,"msg":"Server exiting"}
