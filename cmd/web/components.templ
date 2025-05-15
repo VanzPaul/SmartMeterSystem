@@ -1,7 +1,7 @@
 package web
 
-import ( 
-    "encoding/json"
+import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -10,23 +10,22 @@ import (
 /********************************************************************/
 /*********************** General Templ ******************************/
 /********************************************************************/
+
 templ Base() {
 	<!DOCTYPE html>
 	<html lang="en" class="h-screen">
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width,initial-scale=1"/>
-
-             <!-- Fav Icon -->
-            <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon_io/apple-touch-icon.png">
-            <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon_io/favicon-32x32.png">
-            <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon_io/favicon-16x16.png">
-            <link rel="manifest" href="/assets/favicon_io/site.webmanifest">
-
+			<!-- Fav Icon -->
+			<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon_io/apple-touch-icon.png"/>
+			<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon_io/favicon-32x32.png"/>
+			<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon_io/favicon-16x16.png"/>
+			<link rel="manifest" href="/assets/favicon_io/site.webmanifest"/>
 			<title>Go Blueprint Hello</title>
 			<link href="/assets/css/output.css" rel="stylesheet"/>
 			<script src="/assets/js/htmx.min.js"></script>
-            <script src="/assets/js/echarts.min.js"></script>
+			<script src="/assets/js/echarts.min.js"></script>
 		</head>
 		<body class="bg-gray-100">
 			{ children... }
@@ -35,153 +34,161 @@ templ Base() {
 }
 
 templ HomeWebPage(defaultRouteVersion string) {
-    @Base() {
-        <div class="font-sans bg-gray-100 min-h-screen m-0 p-0 text-center
-                    text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-            <header class="bg-yellow-500 text-white py-5 px-10">
-                <h1 class="font-bold">Welcome to BATELEC I</h1>
-                <p class="mt-2">Power Utility Company in Batangas</p>
-            </header>
-            
-            <main class="mx-5 my-8">
-                <p class="mb-6">Your trusted partner in energy solutions.</p>
-                
-                <div class="space-x-4">
-                    <!-- Add query parameter for consumer -->
-                    <a href={ templ.URL("/" + defaultRouteVersion + "/consumer/login?user_type=consumer") } class="button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-40 inline-block">
-                        Login as Consumer
-                    </a>
-                    
-                    <!-- Add query parameter for employee -->
-                    <a href={ templ.URL("/" + defaultRouteVersion + "/employee/login?user_type=employee") } class="button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-40 inline-block">
-                        Login as Employee
-                    </a>
-                </div>
-            </main>
-        </div>
-    }
+	@Base() {
+		<div
+			class="font-sans bg-gray-100 min-h-screen m-0 p-0 text-center
+                    text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl"
+		>
+			<header class="bg-yellow-500 text-white py-5 px-10">
+				<h1 class="font-bold">Welcome to BATELEC I</h1>
+				<p class="mt-2">Power Utility Company in Batangas</p>
+			</header>
+			<main class="mx-5 my-8">
+				<p class="mb-6">Your trusted partner in energy solutions.</p>
+				<div class="space-x-4">
+					<!-- Add query parameter for consumer -->
+					<a href={ templ.URL("/" + defaultRouteVersion + "/consumer/login?user_type=consumer") } class="button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-40 inline-block">
+						Login as Consumer
+					</a>
+					<!-- Add query parameter for employee -->
+					<a href={ templ.URL("/" + defaultRouteVersion + "/employee/login?user_type=employee") } class="button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-40 inline-block">
+						Login as Employee
+					</a>
+				</div>
+			</main>
+		</div>
+	}
 }
 
 templ LoginWebPage(defaultRouteVersion, clientType string) {
-    @Base() {
-        <div class="min-h-screen bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center">
-            <div class="max-w-md w-full space-y-8">
-                <div class="text-center">
-                    <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">
-                        { strings.ToUpper(clientType) } LOGIN
-                    </h1>
-                </div>
-                
-                <div class="bg-white bg-opacity-90 rounded-2xl shadow-2xl p-8 space-y-6 border border-green-100">
-                    <form hx-post={ "/" + defaultRouteVersion + "/" + clientType + "/login"} 
-                          hx-target="#error-message" 
-                          hx-swap="innerHTML"
-                          class="space-y-6">
-                          
-                        <div class="space-y-2">
-                            <label for="email" class="block text-sm font-medium text-gray-700">
-                                Email Address
-                            </label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
-                                   required
-                                   class="block w-full px-4 py-3 border border-gray-300 
+	@Base() {
+		<div class="min-h-screen bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center">
+			<div class="max-w-md w-full space-y-8">
+				<div class="text-center">
+					<h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">
+						{ strings.ToUpper(clientType) } LOGIN
+					</h1>
+				</div>
+				<div class="bg-white bg-opacity-90 rounded-2xl shadow-2xl p-8 space-y-6 border border-green-100">
+					<form
+						hx-post={ "/" + defaultRouteVersion + "/" + clientType + "/login" }
+						hx-target="#error-message"
+						hx-swap="innerHTML"
+						class="space-y-6"
+					>
+						<div class="space-y-2">
+							<label for="email" class="block text-sm font-medium text-gray-700">
+								Email Address
+							</label>
+							<input
+								type="email"
+								id="email"
+								name="email"
+								required
+								class="block w-full px-4 py-3 border border-gray-300 
                                           rounded-lg focus:ring-2 focus:ring-green-500 
                                           focus:border-transparent placeholder-gray-400 
-                                          transition-all duration-200">
-                        </div>
-                        
-                        <div class="space-y-2">
-                            <label for="password" class="block text-sm font-medium text-gray-700">
-                                Password
-                            </label>
-                            <div class="relative">
-                                <input type="password" 
-                                       id="password" 
-                                       name="password" 
-                                       required
-                                       class="block w-full px-4 py-3 border border-gray-300 
+                                          transition-all duration-200"
+							/>
+						</div>
+						<div class="space-y-2">
+							<label for="password" class="block text-sm font-medium text-gray-700">
+								Password
+							</label>
+							<div class="relative">
+								<input
+									type="password"
+									id="password"
+									name="password"
+									required
+									class="block w-full px-4 py-3 border border-gray-300 
                                               rounded-lg focus:ring-2 focus:ring-green-500 
                                               focus:border-transparent placeholder-gray-400 
-                                              transition-all duration-200">
-                                <button type="button" 
-                                        class="absolute inset-y-0 right-0 px-4 text-sm 
+                                              transition-all duration-200"
+								/>
+								<button
+									type="button"
+									class="absolute inset-y-0 right-0 px-4 text-sm 
                                                text-green-600 hover:text-green-700 
-                                               flex items-center">
-                                    Show
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <input id="remember-me" name="remember-me" type="checkbox"
-                                       class="h-4 w-4 text-green-600 focus:ring-green-500 
-                                              border-gray-300 rounded">
-                                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
-                                    Remember me
-                                </label>
-                            </div>
-                            
-                            <a href="#" 
-                               class="text-sm font-medium text-green-600 hover:text-green-700 
-                                      hover:underline">
-                                Forgot your password?
-                            </a>
-                        </div>
-                        
-                        <button type="submit" 
-                                class="w-full bg-gradient-to-r from-green-600 to-green-700 
+                                               flex items-center"
+								>
+									Show
+								</button>
+							</div>
+						</div>
+						<div class="flex items-center justify-between">
+							<div class="flex items-center">
+								<input
+									id="remember-me"
+									name="remember-me"
+									type="checkbox"
+									class="h-4 w-4 text-green-600 focus:ring-green-500 
+                                              border-gray-300 rounded"
+								/>
+								<label for="remember-me" class="ml-2 block text-sm text-gray-700">
+									Remember me
+								</label>
+							</div>
+							<a
+								href="#"
+								class="text-sm font-medium text-green-600 hover:text-green-700 
+                                      hover:underline"
+							>
+								Forgot your password?
+							</a>
+						</div>
+						<button
+							type="submit"
+							class="w-full bg-gradient-to-r from-green-600 to-green-700 
                                        hover:from-green-700 hover:to-green-800 text-white 
                                        font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg 
                                        transition-all duration-200 ease-in-out transform 
                                        hover:-translate-y-0.5 focus:outline-none 
-                                       focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                            Login
-                        </button>
-                    </form>
-                    
-                    <div class="flex items-center justify-center space-x-2">
-                        <span class="h-px bg-gray-300 flex-grow"></span>
-                        <span class="text-gray-600 text-sm">or</span>
-                        <span class="h-px bg-gray-300 flex-grow"></span>
-                    </div>
-                    
-                    <div class="text-center">
-                        <a href="/register" 
-                           class="text-green-600 hover:text-green-700 font-medium 
-                                  underline transition-colors duration-200">
-                            Create a new account
-                        </a>
-                    </div>
-                    
-                    <div id="error-message" class="text-red-600 text-sm text-center mt-3 flex items-center justify-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
-                        <span></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+                                       focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+						>
+							Login
+						</button>
+					</form>
+					<div class="flex items-center justify-center space-x-2">
+						<span class="h-px bg-gray-300 flex-grow"></span>
+						<span class="text-gray-600 text-sm">or</span>
+						<span class="h-px bg-gray-300 flex-grow"></span>
+					</div>
+					<div class="text-center">
+						<a
+							href="/register"
+							class="text-green-600 hover:text-green-700 font-medium 
+                                  underline transition-colors duration-200"
+						>
+							Create a new account
+						</a>
+					</div>
+					<div id="error-message" class="text-red-600 text-sm text-center mt-3 flex items-center justify-center space-x-2">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+						</svg>
+						<span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
 }
 
 templ NotFound() {
-    @Base() {
-        <main class="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
-            <div class="text-center">
-                <p class="text-base font-semibold text-indigo-600">404</p>
-                <h1 class="mt-4 text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">Page not found</h1>
-                <p class="mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">Sorry, we couldn’t find the page you’re looking for.</p>
-                <div class="mt-10 flex items-center justify-center gap-x-6">
-                    <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go back home</a>
-                    <a href="#" class="text-sm font-semibold text-gray-900">Contact support <span aria-hidden="true">&rarr;</span></a>
-                </div>
-            </div>
-        </main>
-    }
+	@Base() {
+		<main class="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+			<div class="text-center">
+				<p class="text-base font-semibold text-indigo-600">404</p>
+				<h1 class="mt-4 text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">Page not found</h1>
+				<p class="mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">Sorry, we couldn’t find the page you’re looking for.</p>
+				<div class="mt-10 flex items-center justify-center gap-x-6">
+					<a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go back home</a>
+					<a href="#" class="text-sm font-semibold text-gray-900">Contact support <span aria-hidden="true">&rarr;</span></a>
+				</div>
+			</div>
+		</main>
+	}
 }
 
 /********************************************************************/
@@ -193,37 +200,40 @@ templ NotFound() {
 /********************************************************************/
 
 templ ConsumerDashboardWebPage() {
-    @Base() {
-        <div class="bg-yellow-500 px-4 py-3 flex justify-between items-center relative
-                    text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-            <div class="text-white font-semibold">BATELEC I</div>
-            <div class="hidden md:flex space-x-4">
-                <a href="#" class="text-white hover:underline">Home</a>
-                <a href="#" class="text-white hover:underline">Profile</a>
-                <a href="#" class="text-white hover:underline">Billing</a>
-                <a href="#" class="text-white hover:underline">Support</a>
-                <a href="#" class="text-white hover:underline">Logout</a>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden text-green-600 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-            <div id="mobile-menu" class="md:hidden hidden absolute top-full left-0 w-full bg-yellow-500 p-4 space-y-4">
-                <a href="#" class="block text-white hover:underline">Home</a>
-                <a href="#" class="block text-white hover:underline">Profile</a>
-                <a href="#" class="block text-white hover:underline">Billing</a>
-                <a href="#" class="block text-white hover:underline">Support</a>
-                <a href="#" class="block text-white hover:underline">Logout</a>
-            </div>
-        </div>
-        <script>
+	@Base() {
+		<div
+			class="bg-yellow-500 px-4 py-3 flex justify-between items-center relative
+                    text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl"
+		>
+			<div class="text-white font-semibold">BATELEC I</div>
+			<div class="hidden md:flex space-x-4">
+				<a href="#" class="text-white hover:underline">Home</a>
+				<a href="#" class="text-white hover:underline">Profile</a>
+				<a href="#" class="text-white hover:underline">Billing</a>
+				<a href="#" class="text-white hover:underline">Support</a>
+				<a href="#" class="text-white hover:underline">Logout</a>
+			</div>
+			<button id="mobile-menu-button" class="md:hidden text-green-600 focus:outline-none">
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+			</button>
+			<div id="mobile-menu" class="md:hidden hidden absolute top-full left-0 w-full bg-yellow-500 p-4 space-y-4">
+				<a href="#" class="block text-white hover:underline">Home</a>
+				<a href="#" class="block text-white hover:underline">Profile</a>
+				<a href="#" class="block text-white hover:underline">Billing</a>
+				<a href="#" class="block text-white hover:underline">Support</a>
+				<a href="#" class="block text-white hover:underline">Logout</a>
+			</div>
+		</div>
+		<script>
             document.getElementById('mobile-menu-button').addEventListener('click', function() {
                 document.getElementById('mobile-menu').classList.toggle('hidden');
             });
         </script>
-    }
+	}
 }
+
 /********************************************************************/
 /********************************************************************/
 /********************************************************************/
@@ -234,70 +244,75 @@ templ ConsumerDashboardWebPage() {
 
 // System Admin Base
 templ SystemAdminEmployeeBaseWebPage() {
-    @Base() {
-        <div>
-            <!-- Navbar -->
-            <div class="bg-yellow-500 px-4 py-3 flex justify-between items-center relative
-                        text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-                <div class="text-white font-semibold">BATELEC I</div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-4">
-                    <a href="dashboard" class="block text-white hover:underline">Dashboard</a>
-                    <a href="consumer" class="block text-white hover:underline">Consumer</a>
-                    <a href="accounts" class="block text-white hover:underline">Accounts</a>
-                    <a href="accounting" class="block text-white hover:underline">Accounting</a>
-                    <button onclick="showLogoutModal()" 
-                            class="block text-white hover:underline focus:outline-none">
-                        Logout
-                    </button>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-button" class="md:hidden text-green-600 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-
-                <!-- Mobile Menu -->
-                <div id="mobile-menu" class="md:hidden hidden absolute top-full left-0 w-full bg-yellow-500 p-4 space-y-4">
-                    <a href="dashboard" class="block text-white hover:underline">Dashboard</a>
-                    <a href="consumer" class="block text-white hover:underline">Consumer</a>
-                    <a href="accounts" class="block text-white hover:underline">Accounts</a>
-                    <a href="accounting" class="block text-white hover:underline">Accounting</a>
-                    <button onclick="showLogoutModal()" 
-                            class="block w-full text-left text-white hover:underline focus:outline-none">
-                        Logout
-                    </button>
-                </div>
-            </div>
-
-            <!-- Confirmation Modal -->
-            <div id="logout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white rounded-lg p-6 space-y-4 max-w-md">
-                    <h3 class="text-lg font-semibold text-gray-800">Confirm Logout</h3>
-                    <p class="text-gray-600">Are you sure you want to log out?</p>
-                    <div class="flex justify-end space-x-3">
-                        <button onclick="hideLogoutModal()" 
-                                class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                            Cancel
-                        </button>
-                        <button hx-get="/v1/employee/sysadmin/logout" 
-                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                            Yes, Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content Container -->
-            <div class="p-0">
-                { children... }
-            </div>
-
-            <!-- Scripts -->
-            <script>
+	@Base() {
+		<div>
+			<!-- Navbar -->
+			<div
+				class="bg-yellow-500 px-4 py-3 flex justify-between items-center relative
+                        text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl"
+			>
+				<div class="text-white font-semibold">BATELEC I</div>
+				<!-- Desktop Menu -->
+				<div class="hidden md:flex space-x-4">
+					<a href="dashboard" class="block text-white hover:underline">Dashboard</a>
+					<a href="consumer" class="block text-white hover:underline">Consumer</a>
+					<a href="accounts" class="block text-white hover:underline">Accounts</a>
+					<a href="accounting" class="block text-white hover:underline">Accounting</a>
+					<a href="payment" class="block text-white hover:underline">Payment</a>
+					<button
+						onclick="showLogoutModal()"
+						class="block text-white hover:underline focus:outline-none"
+					>
+						Logout
+					</button>
+				</div>
+				<!-- Mobile Menu Button -->
+				<button id="mobile-menu-button" class="md:hidden text-green-600 focus:outline-none">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+					</svg>
+				</button>
+				<!-- Mobile Menu -->
+				<div id="mobile-menu" class="md:hidden hidden absolute top-full left-0 w-full bg-yellow-500 p-4 space-y-4">
+					<a href="dashboard" class="block text-white hover:underline">Dashboard</a>
+					<a href="consumer" class="block text-white hover:underline">Consumer</a>
+					<a href="accounts" class="block text-white hover:underline">Accounts</a>
+					<a href="accounting" class="block text-white hover:underline">Accounting</a>
+					<button
+						onclick="showLogoutModal()"
+						class="block w-full text-left text-white hover:underline focus:outline-none"
+					>
+						Logout
+					</button>
+				</div>
+			</div>
+			<!-- Confirmation Modal -->
+			<div id="logout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+				<div class="bg-white rounded-lg p-6 space-y-4 max-w-md">
+					<h3 class="text-lg font-semibold text-gray-800">Confirm Logout</h3>
+					<p class="text-gray-600">Are you sure you want to log out?</p>
+					<div class="flex justify-end space-x-3">
+						<button
+							onclick="hideLogoutModal()"
+							class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+						>
+							Cancel
+						</button>
+						<button
+							hx-get="/v1/employee/sysadmin/logout"
+							class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+						>
+							Yes, Logout
+						</button>
+					</div>
+				</div>
+			</div>
+			<!-- Content Container -->
+			<div class="p-0">
+				{ children... }
+			</div>
+			<!-- Scripts -->
+			<script>
                 // Mobile menu toggle
                 document.getElementById('mobile-menu-button').addEventListener('click', function() {
                     document.getElementById('mobile-menu').classList.toggle('hidden');
@@ -312,8 +327,8 @@ templ SystemAdminEmployeeBaseWebPage() {
                     document.getElementById('logout-modal').classList.add('hidden');
                 }
             </script>
-        </div>
-    }
+		</div>
+	}
 }
 
 //<---------------- Dashboard Section ---------------->//
@@ -330,6 +345,21 @@ templ SystemAdminEmployeeDashboardWebPage() {
 	@SystemAdminEmployeeBaseWebPage() {
 		<div class="flex flex-col h-full w-full p-4 gap-4">
 			<h1 class="text-2xl font-bold">Smart Meter Map</h1>
+			<!-- Meter Statistics -->
+			<div class="flex gap-6 p-3 bg-gray-50 rounded-lg">
+				<div class="flex items-center gap-2">
+					<span class="text-sm font-medium">Total Meters:</span>
+					<span id="totalMetersCount" class="text-sm font-bold text-blue-600">0</span>
+				</div>
+				<div class="flex items-center gap-2">
+					<span class="text-sm font-medium text-green-600">Active:</span>
+					<span id="activeMetersCount" class="text-sm font-bold text-green-600">0</span>
+				</div>
+				<div class="flex items-center gap-2">
+					<span class="text-sm font-medium text-red-600">Inactive:</span>
+					<span id="inactiveMetersCount" class="text-sm font-bold text-red-600">0</span>
+				</div>
+			</div>
 			<!-- Filter Controls -->
 			<div class="flex gap-4 items-center p-3 bg-gray-50 rounded-lg">
 				<label class="flex items-center gap-2">
@@ -392,12 +422,23 @@ templ SystemAdminEmployeeDashboardWebPage() {
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
             }
+            
+            // Add these variables at the top with other declarations
+            let totalMetersCount = document.getElementById('totalMetersCount');
+            let activeMetersCount = document.getElementById('activeMetersCount');
+            let inactiveMetersCount = document.getElementById('inactiveMetersCount');
 
             async function loadMeters() {
                 try {
                     const response = await fetch('dashboard/meter-list');
                     const smartMeters = await response.json();
                     
+                    // Update meter statistics
+                    const activeMeters = smartMeters.filter(m => m.Status.toLowerCase() === 'active').length;
+                    totalMetersCount.textContent = smartMeters.length;
+                    activeMetersCount.textContent = activeMeters;
+                    inactiveMetersCount.textContent = smartMeters.length - activeMeters;
+
                     // Clear existing markers
                     markers.forEach(marker => map.removeLayer(marker));
                     markers = [];
@@ -489,516 +530,525 @@ templ SystemAdminEmployeeDashboardWebPage() {
 
 //<---------------- Accounts Section ---------------->//
 templ SystemAdminEmployeeAccountsWebPage() {
-    @SystemAdminEmployeeBaseWebPage() {
-        <div class="container mx-auto p-6 max-w-4xl">
-            <!-- Overview Section -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Overview</h2>
-                <div class="bg-gray-100 rounded-lg h-48 flex items-center justify-center">
-                    <p class="text-gray-500">Account statistics and metrics will appear here</p>
-                </div>
-            </div>
-
-            <!-- Create Account Section -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Create Account</h2>
-                
-                <!-- Account Type Selector -->
-                <div class="flex space-x-4 mb-8">
-                    <button hx-get="accounts/meter-form" 
-                            hx-target="#account-form-container" 
-                            hx-swap="innerHTML"
-                            class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+	@SystemAdminEmployeeBaseWebPage() {
+		<div class="container mx-auto p-6 max-w-4xl">
+			<!-- Overview Section -->
+			<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+				<h2 class="text-2xl font-semibold text-gray-800 mb-4">Overview</h2>
+				<div class="bg-gray-100 rounded-lg h-48 flex items-center justify-center">
+					<p class="text-gray-500">Account statistics and metrics will appear here</p>
+				</div>
+			</div>
+			<!-- Create Account Section -->
+			<div class="bg-white rounded-lg shadow-md p-6">
+				<h2 class="text-2xl font-semibold text-gray-800 mb-6">Create Account</h2>
+				<!-- Account Type Selector -->
+				<div class="flex space-x-4 mb-8">
+					<button
+						hx-get="accounts/meter-form"
+						hx-target="#account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                    hover:bg-green-200 focus:outline-none focus:ring-2 
-                                   focus:ring-green-500 transition-all active:ring-2">
-                        Meter
-                    </button>
-                    <button hx-get="accounts/consumer-form" 
-                            hx-target="#account-form-container" 
-                            hx-swap="innerHTML"
-                            class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Meter
+					</button>
+					<button
+						hx-get="accounts/consumer-form"
+						hx-target="#account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                    hover:bg-green-200 focus:outline-none focus:ring-2 
-                                   focus:ring-green-500 transition-all active:ring-2">
-                        Consumer
-                    </button>
-                    <button hx-get="accounts/employee-form" 
-                            hx-target="#account-form-container" 
-                            hx-swap="innerHTML"
-                            class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Consumer
+					</button>
+					<button
+						hx-get="accounts/employee-form"
+						hx-target="#account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                    hover:bg-green-200 focus:outline-none focus:ring-2 
-                                   focus:ring-green-500 transition-all active:ring-2">
-                        Employee
-
-                    </button>
-                </div>
-
-                <!-- Dynamic Form Container -->
-                <div id="account-form-container">
-                    <!-- Initial empty state -->
-                    <p class="text-gray-500 text-center py-4">
-                        Please select an account type to begin
-                    </p>
-                </div>
-            </div>
-        </div>
-    }
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Employee
+					</button>
+				</div>
+				<!-- Dynamic Form Container -->
+				<div id="account-form-container">
+					<!-- Initial empty state -->
+					<p class="text-gray-500 text-center py-4">
+						Please select an account type to begin
+					</p>
+				</div>
+			</div>
+		</div>
+	}
 }
 
 templ NewMeterAccountForm() {
-    <form hx-post="/admin/accounts/meter" 
-        hx-target="#form-response" 
-        hx-swap="innerHTML"
-        class="space-y-6">
-
-        // Horizontal line        
-        <div class="w-full h-px bg-gray-300 mb-4"></div>
-
-        // Serial Number Group
-        <div class="grid grid-cols-6 gap-10 mb-8">
-        
-            <!-- SNID (Row 1, Column 1) -->
-            <div class="col-span-2">
-                <label for="consumer-snid" class="block text-sm font-medium text-gray-700 mb-2">
-                    SNID
-                </label>
-                <input type="number" id="consumer-snid" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+	<form
+		hx-post="/admin/accounts/meter"
+		hx-target="#form-response"
+		hx-swap="innerHTML"
+		class="space-y-6"
+	>
+		// Horizontal line        
+		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		// Serial Number Group
+		<div class="grid grid-cols-6 gap-10 mb-8">
+			<!-- SNID (Row 1, Column 1) -->
+			<div class="col-span-2">
+				<label for="consumer-snid" class="block text-sm font-medium text-gray-700 mb-2">
+					SNID
+				</label>
+				<input
+					type="number"
+					id="consumer-snid"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                    placeholder="SNID">
-            </div>
-
-            <!-- SN (Row 1, Column 2-3) -->
-            <div class="col-span-2">
-                <label for="meter-sn" class="block text-sm font-medium text-gray-700 mb-2">
-                    SN
-                </label>
-                <input type="text" id="meter-sn" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					placeholder="SNID"
+				/>
+			</div>
+			<!-- SN (Row 1, Column 2-3) -->
+			<div class="col-span-2">
+				<label for="meter-sn" class="block text-sm font-medium text-gray-700 mb-2">
+					SN
+				</label>
+				<input
+					type="text"
+					id="meter-sn"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400" 
-                    placeholder="SN">
-            </div>
-
-        </div>
-
-        // Horizontal dashed-line
-        <div class="w-full border-t border-dashed border-gray-300"></div>
-
-        // Installation and GeoLocation Group
-        <div class="grid grid-cols-4 gap-10 mb-8">
-
-            <div>
-                <label for="meter-installation-date" class="block text-sm font-medium text-gray-700 mb-2">
-                    Installation Date
-                </label>
-                <input type="date" id="meter-installation-date" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400"
+					placeholder="SN"
+				/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
+		// Installation and GeoLocation Group
+		<div class="grid grid-cols-4 gap-10 mb-8">
+			<div>
+				<label for="meter-installation-date" class="block text-sm font-medium text-gray-700 mb-2">
+					Installation Date
+				</label>
+				<input
+					type="date"
+					id="meter-installation-date"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400">
-            </div>
-
-            <div>
-                <label for="meter-transformer-id" class="block text-sm font-medium text-gray-700 mb-2">
-                    Transformer ID
-                </label>
-                <input type="number" id="consumer-transformer-id" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400"
+				/>
+			</div>
+			<div>
+				<label for="meter-transformer-id" class="block text-sm font-medium text-gray-700 mb-2">
+					Transformer ID
+				</label>
+				<input
+					type="number"
+					id="consumer-transformer-id"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                    placeholder="Transformer ID">
-            </div>
-
-        </div>
-
-        // Horizontal dashed-line
-        <div class="w-full border-t border-dashed border-gray-300"></div>
-
-        <div class="grid grid-cols-2 gap-10 mb-8">
-
-            <div>
-                <label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
-                    Geolocation
-                </label>
-
-                <div class="grid grid-cols-2 gap-5">
-
-                    <input type="number" id="meter-latitude" 
-                        class="block w-full px-4 py-3 border border-gray-300 
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					placeholder="Transformer ID"
+				/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
+		<div class="grid grid-cols-2 gap-10 mb-8">
+			<div>
+				<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+					Geolocation
+				</label>
+				<div class="grid grid-cols-2 gap-5">
+					<input
+						type="number"
+						id="meter-latitude"
+						class="block w-full px-4 py-3 border border-gray-300 
                                 rounded-lg focus:ring-green-500 focus:border-green-500 
                                 placeholder-gray-400 placeholder:text-sm
-                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                        placeholder="Latitude">
-                    <input type="number" id="meter-longitude" 
-                        class="block w-full px-4 py-3 border border-gray-300 
+                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+						placeholder="Latitude"
+					/>
+					<input
+						type="number"
+						id="meter-longitude"
+						class="block w-full px-4 py-3 border border-gray-300 
                                 rounded-lg focus:ring-green-500 focus:border-green-500 
                                 placeholder-gray-400 placeholder:text-sm
-                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                        placeholder="Longitude">
-
-                </div>
-
-            </div>
-
-        </div>
-
-        // Horizontal line        
-        <div class="w-full h-px bg-gray-300 mb-4"></div>
-
-        <div class="flex justify-end">
-            <button type="submit" 
-                    class="px-6 py-3 bg-green-600 hover:bg-green-700 
+                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+						placeholder="Longitude"
+					/>
+				</div>
+			</div>
+		</div>
+		// Horizontal line        
+		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		<div class="flex justify-end">
+			<button
+				type="submit"
+				class="px-6 py-3 bg-green-600 hover:bg-green-700 
                         text-white font-medium rounded-lg 
                         transition-all shadow-md hover:shadow-lg 
-                        focus:outline-none focus:ring-2 focus:ring-green-500">
-                Create Meter Account
-            </button>
-        </div>
-        
-        <div id="form-response"></div>
-    </form>
+                        focus:outline-none focus:ring-2 focus:ring-green-500"
+			>
+				Create Meter Account
+			</button>
+		</div>
+		<div id="form-response"></div>
+	</form>
 }
 
 templ NewConsumerAccountForm() {
-    <form hx-post="/admin/accounts/meter" 
-        hx-target="#form-response" 
-        hx-swap="innerHTML"
-        class="space-y-6">
-
-        // Horizontal line        
-        <div class="w-full h-px bg-gray-300 mb-4"></div>
-
-        // Consumer Name group
-        <div class="mb-8 grid grid-cols-4 gap-4">
-
-            <!-- First Name (Row 1, Column 1) -->
-            <div>
-                <label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700"> First Name </label>
-                <input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name" />
-            </div>
-
-            <!-- Middle Name (Row 1, Column 2) -->
-            <div>
-                <label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700"> Middle Name </label>
-                <input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name" />
-            </div>
-
-            <!-- Last Name (Row 1, Column 3) -->
-            <div>
-                <label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700"> Last Name </label>
-                <input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name" />
-            </div>
-
-            <!-- Suffix (Row 1, Column 4) -->
-            <div>
-                <label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700"> Suffix </label>
-                <input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)" />
-            </div>
-
-            <!-- Birth Date (Row 1, Column 5) -->
-            <div>
-                <label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700"> Birth Date </label>
-                <input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" />
-            </div>
-        </div>
-
-        // Horizontal dashed-line
-        <div class="w-full border-t border-dashed border-gray-300"></div>
-
-        // Consumer Address group
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <!-- Province (Row 1, Column 1) -->
-            <div>
-                <label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
-                    Province
-                </label>
-                <input type="text" id="consumer-province" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+	<form
+		hx-post="/admin/accounts/meter"
+		hx-target="#form-response"
+		hx-swap="innerHTML"
+		class="space-y-6"
+	>
+		// Horizontal line        
+		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		// Consumer Name group
+		<div class="mb-8 grid grid-cols-4 gap-4">
+			<!-- First Name (Row 1, Column 1) -->
+			<div>
+				<label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700">First Name </label>
+				<input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name"/>
+			</div>
+			<!-- Middle Name (Row 1, Column 2) -->
+			<div>
+				<label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700">Middle Name </label>
+				<input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name"/>
+			</div>
+			<!-- Last Name (Row 1, Column 3) -->
+			<div>
+				<label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700">Last Name </label>
+				<input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name"/>
+			</div>
+			<!-- Suffix (Row 1, Column 4) -->
+			<div>
+				<label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700">Suffix </label>
+				<input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)"/>
+			</div>
+			<!-- Birth Date (Row 1, Column 5) -->
+			<div>
+				<label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700">Birth Date </label>
+				<input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
+		// Consumer Address group
+		<div class="grid grid-cols-3 gap-4 mb-8">
+			<!-- Province (Row 1, Column 1) -->
+			<div>
+				<label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
+					Province
+				</label>
+				<input
+					type="text"
+					id="consumer-province"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="Province">
-            </div>
-
-            <!-- Postal Code (Row 1, Column 2) -->
-            <div>
-                <label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
-                    Postal Code
-                </label>
-                <input type="number" id="consumer-postal-code" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="Province"
+				/>
+			</div>
+			<!-- Postal Code (Row 1, Column 2) -->
+			<div>
+				<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+					Postal Code
+				</label>
+				<input
+					type="number"
+					id="consumer-postal-code"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                    placeholder="Postal Code">
-            </div>
-
-            <!-- Municipality (Row 1, Column 3) -->
-            <div>
-                <label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
-                    City/Municipality
-                </label>
-                <input type="text" id="consumer-city-municipality" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					placeholder="Postal Code"
+				/>
+			</div>
+			<!-- Municipality (Row 1, Column 3) -->
+			<div>
+				<label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
+					City/Municipality
+				</label>
+				<input
+					type="text"
+					id="consumer-city-municipality"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="City/Municipality">
-            </div>
-
-            <!-- Barangay (Row 2, Column 1) -->
-            <div>
-                <label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
-                    Barangay
-                </label>
-                <input type="text" id="consumer-barangay" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="City/Municipality"
+				/>
+			</div>
+			<!-- Barangay (Row 2, Column 1) -->
+			<div>
+				<label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
+					Barangay
+				</label>
+				<input
+					type="text"
+					id="consumer-barangay"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="Barangay">
-            </div>
-
-            <!-- Street Address (Row 2, Columns 2-3) -->
-            <div class="col-span-2">
-                <label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
-                    House or Building Number, Street Name
-                </label>
-                <input type="text" id="consumer-house-street" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="Barangay"
+				/>
+			</div>
+			<!-- Street Address (Row 2, Columns 2-3) -->
+			<div class="col-span-2">
+				<label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
+					House or Building Number, Street Name
+				</label>
+				<input
+					type="text"
+					id="consumer-house-street"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="House/Building Number, Street Name">
-            </div>
-        </div>
-
-        // Horizontal dashed-line
-        <div class="w-full border-t border-dashed border-gray-300"></div>
-
-        // Contact Info Group
-        <div class="grid grid-cols-3 gap-4 mb-8">
-
-            <div>
-                <label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
-                </label>
-                <input type="number" id="consumer-phone-number" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="House/Building Number, Street Name"
+				/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
+		// Contact Info Group
+		<div class="grid grid-cols-3 gap-4 mb-8">
+			<div>
+				<label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
+					Phone Number
+				</label>
+				<input
+					type="number"
+					id="consumer-phone-number"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                    placeholder="Phone Number">
-            </div>
-
-        </div>
-        
-        // Horizontal Line
-        <div class="w-full h-px bg-gray-300 mb-4"></div>
-
-        <div class="flex justify-end">
-            <button type="submit" 
-                    class="px-6 py-3 bg-green-600 hover:bg-green-700 
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					placeholder="Phone Number"
+				/>
+			</div>
+		</div>
+		// Horizontal Line
+		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		<div class="flex justify-end">
+			<button
+				type="submit"
+				class="px-6 py-3 bg-green-600 hover:bg-green-700 
                         text-white font-medium rounded-lg 
                         transition-all shadow-md hover:shadow-lg 
-                        focus:outline-none focus:ring-2 focus:ring-green-500">
-                Create Consumer Account
-            </button>
-        </div>
-        
-        <div id="form-response"></div>
-    </form>
+                        focus:outline-none focus:ring-2 focus:ring-green-500"
+			>
+				Create Consumer Account
+			</button>
+		</div>
+		<div id="form-response"></div>
+	</form>
 }
 
 templ NewEmployeeAccountForm() {
-    <form hx-post="/admin/accounts/meter" 
-        hx-target="#form-response" 
-        hx-swap="innerHTML"
-        class="space-y-6">
-        
-        // Horizontal line        
-        <div class="w-full h-px bg-gray-300 mb-4"></div>
-
-        // Consumer Name group
-        <div class="mb-8 grid grid-cols-4 gap-4">
-
-            <!-- First Name (Row 1, Column 1) -->
-            <div>
-                <label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700"> First Name </label>
-                <input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name" />
-            </div>
-
-            <!-- Middle Name (Row 1, Column 2) -->
-            <div>
-                <label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700"> Middle Name </label>
-                <input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name" />
-            </div>
-
-            <!-- Last Name (Row 1, Column 3) -->
-            <div>
-                <label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700"> Last Name </label>
-                <input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name" />
-            </div>
-
-            <!-- Suffix (Row 1, Column 4) -->
-            <div>
-                <label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700"> Suffix </label>
-                <input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)" />
-            </div>
-
-            <!-- Birth Date (Row 1, Column 5) -->
-            <div>
-                <label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700"> Birth Date </label>
-                <input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" />
-            </div>
-        </div>
-
-        // Horizontal dashed-line
-        <div class="w-full border-t border-dashed border-gray-300"></div>
-
-        // Consumer Address group
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <!-- Province (Row 1, Column 1) -->
-            <div>
-                <label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
-                    Province
-                </label>
-                <input type="text" id="consumer-province" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+	<form
+		hx-post="/admin/accounts/meter"
+		hx-target="#form-response"
+		hx-swap="innerHTML"
+		class="space-y-6"
+	>
+		// Horizontal line        
+		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		// Consumer Name group
+		<div class="mb-8 grid grid-cols-4 gap-4">
+			<!-- First Name (Row 1, Column 1) -->
+			<div>
+				<label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700">First Name </label>
+				<input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name"/>
+			</div>
+			<!-- Middle Name (Row 1, Column 2) -->
+			<div>
+				<label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700">Middle Name </label>
+				<input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name"/>
+			</div>
+			<!-- Last Name (Row 1, Column 3) -->
+			<div>
+				<label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700">Last Name </label>
+				<input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name"/>
+			</div>
+			<!-- Suffix (Row 1, Column 4) -->
+			<div>
+				<label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700">Suffix </label>
+				<input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)"/>
+			</div>
+			<!-- Birth Date (Row 1, Column 5) -->
+			<div>
+				<label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700">Birth Date </label>
+				<input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
+		// Consumer Address group
+		<div class="grid grid-cols-3 gap-4 mb-8">
+			<!-- Province (Row 1, Column 1) -->
+			<div>
+				<label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
+					Province
+				</label>
+				<input
+					type="text"
+					id="consumer-province"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="Province">
-            </div>
-
-            <!-- Postal Code (Row 1, Column 2) -->
-            <div>
-                <label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
-                    Postal Code
-                </label>
-                <input type="number" id="consumer-postal-code" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="Province"
+				/>
+			</div>
+			<!-- Postal Code (Row 1, Column 2) -->
+			<div>
+				<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+					Postal Code
+				</label>
+				<input
+					type="number"
+					id="consumer-postal-code"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                    placeholder="Postal Code">
-            </div>
-
-            <!-- Municipality (Row 1, Column 3) -->
-            <div>
-                <label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
-                    City/Municipality
-                </label>
-                <input type="text" id="consumer-city-municipality" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					placeholder="Postal Code"
+				/>
+			</div>
+			<!-- Municipality (Row 1, Column 3) -->
+			<div>
+				<label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
+					City/Municipality
+				</label>
+				<input
+					type="text"
+					id="consumer-city-municipality"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="City/Municipality">
-            </div>
-
-            <!-- Barangay (Row 2, Column 1) -->
-            <div>
-                <label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
-                    Barangay
-                </label>
-                <input type="text" id="consumer-barangay" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="City/Municipality"
+				/>
+			</div>
+			<!-- Barangay (Row 2, Column 1) -->
+			<div>
+				<label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
+					Barangay
+				</label>
+				<input
+					type="text"
+					id="consumer-barangay"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="Barangay">
-            </div>
-
-            <!-- Street Address (Row 2, Columns 2-3) -->
-            <div class="col-span-2">
-                <label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
-                    House or Building Number, Street Name
-                </label>
-                <input type="text" id="consumer-house-street" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="Barangay"
+				/>
+			</div>
+			<!-- Street Address (Row 2, Columns 2-3) -->
+			<div class="col-span-2">
+				<label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
+					House or Building Number, Street Name
+				</label>
+				<input
+					type="text"
+					id="consumer-house-street"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm" 
-                    placeholder="House/Building Number, Street Name">
-            </div>
-        </div>
-
-        // Horizontal dashed-line
-        <div class="w-full border-t border-dashed border-gray-300"></div>
-
-        // Contact Info and Account Type Group
-        <div class="grid grid-cols-3 gap-4 mb-8">
-
-            <!-- Phone Number (Row 1, Columns 1) -->
-            <div>
-                <label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
-                </label>
-                <input type="number" id="consumer-phone-number" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            placeholder-gray-400 placeholder:text-sm"
+					placeholder="House/Building Number, Street Name"
+				/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
+		// Contact Info and Account Type Group
+		<div class="grid grid-cols-3 gap-4 mb-8">
+			<!-- Phone Number (Row 1, Columns 1) -->
+			<div>
+				<label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
+					Phone Number
+				</label>
+				<input
+					type="number"
+					id="consumer-phone-number"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                    placeholder="Phone Number">
-            </div>
-
-            <!-- Account Type (Row 1, Columns 2) -->
-            <div>
-                <label for="consumer-account-type" class="block text-sm font-medium text-gray-700 mb-2">
-                    Account Type
-                </label>
-                <select id="consumer-account-type" 
-                    class="block w-full px-4 py-3 border border-gray-300 
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+					placeholder="Phone Number"
+				/>
+			</div>
+			<!-- Account Type (Row 1, Columns 2) -->
+			<div>
+				<label for="consumer-account-type" class="block text-sm font-medium text-gray-700 mb-2">
+					Account Type
+				</label>
+				<select
+					id="consumer-account-type"
+					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
-                            text-gray-700 placeholder-gray-400 placeholder:text-sm">
-                    <option value="" disabled selected hidden class="text-gray-400">Account Type</option>
-                    <option value="cashier">Cashier</option>
-                    <option value="field-admin">Field Admin</option>
-                    <option value="finance-admin">Finance Admin</option>
-                    <option value="hr-admin">HR Admin</option>
-                    <option value="customer-admin">Customer Admin</option>
-                </select>
-            </div>
-
-        </div>
-        
-        // Horizontal Line
-        <div class="w-full h-px bg-gray-300 mb-4"></div>
-
-        <div class="flex justify-end">
-            <button type="submit" 
-                    class="px-6 py-3 bg-green-600 hover:bg-green-700 
+                            text-gray-700 placeholder-gray-400 placeholder:text-sm"
+				>
+					<option value="" disabled selected hidden class="text-gray-400">Account Type</option>
+					<option value="cashier">Cashier</option>
+					<option value="field-admin">Field Admin</option>
+					<option value="finance-admin">Finance Admin</option>
+					<option value="hr-admin">HR Admin</option>
+					<option value="customer-admin">Customer Admin</option>
+				</select>
+			</div>
+		</div>
+		// Horizontal Line
+		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		<div class="flex justify-end">
+			<button
+				type="submit"
+				class="px-6 py-3 bg-green-600 hover:bg-green-700 
                         text-white font-medium rounded-lg 
                         transition-all shadow-md hover:shadow-lg 
-                        focus:outline-none focus:ring-2 focus:ring-green-500">
-                Create Employee Account
-            </button>
-        </div>
-        
-        <div id="form-response"></div>
-    </form>
+                        focus:outline-none focus:ring-2 focus:ring-green-500"
+			>
+				Create Employee Account
+			</button>
+		</div>
+		<div id="form-response"></div>
+	</form>
 }
+
 //<-------------------------------------------------->//
 
-//*<---------------- Consumer Section ---------------->*//
+// *<---------------- Consumer Section ---------------->*//
 type ConsumerList struct {
-    ConsumerID   string
-    ConsumerName string
-    ConsumerType string
-    Status       string
+	ConsumerID   string
+	ConsumerName string
+	ConsumerType string
+	Status       string
 }
 
 var ConsumerAccountTypeData = struct {
-    Residential string
-    Commercial string
-    Industrial string
+	Residential string
+	Commercial  string
+	Industrial  string
 }{
-    Residential: "residential",
-    Commercial: "commercial",
-    Industrial: "industrial",
+	Residential: "residential",
+	Commercial:  "commercial",
+	Industrial:  "industrial",
 }
 
 var ConsumerAccountStatusData = struct {
-    Active string
-    Inactive string
+	Active   string
+	Inactive string
 }{
-    Active: "active",
-    Inactive: "inactive",
+	Active:   "active",
+	Inactive: "inactive",
 }
 
 // var AccountType = struct {
@@ -1014,156 +1064,155 @@ var ConsumerAccountStatusData = struct {
 //     HRAdmin: "hr-admin",
 //     CustomerAdmin: "customer-admin",
 // }
-
 templ SystemAdminEmployeeConsumerWebPage(consumerlist []ConsumerList) {
-    @SystemAdminEmployeeBaseWebPage() {
-        
-        <div class=" p-6">
-            <div class="bg-white rounded-lg shadow-md p-2">
-                <div>
-                    <div class="text-2xl font-semibold text-gray-800 m-4 text-left">Consumers</div>
-                    <form>
-                        <div class="max-w-lg mx-auto mb-10">
-                            <div class="relative w-full">
-                                <div class="relative w-full">
-                                    <input type="search" 
-                                        class="block p-2.5 w-full z-20 text-sm text-gray-800 rounded-lg
+	@SystemAdminEmployeeBaseWebPage() {
+		<div class=" p-6">
+			<div class="bg-white rounded-lg shadow-md p-2">
+				<div>
+					<div class="text-2xl font-semibold text-gray-800 m-4 text-left">Consumers</div>
+					<form>
+						<div class="max-w-lg mx-auto mb-10">
+							<div class="relative w-full">
+								<div class="relative w-full">
+									<input
+										type="search"
+										class="block p-2.5 w-full z-20 text-sm text-gray-800 rounded-lg
                                             border-s-gray-200 border-s-2 border bg-gray-50
-                                            border-gray-300 focus:ring-gray-300 focus:border-gray-300" 
-                                        placeholder="Search Consumers" required />
-                                    <button type="submit" 
-                                            class="absolute top-0 end-0
+                                            border-gray-300 focus:ring-gray-300 focus:border-gray-300"
+										placeholder="Search Consumers"
+										required
+									/>
+									<button
+										type="submit"
+										class="absolute top-0 end-0
                                              p-2.5 text-sm font-medium h-full 
                                                 text-white bg-green-600 hover:bg-green-700 rounded-e-lg
                                                 border border-green-700 focus:ring-4 focus:outline-none
-                                                focus:ring-green-300">
-                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                        </svg>
-                                        <span class="sr-only">Search</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="consumer-info-container" class="bg-gray-50 rounded-lg items-center text-center justify-center h-auto p-1 m-0.5">
-                            <!-- Consumer Information Container -->
-                            @ConsumerListContainer(consumerlist)
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    }
+                                                focus:ring-green-300"
+									>
+										<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+											<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path>
+										</svg>
+										<span class="sr-only">Search</span>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div id="consumer-info-container" class="bg-gray-50 rounded-lg items-center text-center justify-center h-auto p-1 m-0.5">
+							<!-- Consumer Information Container -->
+							@ConsumerListContainer(consumerlist)
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	}
 }
 
 templ ConsumerListContainer(consumerlist []ConsumerList) {
-    for _, item := range consumerlist {
-        <button hx-get="consumer/consumer-info"
-                hx-target="#consumer-info-container"
-                hx-swap="innerHTML"
-                class="flex items-center w-full shadow-sm p-2 rounded-lg bg-white mb-2
+	for _, item := range consumerlist {
+		<button
+			hx-get="consumer/consumer-info"
+			hx-target="#consumer-info-container"
+			hx-swap="innerHTML"
+			class="flex items-center w-full shadow-sm p-2 rounded-lg bg-white mb-2
                     hover:bg-slate-200 transition-all duration-200 ease-in-out
-                    focus:outline-none focus:ring-2 focus:ring-gray-500">
-            <div 
-                if item.Status == ConsumerAccountStatusData.Active {
-                    class="bg-green-500 rounded-lg p-2 h-5 w-5 mr-4 shrink-0"
-                } else {
-                    class="bg-red-500 rounded-lg p-2 h-5 w-5 mr-4 shrink-0"
-                }>
-            </div>
-            
-            <div class="flex flex-1 gap-4">
-                <div class="flex-1 text-left font-medium truncate">{ item.ConsumerID }</div>
-                <div class="flex-1 text-left truncate">{ item.ConsumerName }</div>
-                <div class="flex-1 text-left truncate">{ item.ConsumerType }</div>
-            </div>
-        </button>
-    }
+                    focus:outline-none focus:ring-2 focus:ring-gray-500"
+		>
+			<div
+				if item.Status == ConsumerAccountStatusData.Active {
+					class="bg-green-500 rounded-lg p-2 h-5 w-5 mr-4 shrink-0"
+				} else {
+					class="bg-red-500 rounded-lg p-2 h-5 w-5 mr-4 shrink-0"
+				}
+			></div>
+			<div class="flex flex-1 gap-4">
+				<div class="flex-1 text-left font-medium truncate">{ item.ConsumerID }</div>
+				<div class="flex-1 text-left truncate">{ item.ConsumerName }</div>
+				<div class="flex-1 text-left truncate">{ item.ConsumerType }</div>
+			</div>
+		</button>
+	}
 }
 
 templ ConsumerInformationContainer() {
-    <div class="m-2">
-        <div class="flex space-x-5 place-items-center">
-            <button hx-get="consumer/consumer-list"
-                    hx-target="#consumer-info-container"
-                    hx-swap="innerHTML"
-                    class="text-5xl pb-1
-                           hover:text-green-500 transition-all">
-                &larr;
-            </button>
-            <p class="text-2xl">Consumer Information</p>
-        </div>
-
-        <!-- Consumer Information -->
-        <div class="flex flex-col items-center justify-center w-full mx-auto">
-
-    <!-- Consumer & Meter Info Table -->
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden w-full mb-6">
-        <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-700">Consumer & Meter Details</h3>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full divide-y divide-gray-200">
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Consumer Info -->
-                    <tr>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">Name</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">John Doe</td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">Account Number</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">123456789</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">Address</td>
-                        <td colspan="3" class="px-4 py-3 text-sm text-gray-600">123 Main Street, Cityville, ST 12345</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">Phone</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">(555) 123-4567</td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">Email</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">john.doe@example.com</td>
-                    </tr>
-                    
-                    <!-- Meter Section Header -->
-                    <tr>
-                        <td colspan="4" class="px-4 py-3 bg-gray-50 border-t border-gray-200">
-                            <span class="text-sm font-semibold text-gray-900">Meters</span>
-                        </td>
-                    </tr>
-                    
-                    <!-- Meter Table Headers -->
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Meter ID</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    </tr>
-                    
-                    <!-- Meter Rows -->
-                    <tr>
-                        <td class="px-4 py-3 text-sm text-gray-900">MTR-001</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">Electric</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">Main Building</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-3 text-sm text-gray-900">MTR-002</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">Water</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">Backyard</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2.5 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Inactive</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-            <!-- Energy Chart -->
-            <div id="energy-chart" class="w-full h-[100vh] min-h-[300px]"></div>
-            <script>
+	<div class="m-2">
+		<div class="flex space-x-5 place-items-center">
+			<button
+				hx-get="consumer/consumer-list"
+				hx-target="#consumer-info-container"
+				hx-swap="innerHTML"
+				class="text-5xl pb-1
+                           hover:text-green-500 transition-all"
+			>
+				&larr;
+			</button>
+			<p class="text-2xl">Consumer Information</p>
+		</div>
+		<!-- Consumer Information -->
+		<div class="flex flex-col items-center justify-center w-full mx-auto">
+			<!-- Consumer & Meter Info Table -->
+			<div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden w-full mb-6">
+				<div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+					<h3 class="text-lg font-semibold text-gray-700">Consumer & Meter Details</h3>
+				</div>
+				<div class="overflow-x-auto">
+					<table class="w-full divide-y divide-gray-200">
+						<tbody class="bg-white divide-y divide-gray-200">
+							<!-- Consumer Info -->
+							<tr>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">Name</td>
+								<td class="px-4 py-3 text-sm text-gray-600">John Doe</td>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">Account Number</td>
+								<td class="px-4 py-3 text-sm text-gray-600">123456789</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">Address</td>
+								<td colspan="3" class="px-4 py-3 text-sm text-gray-600">123 Main Street, Cityville, ST 12345</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">Phone</td>
+								<td class="px-4 py-3 text-sm text-gray-600">(555) 123-4567</td>
+								<td class="px-4 py-3 text-sm font-medium text-gray-900">Email</td>
+								<td class="px-4 py-3 text-sm text-gray-600">john.doe@example.com</td>
+							</tr>
+							<!-- Meter Section Header -->
+							<tr>
+								<td colspan="4" class="px-4 py-3 bg-gray-50 border-t border-gray-200">
+									<span class="text-sm font-semibold text-gray-900">Meters</span>
+								</td>
+							</tr>
+							<!-- Meter Table Headers -->
+							<tr>
+								<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Meter ID</th>
+								<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+								<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
+								<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+							</tr>
+							<!-- Meter Rows -->
+							<tr>
+								<td class="px-4 py-3 text-sm text-gray-900">MTR-001</td>
+								<td class="px-4 py-3 text-sm text-gray-600">Electric</td>
+								<td class="px-4 py-3 text-sm text-gray-600">Main Building</td>
+								<td class="px-4 py-3">
+									<span class="px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active</span>
+								</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3 text-sm text-gray-900">MTR-002</td>
+								<td class="px-4 py-3 text-sm text-gray-600">Water</td>
+								<td class="px-4 py-3 text-sm text-gray-600">Backyard</td>
+								<td class="px-4 py-3">
+									<span class="px-2.5 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Inactive</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- Energy Chart -->
+			<div id="energy-chart" class="w-full h-[100vh] min-h-[300px]"></div>
+			<script>
                 (function() {
                     var chartDom = document.getElementById('energy-chart');
                     var myChart = echarts.init(chartDom);
@@ -1269,37 +1318,33 @@ templ ConsumerInformationContainer() {
 
                 })();
             </script>
-
-            <!-- Live Updates Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6 px-4">
-                <!-- Last Updated Card -->
-                <div class="flex items-center bg-green-50 rounded-lg border border-green-200 p-3 md:p-4 shadow-sm">
-                    <div class="flex-1 flex items-center gap-3">
-                        <span class="text-sm md:text-base text-green-700 font-medium">Last Updated:</span>
-                        <span id="last-updated" class="text-2xl md:text-3xl font-semibold text-green-900">0</span>
-                        <span class="text-sm text-green-600">minutes ago</span>
-                    </div>
-                </div>
-
-                <!-- Live Power Card -->
-                <div class="flex items-center bg-blue-50 rounded-lg border border-blue-200 p-3 md:p-4 shadow-sm">
-                    <div class="flex-1 flex items-center gap-3">
-                        <span class="text-sm md:text-base text-blue-700 font-medium">Live Power:</span>
-                        <span id="live-power" class="text-2xl md:text-3xl font-semibold text-blue-900">0</span>
-                        <span class="text-sm text-blue-600">W</span>
-                    </div>
-                </div>
-
-                <!-- Total Energy Card -->
-                <div class="flex items-center bg-purple-50 rounded-lg border border-purple-200 p-3 md:p-4 shadow-sm">
-                    <div class="flex-1 flex items-center gap-3">
-                        <span class="text-sm md:text-base text-purple-700 font-medium">Total Energy:</span>
-                        <span id="total-energy" class="text-2xl md:text-3xl font-semibold text-purple-900">0</span>
-                        <span class="text-sm text-purple-600">kWh</span>
-                    </div>
-                </div>
-
-                <script>
+			<!-- Live Updates Section -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6 px-4">
+				<!-- Last Updated Card -->
+				<div class="flex items-center bg-green-50 rounded-lg border border-green-200 p-3 md:p-4 shadow-sm">
+					<div class="flex-1 flex items-center gap-3">
+						<span class="text-sm md:text-base text-green-700 font-medium">Last Updated:</span>
+						<span id="last-updated" class="text-2xl md:text-3xl font-semibold text-green-900">0</span>
+						<span class="text-sm text-green-600">minutes ago</span>
+					</div>
+				</div>
+				<!-- Live Power Card -->
+				<div class="flex items-center bg-blue-50 rounded-lg border border-blue-200 p-3 md:p-4 shadow-sm">
+					<div class="flex-1 flex items-center gap-3">
+						<span class="text-sm md:text-base text-blue-700 font-medium">Live Power:</span>
+						<span id="live-power" class="text-2xl md:text-3xl font-semibold text-blue-900">0</span>
+						<span class="text-sm text-blue-600">W</span>
+					</div>
+				</div>
+				<!-- Total Energy Card -->
+				<div class="flex items-center bg-purple-50 rounded-lg border border-purple-200 p-3 md:p-4 shadow-sm">
+					<div class="flex-1 flex items-center gap-3">
+						<span class="text-sm md:text-base text-purple-700 font-medium">Total Energy:</span>
+						<span id="total-energy" class="text-2xl md:text-3xl font-semibold text-purple-900">0</span>
+						<span class="text-sm text-purple-600">kWh</span>
+					</div>
+				</div>
+				<script>
                     // Function to update live mtetrics
                     function updateMetrics({ minutes, power, energy }) {
                         document.querySelector('#last-updated').textContent = minutes;
@@ -1307,95 +1352,90 @@ templ ConsumerInformationContainer() {
                         document.querySelector('#total-energy').textContent = energy;
                     }
                 </script>
-            </div>
-
-            <!-- Balance Section -->
-            <div class="mt-8 px-4">
-                <!-- Balance Overview -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
-                    <div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
-                        <div class="flex-1 flex items-center gap-3">
-                            <span class="text-sm md:text-base text-amber-700 font-medium">Account Balance:</span>
-                            <span class="text-2xl md:text-3xl font-semibold text-amber-900">$500.00</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
-                        <div class="flex-1 flex items-center gap-3">
-                            <span class="text-sm md:text-base text-amber-700 font-medium">Due Balance:</span>
-                            <span class="text-2xl md:text-3xl font-semibold text-amber-900">$120.00</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
-                        <div class="flex-1 flex items-center gap-3">
-                            <span class="text-sm md:text-base text-amber-700 font-medium">Last Payment:</span>
-                            <span class="text-lg font-semibold text-amber-900">2023-11-15</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Balance Breakdown Table -->
-                <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                    <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-700">Balance Breakdown</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bill ID</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount Due</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Months Overdue</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Interest</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-4 py-3 text-sm text-gray-900 font-medium">#101</td>
-                                    <td class="px-4 py-3 text-sm text-gray-600">2023-10-05</td>
-                                    <td class="px-4 py-3 text-sm text-gray-900">$50.00</td>
-                                    <td class="px-4 py-3 text-sm text-gray-600">3</td>
-                                    <td class="px-4 py-3 text-sm text-red-600">$7.50</td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Delinquent</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 text-sm text-gray-900 font-medium">#102</td>
-                                    <td class="px-4 py-3 text-sm text-gray-600">2023-11-05</td>
-                                    <td class="px-4 py-3 text-sm text-gray-900">$70.00</td>
-                                    <td class="px-4 py-3 text-sm text-gray-600">2</td>
-                                    <td class="px-4 py-3 text-sm text-yellow-600">$7.00</td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2.5 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Overdue</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-    </div>
+			</div>
+			<!-- Balance Section -->
+			<div class="mt-8 px-4">
+				<!-- Balance Overview -->
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+					<div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
+						<div class="flex-1 flex items-center gap-3">
+							<span class="text-sm md:text-base text-amber-700 font-medium">Account Balance:</span>
+							<span class="text-2xl md:text-3xl font-semibold text-amber-900">$500.00</span>
+						</div>
+					</div>
+					<div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
+						<div class="flex-1 flex items-center gap-3">
+							<span class="text-sm md:text-base text-amber-700 font-medium">Due Balance:</span>
+							<span class="text-2xl md:text-3xl font-semibold text-amber-900">$120.00</span>
+						</div>
+					</div>
+					<div class="flex items-center bg-amber-50 rounded-lg border border-amber-200 p-3 md:p-4 shadow-sm">
+						<div class="flex-1 flex items-center gap-3">
+							<span class="text-sm md:text-base text-amber-700 font-medium">Last Payment:</span>
+							<span class="text-lg font-semibold text-amber-900">2023-11-15</span>
+						</div>
+					</div>
+				</div>
+				<!-- Balance Breakdown Table -->
+				<div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+					<div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+						<h3 class="text-lg font-semibold text-gray-700">Balance Breakdown</h3>
+					</div>
+					<div class="overflow-x-auto">
+						<table class="w-full divide-y divide-gray-200">
+							<thead class="bg-gray-50">
+								<tr>
+									<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bill ID</th>
+									<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
+									<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount Due</th>
+									<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Months Overdue</th>
+									<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Interest</th>
+									<th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+								</tr>
+							</thead>
+							<tbody class="bg-white divide-y divide-gray-200">
+								<tr>
+									<td class="px-4 py-3 text-sm text-gray-900 font-medium">#101</td>
+									<td class="px-4 py-3 text-sm text-gray-600">2023-10-05</td>
+									<td class="px-4 py-3 text-sm text-gray-900">$50.00</td>
+									<td class="px-4 py-3 text-sm text-gray-600">3</td>
+									<td class="px-4 py-3 text-sm text-red-600">$7.50</td>
+									<td class="px-4 py-3">
+										<span class="px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Delinquent</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="px-4 py-3 text-sm text-gray-900 font-medium">#102</td>
+									<td class="px-4 py-3 text-sm text-gray-600">2023-11-05</td>
+									<td class="px-4 py-3 text-sm text-gray-900">$70.00</td>
+									<td class="px-4 py-3 text-sm text-gray-600">2</td>
+									<td class="px-4 py-3 text-sm text-yellow-600">$7.00</td>
+									<td class="px-4 py-3">
+										<span class="px-2.5 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Overdue</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }
+
 //<-------------------------------------------------->//
 
 //<---------------- Accounting Section ---------------->//
-//<---------------- Accounting Section ---------------->//
 templ SystemAdminEmployeeAccountingWebPage(
-    accountingRatesTableFormType string,
-    accountingRatesTable AccountingRatesTable) {
-    @SystemAdminEmployeeBaseWebPage() {
-        <head>
-            <!-- Load HTMX and json-enc extension -->
-            <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
-            <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-        </head>
-        <style>
+	accountingRatesTableFormType string,
+	accountingRatesTable AccountingRatesTable) {
+	@SystemAdminEmployeeBaseWebPage() {
+		<head>
+			<!-- Load HTMX and json-enc extension -->
+			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+		</head>
+		<style>
             @keyframes spin {
                 to { transform: rotate(360deg); }
             }
@@ -1411,220 +1451,242 @@ templ SystemAdminEmployeeAccountingWebPage(
                 display: inline-block;
             }
         </style>
-        
-        <div class="container mx-auto max-w-fit p-6 sm:p-9 md:p-12 lg:p-15 xl:p-28 text-xs sm:text-xs md:text-base lg:text-base xl:text-base">
-
-            <!-- Dialog Structure -->
-            <dialog id="loadingDialog" class="bg-transparent backdrop:bg-black/50">
-                <div class="bg-white/90 rounded-lg p-8 text-center">
-                    <div class="animate-spin inline-block size-8 border-[3px] border-current border-t-transparent text-green-600 rounded-full" role="status" aria-label="loading"></div>
-                    <p class="mt-4 text-gray-600">Processing your request...</p>
-                </div>
-            </dialog>
-
-            <!-- Modified updateRatesDialog -->
-            <dialog id="updateRatesDialog" class="w-full max-w-fit p-0 bg-transparent backdrop:bg-black/50"
-                    hx-on:htmx:after-swap="initRateCalculator()">
-                <div class="bg-white rounded-lg shadow-xl p-6 relative">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 id="dialogTitle" class="text-xl font-semibold"></h3>
-                        <button 
-                            onclick="document.getElementById('updateRatesDialog').close()"
-                            class="text-gray-500 hover:text-gray-700 transition-colors">
-                            ✕
-                        </button>
-                    </div>
-
-                    <form id="ratesForm"                    
-                          hx-post="accounting/submit-update-rates-form"
-                          hx-trigger="submit"
-                          hx-swap="none"
-                          hx-ext="json-enc"
-                          class="max-h-[80vh] overflow-y-auto border-2 border-solid border-slate-500 shadow-sm"
-                          hx-on::before-request="
+		<div class="container mx-auto max-w-fit p-6 sm:p-9 md:p-12 lg:p-15 xl:p-28 text-xs sm:text-xs md:text-base lg:text-base xl:text-base">
+			<!-- Dialog Structure -->
+			<dialog id="loadingDialog" class="bg-transparent backdrop:bg-black/50">
+				<div class="bg-white/90 rounded-lg p-8 text-center">
+					<div class="animate-spin inline-block size-8 border-[3px] border-current border-t-transparent text-green-600 rounded-full" role="status" aria-label="loading"></div>
+					<p class="mt-4 text-gray-600">Processing your request...</p>
+				</div>
+			</dialog>
+			<!-- Modified updateRatesDialog -->
+			<dialog
+				id="updateRatesDialog"
+				class="w-full max-w-fit p-0 bg-transparent backdrop:bg-black/50"
+				hx-on:htmx:after-swap="initRateCalculator()"
+			>
+				<div class="bg-white rounded-lg shadow-xl p-6 relative">
+					<div class="flex justify-between items-center mb-4">
+						<h3 id="dialogTitle" class="text-xl font-semibold"></h3>
+						<button
+							onclick="document.getElementById('updateRatesDialog').close()"
+							class="text-gray-500 hover:text-gray-700 transition-colors"
+						>
+							✕
+						</button>
+					</div>
+					<form
+						id="ratesForm"
+						hx-post="accounting/submit-update-rates-form"
+						hx-trigger="submit"
+						hx-swap="none"
+						hx-ext="json-enc"
+						class="max-h-[80vh] overflow-y-auto border-2 border-solid border-slate-500 shadow-sm"
+						hx-on::before-request="
                               document.getElementById('updateRatesDialog').close();
                               document.getElementById('loadingDialog').showModal();
                           "
-                          hx-on::after-request="
+						hx-on::after-request="
                               if(event.detail.successful) {
                                   document.getElementById('loadingDialog').close();
                               } else {
                                   document.getElementById('loadingDialog').close();
                                   document.getElementById('updateRatesDialog').showModal();
                               }
-                          ">
-                        <div id="ratesDialogContent">
-                            <!-- HTMX form content will be loaded here -->
-                        </div>
-                        <div class="flex justify-end m-6 gap-2">
-                            <button
-                                type="submit"
-                                class="px-6 py-3 rounded-xl bg-green-600 text-white 
+                          "
+					>
+						<div id="ratesDialogContent">
+							<!-- HTMX form content will be loaded here -->
+						</div>
+						<div class="flex justify-end m-6 gap-2">
+							<button
+								type="submit"
+								class="px-6 py-3 rounded-xl bg-green-600 text-white 
                                        hover:bg-green-700 focus:outline-none focus:ring-4 
                                        focus:ring-green-500/50 transition-all duration-150
                                        shadow-lg hover:shadow-xl active:scale-[0.98]
-                                       disabled:opacity-70 disabled:cursor-not-allowed">
-                                <span class="inline-flex items-center">
-                                    <span>Submit</span>
-                                    <svg id="spinner" class="htmx-indicator ml-2 h-5 w-5 animate-spin" 
-                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" 
-                                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                </span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </dialog>
-
-            <!-- Modified updateERCDialog -->
-            <dialog id="updateERCDialog" class="w-full max-w-fit p-0 bg-transparent backdrop:bg-black/50"
-                    hx-on:htmx:after-swap="initRateCalculator()">
-                <div class="bg-white rounded-lg shadow-xl p-6 relative">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 id="dialogTitle" class="text-xl font-semibold"></h3>
-                        <button 
-                            onclick="document.getElementById('updateERCDialog').close()"
-                            class="text-gray-500 hover:text-gray-700 transition-colors">
-                            ✕
-                        </button>
-                    </div>
-
-                    <form id="ratesForm"                    
-                          hx-post="accounting/submit-update-erc-form"
-                          hx-trigger="submit"
-                          hx-swap="none"
-                          hx-ext="json-enc"
-                          class="max-h-[80vh] overflow-y-auto border-2 border-solid border-slate-500 shadow-sm"
-                          hx-on::before-request="
+                                       disabled:opacity-70 disabled:cursor-not-allowed"
+							>
+								<span class="inline-flex items-center">
+									<span>Submit</span>
+									<svg
+										id="spinner"
+										class="htmx-indicator ml-2 h-5 w-5 animate-spin"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+									>
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<path
+											class="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+										></path>
+									</svg>
+								</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</dialog>
+			<!-- Modified updateERCDialog -->
+			<dialog
+				id="updateERCDialog"
+				class="w-full max-w-fit p-0 bg-transparent backdrop:bg-black/50"
+				hx-on:htmx:after-swap="initRateCalculator()"
+			>
+				<div class="bg-white rounded-lg shadow-xl p-6 relative">
+					<div class="flex justify-between items-center mb-4">
+						<h3 id="dialogTitle" class="text-xl font-semibold"></h3>
+						<button
+							onclick="document.getElementById('updateERCDialog').close()"
+							class="text-gray-500 hover:text-gray-700 transition-colors"
+						>
+							✕
+						</button>
+					</div>
+					<form
+						id="ratesForm"
+						hx-post="accounting/submit-update-erc-form"
+						hx-trigger="submit"
+						hx-swap="none"
+						hx-ext="json-enc"
+						class="max-h-[80vh] overflow-y-auto border-2 border-solid border-slate-500 shadow-sm"
+						hx-on::before-request="
                               document.getElementById('updateERCDialog').close();
                               document.getElementById('loadingDialog').showModal();
                           "
-                          hx-on::after-request="
+						hx-on::after-request="
                               if(event.detail.successful) {
                                   document.getElementById('loadingDialog').close();
                               } else {
                                   document.getElementById('loadingDialog').close();
                                   document.getElementById('updateERCDialog').showModal();
                               }
-                          ">
-                        <div id="ercDialogContent">
-                            <!-- HTMX form content will be loaded here -->
-                        </div>
-                        <div class="flex justify-end mt-4 gap-2">
-                            <button
-                                type="submit"
-                                class="px-6 py-3 rounded-xl bg-green-600 text-white 
+                          "
+					>
+						<div id="ercDialogContent">
+							<!-- HTMX form content will be loaded here -->
+						</div>
+						<div class="flex justify-end mt-4 gap-2">
+							<button
+								type="submit"
+								class="px-6 py-3 rounded-xl bg-green-600 text-white 
                                        hover:bg-green-700 focus:outline-none focus:ring-4 
                                        focus:ring-green-500/50 transition-all duration-150
                                        shadow-lg hover:shadow-xl active:scale-[0.98]
-                                       disabled:opacity-70 disabled:cursor-not-allowed">
-                                <span class="inline-flex items-center">
-                                    <span>Submit</span>
-                                    <svg id="spinner" class="htmx-indicator ml-2 h-5 w-5 animate-spin" 
-                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" 
-                                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                </span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </dialog>
-
-            <!-- Table Section -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Update</h2>
-
-                <!-- Option Selector -->
-                <div class="flex space-x-4 mb-2">
-                    <button 
-                        hx-get="accounting/update-rates-form"
-                        hx-target="#ratesDialogContent"
-                        hx-swap="innerHTML"
-                        onclick="
+                                       disabled:opacity-70 disabled:cursor-not-allowed"
+							>
+								<span class="inline-flex items-center">
+									<span>Submit</span>
+									<svg
+										id="spinner"
+										class="htmx-indicator ml-2 h-5 w-5 animate-spin"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+									>
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<path
+											class="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+										></path>
+									</svg>
+								</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</dialog>
+			<!-- Table Section -->
+			<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+				<h2 class="text-2xl font-semibold text-gray-800 mb-4">Update</h2>
+				<!-- Option Selector -->
+				<div class="flex space-x-4 mb-2">
+					<button
+						hx-get="accounting/update-rates-form"
+						hx-target="#ratesDialogContent"
+						hx-swap="innerHTML"
+						onclick="
                             document.getElementById('dialogTitle').textContent = 'Update Rates';
                             showDialog('updateRatesDialog', 'Update Rates');
                         "
-                        class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                hover:bg-green-200 focus:outline-none focus:ring-2 
-                               focus:ring-green-500 transition-all active:ring-2">
-                        Rates
-                    </button>
-                    <button 
-                        hx-get="accounting/update-erc-form"
-                        hx-target="#ercDialogContent"
-                        hx-swap="innerHTML"
-                        onclick="
+                               focus:ring-green-500 transition-all active:ring-2"
+					>
+						Rates
+					</button>
+					<button
+						hx-get="accounting/update-erc-form"
+						hx-target="#ercDialogContent"
+						hx-swap="innerHTML"
+						onclick="
                             document.getElementById('dialogTitle').textContent = 'Update ERC';
                             showDialog('updateERCDialog', 'Update ERC')
                         "
-                        class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                hover:bg-green-200 focus:outline-none focus:ring-2 
-                               focus:ring-green-500 transition-all active:ring-2">
-                        ERC
-                    </button>
-                </div>
-                <script>
+                               focus:ring-green-500 transition-all active:ring-2"
+					>
+						ERC
+					</button>
+				</div>
+				<script>
                     function showDialog(dialogId, title) {
                         const dialog = document.getElementById(dialogId);
                         dialog.querySelector('#dialogTitle').textContent = title;
                         dialog.showModal();
                     }
                 </script>
-            </div>
-
-            <!-- Table Section -->
-            <div class="bg-white rounded-lg shadow-md mb-8 font-serif p-4 sm:p-5 md:p-12 lg:p-15 xl:p-18">
-                <div class="col-span-2 text-center text-2xl font-extrabold mb-4 textg-black">Electric Utility Rates</div>
-
-                <div class="border-2 border-solid border-black shadow-sm">
-                    <!-- Table content will be loaded here -->
-                    @SystemAdminEmployeeAccountingTable(
-                        accountingRatesTableFormType,
-                        accountingRatesTable)
-                </div>
-            </div>
-        </div>
-    }
+			</div>
+			<!-- Table Section -->
+			<div class="bg-white rounded-lg shadow-md mb-8 font-serif p-4 sm:p-5 md:p-12 lg:p-15 xl:p-18">
+				<div class="col-span-2 text-center text-2xl font-extrabold mb-4 textg-black">Electric Utility Rates</div>
+				<div class="border-2 border-solid border-black shadow-sm">
+					<!-- Table content will be loaded here -->
+					@SystemAdminEmployeeAccountingTable(
+						accountingRatesTableFormType,
+						accountingRatesTable)
+				</div>
+			</div>
+		</div>
+	}
 }
 
 var AccountingRatesTableFormType = struct {
-    Display  string
-    FormRates string
-    FormERC   string
+	Display   string
+	FormRates string
+	FormERC   string
 }{
-    Display:   "display",
-    FormRates: "form-rates",
-    FormERC:   "form-erc",
+	Display:   "display",
+	FormRates: "form-rates",
+	FormERC:   "form-erc",
 }
 
 type AccountingRatesTable struct {
-    Date                          string `json:"date,omitempty"`
-    Particulars                   string `json:"particulars"`
-    // Unit                          string `json:"unit"`
-    Rates                         string `json:"rates,,omitempty"`
-    ERC                           string `json:"erc,,omitempty"`
-    AccountingRatesTableRowGroup []AccountingRatesTableRowGroup `json:"row-group"`
+	Date        string `json:"date,omitempty"`
+	Particulars string `json:"particulars"`
+	// Unit                          string `json:"unit"`
+	Rates                        string                         `json:"rates,,omitempty"`
+	ERC                          string                         `json:"erc,,omitempty"`
+	AccountingRatesTableRowGroup []AccountingRatesTableRowGroup `json:"row-group"`
 }
 
 type AccountingRatesTableRowGroup struct {
-    Particulars string `json:"particulars"`
-    Unit        string `json:"unit,omitempty"`
-    Rates       string `json:"rates,omitempty"`
-    ERC         string `json:"erc,omitempty"`
-    SubRowGroup []SubRowGroup `json:"sub-row-group"`
+	Particulars string        `json:"particulars"`
+	Unit        string        `json:"unit,omitempty"`
+	Rates       string        `json:"rates,omitempty"`
+	ERC         string        `json:"erc,omitempty"`
+	SubRowGroup []SubRowGroup `json:"sub-row-group"`
 }
 
 type SubRowGroup struct {
-    Particulars string `json:"particulars"`
-    Unit        string `json:"unit"`
-    Rates       string `json:"rates,omitempty"`
-    ERC         string `json:"erc,omitempty"`
+	Particulars string `json:"particulars"`
+	Unit        string `json:"unit"`
+	Rates       string `json:"rates,omitempty"`
+	ERC         string `json:"erc,omitempty"`
 }
 
 func (art *AccountingRatesTable) UnmarshalJSON(data []byte) error {
@@ -1737,247 +1799,233 @@ func (art *AccountingRatesTable) UnmarshalJSON(data []byte) error {
 }
 
 templ SystemAdminEmployeeAccountingTable(
-    accountingRatesTableFormType string,
-    accountingRatesTable AccountingRatesTable) {
-    // Determine grid configuration based on form type
-    {{ gridClass := "grid grid-cols-4" }}  // Default for forms
-    if accountingRatesTableFormType == AccountingRatesTableFormType.Display {
-        {{ gridClass = "grid grid-cols-5" }} // For Display
-    }
-
-    // Date input for rates form
-    if accountingRatesTableFormType == AccountingRatesTableFormType.FormRates {
-        <div class="flex justify-end gap-4 m-4">
-            <div class="w-full max-w-[8rem]">
-                <label for="billing-date" class="mb-1 block text-sm font-medium text-gray-700">
-                    Billing Date
-                </label>
-                <!-- Date input -->
-                <input 
-                    type="date" 
-                    id="billing-date" 
-                    name="date"
-                    class="w-full rounded-md border border-gray-300 px-3 py-0.5 text-sm shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
-                    required
-                    value={ accountingRatesTable.Date }
-                >
-            </div>
-        </div>
-    }
-
-    <!-- Table Structure -->
-    <div class="space-y-4">
-        <!-- Header Separator -->
-        <div class="w-full h-0.5 bg-gray-400"></div>
-
-        <!-- Table Header -->
-        <div class={ gridClass + " text-center font-bold " }>
-            <div class="col-span-2">PARTICULARS</div>
-            <div class="">UNIT</div>
-            switch accountingRatesTableFormType {
-                case AccountingRatesTableFormType.Display:
-                    <div class="">RATES</div>
-                    <div class="">ERC</div>
-                case AccountingRatesTableFormType.FormRates:
-                    <div class="">RATES</div>
-                case AccountingRatesTableFormType.FormERC:
-                    <div class="">ERC</div>
-            }
-        </div>
-
-        <!-- Content Separator -->
-        <div class="w-full h-0.5 bg-gray-400"></div>
-
-        <!-- Main Content -->
-        <div class="p-2 pb-2 xl:p-4 space-y-4">
-            <!-- Header Row with data attributes -->
-            <div class={ gridClass + " items-center py-1 font-medium" } data-header-row>
-                <div class="col-span-3 text-left pl-2" data-header-particulars>
-                    <input 
-                        type="text" 
-                        readonly 
-                        name="particulars"
-                        value={accountingRatesTable.Particulars}
-                        class="bg-transparent border-none focus:ring-0 focus:border-none text-left"
-                    >
-                </div>
-
-                switch accountingRatesTableFormType {
-                    case AccountingRatesTableFormType.Display:
-                        <div class="text-center">{ accountingRatesTable.Rates }</div>
-                        <div class="text-center">{ accountingRatesTable.ERC }</div>
-                    case AccountingRatesTableFormType.FormRates:
-                        <div class="text-center font-medium justify-center">
-                            <input 
-                                type="text" 
-                                readonly 
-                                name="rates"
-                                value={accountingRatesTable.Rates}
-                                class="header-parent-rate-value bg-transparent border-none focus:ring-0 focus:border-none text-center"
-                            >
-                        </div>
-                    case AccountingRatesTableFormType.FormERC:
-                        <div class="text-center font-medium justify-center">
-                            <input 
-                                type="text" 
-                                readonly 
-                                name="erc"
-                                value={accountingRatesTable.ERC}
-                                class="header-parent-rate-value bg-transparent border-none focus:ring-0 focus:border-none text-center"
-                            >
-                        </div>
-                }
-            </div>
-
-            <!-- Dynamic Rows -->
-            for index, item := range accountingRatesTable.AccountingRatesTableRowGroup {
-                <div class="space-y-2 group" data-group={ item.Particulars }>
-
-                    <!-- Parent Row -->
-                    <div class={ gridClass + " items-center py-1 font-medium" }>
-                        switch accountingRatesTableFormType {
-                            case AccountingRatesTableFormType.Display:
-                                <div class="col-span-3 text-left pl-4">{ item.Particulars }</div>
-                                // <div class="text-center">{ item.Unit }</div>
-                                <div class="text-center">{ item.Rates }</div>
-                                <div class="text-center">{ item.ERC }</div>
-
-                            case AccountingRatesTableFormType.FormRates:
-                                <div class="col-span-3 text-left pl-4">
-                                    <input 
-                                        type="text" 
-                                        readonly 
-                                        name={ fmt.Sprintf("row-group[%d].particulars", index) }
-                                        value={item.Particulars}
-                                        class="bg-transparent border-none focus:ring-0"
-                                    >
-                                </div>
-                                // <div class="text-center">
-                                //     <input
-                                //         type="text"
-                                //         readonly
-                                //         name={ fmt.Sprintf("row-group[%d].unit", index) }
-                                //         value={item.Unit}
-                                //         class="bg-transparent border-none focus:ring-0"
-                                //     >
-                                // </div>
-                                <div class="text-center">
-                                    <input
-                                        type="text"
-                                        readonly
-                                        name={ fmt.Sprintf("row-group[%d].rates", index) }
-                                        value={item.Rates}
-                                        class="parent-rate-value bg-transparent border-none focus:ring-0 text-center"
-                                    >
-                                </div>
-
-                            case AccountingRatesTableFormType.FormERC:
-                                 <div class="col-span-2 text-left pl-4">
-                                    <input 
-                                        type="text" 
-                                        readonly 
-                                        name={ fmt.Sprintf("row-group[%d].particulars", index) }
-                                        value={item.Particulars}
-                                        class="bg-transparent border-none focus:ring-0"
-                                    >
-                                </div>
-                                <div class="text-center">
-                                    <input
-                                        type="text"
-                                        readonly
-                                        name={ fmt.Sprintf("row-group[%d].unit", index) }
-                                        value={item.Unit}
-                                        class="bg-transparent border-none focus:ring-0"
-                                    >
-                                </div>
-                                <div class="text-center">
-                                    <input
-                                        type="text"
-                                        readonly
-                                        name={ fmt.Sprintf("row-group[%d].erc", index) }
-                                        value={item.ERC}
-                                        class="parent-rate-value bg-transparent border-none focus:ring-0 text-center"
-                                    >
-                                </div>
-                        }
-                    </div>
-
-                    <!-- Sub Items -->
-                    for subIndex, subitem := range item.SubRowGroup {
-                        <div class={ gridClass + " items-center py-1  text-slate-600" }>
-
-                            switch accountingRatesTableFormType {
-                                case AccountingRatesTableFormType.Display:
-                                    <div class="col-span-2 text-left pl-8">{ subitem.Particulars }</div>
-                                    <div class="text-center">{ subitem.Unit }</div>
-                                    <div class="text-center">{ subitem.Rates }</div>
-                                    <div class="text-center">{ subitem.ERC }</div>
-                                case AccountingRatesTableFormType.FormRates:
-                                    <div class="col-span-2 text-left pl-8">
-                                        <input
-                                            type="hidden"
-                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].particulars", index, subIndex)}
-                                            value={subitem.Particulars}
-                                        >
-                                        { subitem.Particulars }
-                                    </div>
-                                    <div class="text-center">
-                                        <input
-                                            type="hidden"
-                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].unit", index, subIndex)}
-                                            value={subitem.Unit}
-                                        >
-                                        { subitem.Unit }
-                                    </div>
-                                    <div class="text-center">
-                                        <input 
-                                            type="number"
-                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].rates", index, subIndex)}
-                                            class="subitem-input w-32 px-2 py-1 border rounded-lg text-center"
-                                            step="0.0001"
-                                            value={subitem.Rates}
-                                            required
-                                        >
-                                    </div>
-
-                                case AccountingRatesTableFormType.FormERC:
-                                    <div class="col-span-2 text-left pl-8">
-                                        <input
-                                            type="hidden"
-                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].particulars", index, subIndex)}
-                                            value={subitem.Particulars}
-                                        >
-                                        { subitem.Particulars }
-                                    </div>
-                                    <div class="text-center">
-                                        <input
-                                            type="hidden"
-                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].unit", index, subIndex)}
-                                            value={subitem.Unit}
-                                        >
-                                        { subitem.Unit }
-                                    </div>
-                                    <div class="text-center">
-                                        <input 
-                                            type="number"
-                                            name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].rates", index, subIndex)}
-                                            class="subitem-input w-32 px-2 py-1 border rounded-lg text-center"
-                                            step="0.0001"
-                                            value={subitem.ERC}
-                                            required
-                                        >
-                                    </div>
-                            }
-                        </div>
-                    }
-                </div>
-            }
-        </div>
-    </div>
-
-    <!-- Rate Calculator for Forms -->
-    if accountingRatesTableFormType == AccountingRatesTableFormType.FormRates || accountingRatesTableFormType == AccountingRatesTableFormType.FormERC {
-        <script>
+	accountingRatesTableFormType string,
+	accountingRatesTable AccountingRatesTable) {
+	// Determine grid configuration based on form type
+	{{ gridClass := "grid grid-cols-4" }} // Default for forms
+	if accountingRatesTableFormType == AccountingRatesTableFormType.Display {
+		{{ gridClass = "grid grid-cols-5" }} // For Display
+	}
+	// Date input for rates form
+	if accountingRatesTableFormType == AccountingRatesTableFormType.FormRates {
+		<div class="flex justify-end gap-4 m-4">
+			<div class="w-full max-w-[8rem]">
+				<label for="billing-date" class="mb-1 block text-sm font-medium text-gray-700">
+					Billing Date
+				</label>
+				<!-- Date input -->
+				<input
+					type="date"
+					id="billing-date"
+					name="date"
+					class="w-full rounded-md border border-gray-300 px-3 py-0.5 text-sm shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+					required
+					value={ accountingRatesTable.Date }
+				/>
+			</div>
+		</div>
+	}
+	<!-- Table Structure -->
+	<div class="space-y-4">
+		<!-- Header Separator -->
+		<div class="w-full h-0.5 bg-gray-400"></div>
+		<!-- Table Header -->
+		<div class={ gridClass + " text-center font-bold " }>
+			<div class="col-span-2">PARTICULARS</div>
+			<div class="">UNIT</div>
+			switch accountingRatesTableFormType {
+				case AccountingRatesTableFormType.Display:
+					<div class="">RATES</div>
+					<div class="">ERC</div>
+				case AccountingRatesTableFormType.FormRates:
+					<div class="">RATES</div>
+				case AccountingRatesTableFormType.FormERC:
+					<div class="">ERC</div>
+			}
+		</div>
+		<!-- Content Separator -->
+		<div class="w-full h-0.5 bg-gray-400"></div>
+		<!-- Main Content -->
+		<div class="p-2 pb-2 xl:p-4 space-y-4">
+			<!-- Header Row with data attributes -->
+			<div class={ gridClass + " items-center py-1 font-medium" } data-header-row>
+				<div class="col-span-3 text-left pl-2" data-header-particulars>
+					<input
+						type="text"
+						readonly
+						name="particulars"
+						value={ accountingRatesTable.Particulars }
+						class="bg-transparent border-none focus:ring-0 focus:border-none text-left"
+					/>
+				</div>
+				switch accountingRatesTableFormType {
+					case AccountingRatesTableFormType.Display:
+						<div class="text-center">{ accountingRatesTable.Rates }</div>
+						<div class="text-center">{ accountingRatesTable.ERC }</div>
+					case AccountingRatesTableFormType.FormRates:
+						<div class="text-center font-medium justify-center">
+							<input
+								type="text"
+								readonly
+								name="rates"
+								value={ accountingRatesTable.Rates }
+								class="header-parent-rate-value bg-transparent border-none focus:ring-0 focus:border-none text-center"
+							/>
+						</div>
+					case AccountingRatesTableFormType.FormERC:
+						<div class="text-center font-medium justify-center">
+							<input
+								type="text"
+								readonly
+								name="erc"
+								value={ accountingRatesTable.ERC }
+								class="header-parent-rate-value bg-transparent border-none focus:ring-0 focus:border-none text-center"
+							/>
+						</div>
+				}
+			</div>
+			<!-- Dynamic Rows -->
+			for index, item := range accountingRatesTable.AccountingRatesTableRowGroup {
+				<div class="space-y-2 group" data-group={ item.Particulars }>
+					<!-- Parent Row -->
+					<div class={ gridClass + " items-center py-1 font-medium" }>
+						switch accountingRatesTableFormType {
+							case AccountingRatesTableFormType.Display:
+								<div class="col-span-3 text-left pl-4">{ item.Particulars }</div>
+								// <div class="text-center">{ item.Unit }</div>
+								<div class="text-center">{ item.Rates }</div>
+								<div class="text-center">{ item.ERC }</div>
+							case AccountingRatesTableFormType.FormRates:
+								<div class="col-span-3 text-left pl-4">
+									<input
+										type="text"
+										readonly
+										name={ fmt.Sprintf("row-group[%d].particulars", index) }
+										value={ item.Particulars }
+										class="bg-transparent border-none focus:ring-0"
+									/>
+								</div>
+								// <div class="text-center">
+								//     <input
+								//         type="text"
+								//         readonly
+								//         name={ fmt.Sprintf("row-group[%d].unit", index) }
+								//         value={item.Unit}
+								//         class="bg-transparent border-none focus:ring-0"
+								//     >
+								// </div>
+								<div class="text-center">
+									<input
+										type="text"
+										readonly
+										name={ fmt.Sprintf("row-group[%d].rates", index) }
+										value={ item.Rates }
+										class="parent-rate-value bg-transparent border-none focus:ring-0 text-center"
+									/>
+								</div>
+							case AccountingRatesTableFormType.FormERC:
+								<div class="col-span-2 text-left pl-4">
+									<input
+										type="text"
+										readonly
+										name={ fmt.Sprintf("row-group[%d].particulars", index) }
+										value={ item.Particulars }
+										class="bg-transparent border-none focus:ring-0"
+									/>
+								</div>
+								<div class="text-center">
+									<input
+										type="text"
+										readonly
+										name={ fmt.Sprintf("row-group[%d].unit", index) }
+										value={ item.Unit }
+										class="bg-transparent border-none focus:ring-0"
+									/>
+								</div>
+								<div class="text-center">
+									<input
+										type="text"
+										readonly
+										name={ fmt.Sprintf("row-group[%d].erc", index) }
+										value={ item.ERC }
+										class="parent-rate-value bg-transparent border-none focus:ring-0 text-center"
+									/>
+								</div>
+						}
+					</div>
+					<!-- Sub Items -->
+					for subIndex, subitem := range item.SubRowGroup {
+						<div class={ gridClass + " items-center py-1  text-slate-600" }>
+							switch accountingRatesTableFormType {
+								case AccountingRatesTableFormType.Display:
+									<div class="col-span-2 text-left pl-8">{ subitem.Particulars }</div>
+									<div class="text-center">{ subitem.Unit }</div>
+									<div class="text-center">{ subitem.Rates }</div>
+									<div class="text-center">{ subitem.ERC }</div>
+								case AccountingRatesTableFormType.FormRates:
+									<div class="col-span-2 text-left pl-8">
+										<input
+											type="hidden"
+											name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].particulars", index, subIndex) }
+											value={ subitem.Particulars }
+										/>
+										{ subitem.Particulars }
+									</div>
+									<div class="text-center">
+										<input
+											type="hidden"
+											name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].unit", index, subIndex) }
+											value={ subitem.Unit }
+										/>
+										{ subitem.Unit }
+									</div>
+									<div class="text-center">
+										<input
+											type="number"
+											name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].rates", index, subIndex) }
+											class="subitem-input w-32 px-2 py-1 border rounded-lg text-center"
+											step="0.0001"
+											value={ subitem.Rates }
+											required
+										/>
+									</div>
+								case AccountingRatesTableFormType.FormERC:
+									<div class="col-span-2 text-left pl-8">
+										<input
+											type="hidden"
+											name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].particulars", index, subIndex) }
+											value={ subitem.Particulars }
+										/>
+										{ subitem.Particulars }
+									</div>
+									<div class="text-center">
+										<input
+											type="hidden"
+											name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].unit", index, subIndex) }
+											value={ subitem.Unit }
+										/>
+										{ subitem.Unit }
+									</div>
+									<div class="text-center">
+										<input
+											type="number"
+											name={ fmt.Sprintf("row-group[%d].sub-row-group[%d].rates", index, subIndex) }
+											class="subitem-input w-32 px-2 py-1 border rounded-lg text-center"
+											step="0.0001"
+											value={ subitem.ERC }
+											required
+										/>
+									</div>
+							}
+						</div>
+					}
+				</div>
+			}
+		</div>
+	</div>
+	<!-- Rate Calculator for Forms -->
+	if accountingRatesTableFormType == AccountingRatesTableFormType.FormRates || accountingRatesTableFormType == AccountingRatesTableFormType.FormERC {
+		<script>
             // Single event delegation for all input events
             document.addEventListener('input', function(e) {
                 if (!e.target.matches('.subitem-input')) return;
@@ -2009,8 +2057,7 @@ templ SystemAdminEmployeeAccountingTable(
                 input.dispatchEvent(new Event('input', { bubbles: true }));
             });
         </script>
-
-        <script>
+		<script>
             document.addEventListener('submit', function(e) {
                 if (!e.target.matches('#ratesForm')) return;
                 e.preventDefault();
@@ -2054,10 +2101,63 @@ templ SystemAdminEmployeeAccountingTable(
                 });
             });
         </script>
-    }
+	}
 }
 
 //<-------------------------------------------------->//
+templ SystemAdminEmployeePaymentWebPage() {
+	@SystemAdminEmployeeBaseWebPage() {
+		<div class="container mx-auto p-4 max-w-md">
+			<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" hx-post="/payment" hx-trigger="submit">
+				<!-- Account Number Input -->
+				<div class="mb-4">
+					<label class="block text-gray-700 text-sm font-bold mb-2" for="accountNumber">
+						Account Number
+					</label>
+					<input
+						type="number"
+						id="accountNumber"
+						class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+						placeholder="Enter account number"
+						required
+					/>
+				</div>
+				<!-- Amount Input -->
+				<div class="mb-6">
+					<label class="block text-gray-700 text-sm font-bold mb-2" for="amount">
+						Amount
+					</label>
+					<input
+						type="number"
+						id="amount"
+						class="block w-full px-4 py-3 border border-gray-300 
+                            rounded-lg focus:ring-green-500 focus:border-green-500 
+                            placeholder-gray-400 placeholder:text-sm
+                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+						placeholder="0.00"
+						required
+					/>
+				</div>
+				<!-- Submit Button -->
+				<div class="flex items-center justify-between">
+					<button
+						type="submit"
+						class="w-full px-6 py-3 rounded-xl bg-green-600 text-white 
+                                       hover:bg-green-700 focus:outline-none focus:ring-4 
+                                       focus:ring-green-500/50 transition-all duration-150
+                                       shadow-lg hover:shadow-xl active:scale-[0.98]
+                                       disabled:opacity-70 disabled:cursor-not-allowed"
+					>
+						Process Payment
+					</button>
+				</div>
+			</form>
+		</div>
+	}
+}
 
 /********************************************************************/
 /********************************************************************/

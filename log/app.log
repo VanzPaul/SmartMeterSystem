@@ -3759,3 +3759,63 @@
 {"level":"info","ts":1746869346.7600448,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
 {"level":"info","ts":1746869610.9635105,"msg":"shutting down gracefully, press Ctrl+C again to force"}
 {"level":"info","ts":1746869610.9640214,"msg":"Server exiting"}
+{"level":"info","ts":1746870179.9889462,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746870196.1582525,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746870728.7635264,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1746870728.7640698,"msg":"Server exiting"}
+{"level":"info","ts":1746870741.320067,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746870770.0399687,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746870773.389096,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746870774.7650938,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}
+{"level":"info","ts":1746870777.0738544,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746870779.980511,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746871176.0068803,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746871184.7858076,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1746871213.528407,"msg":"v1\t/home\tGET"}
+{"level":"info","ts":1746871215.9766302,"msg":"v1\t/employee/login?user_type=employee\tGET"}
+{"level":"info","ts":1746871224.6877663,"msg":"v1\t/employee/login\tPOST"}
+{"level":"info","ts":1746871224.7784176,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746871225.710023,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}
+{"level":"info","ts":1746871231.7580647,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746871235.0889359,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746871251.952715,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1746880882.65367,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746880902.4517012,"msg":"v1\t/employee/sysadmin/accounts\tGET"}
+{"level":"info","ts":1746880904.6592963,"msg":"v1\t/employee/sysadmin/accounting\tGET"}
+{"level":"info","ts":1746880906.1237764,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746880906.8336313,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}
+{"level":"info","ts":1746882129.7671497,"msg":"v1\t/employee/sysadmin/consumer\tGET"}
+{"level":"info","ts":1746882135.7801566,"msg":"v1\t/employee/sysadmin/consumer/consumer-info\tGET"}
+{"level":"info","ts":1746883765.487291,"msg":"shutting down gracefully, press Ctrl+C again to force"}
+{"level":"info","ts":1746883765.487988,"msg":"Server exiting"}
+{"level":"info","ts":1746888738.9574828,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746888758.658115,"msg":"v1\t/employee/sysadmin/payment\tGET"}
+{"level":"info","ts":1746888975.314445,"msg":"v1\t/employee/sysadmin/payment\tGET"}
+{"level":"info","ts":1746890700.0179071,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746890725.5465932,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746890758.1285396,"msg":"v1\t/employee/sysadmin/payment\tGET"}
+{"level":"info","ts":1746891177.260271,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746891278.1467638,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746891290.9887447,"msg":"v1\t/employee/sysadmin/payment\tGET"}
+{"level":"info","ts":1746947469.9032521,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746954021.8957572,"msg":"v1\t/employee/sysadmin/payment\tGET"}
+{"level":"info","ts":1746954141.5756767,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1746956635.7042449,"msg":"v1\t/employee/sysadmin/payment\tGET"}
+{"level":"info","ts":1746956740.5153463,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1746956741.0113566,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}
+{"level":"info","ts":1747267072.3269606,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747267073.1969306,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}
+{"level":"info","ts":1747267138.791029,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1747268036.9776018,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1747268051.1244678,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747268068.8907642,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747268153.5910814,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1747268161.68482,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747268264.130626,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1747268267.3791063,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747268564.2015111,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1747268572.5244849,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747268573.7922578,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}
+{"level":"info","ts":1747271284.5075145,"msg":"Server is running at http://127.0.1.1:8080\n"}
+{"level":"info","ts":1747271290.4214802,"msg":"v1\t/employee/sysadmin/dashboard\tGET"}
+{"level":"info","ts":1747271291.4528048,"msg":"v1\t/employee/sysadmin/dashboard/meter-list\tGET"}

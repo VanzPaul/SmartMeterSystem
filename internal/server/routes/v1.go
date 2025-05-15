@@ -114,6 +114,10 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 			accounting http.HandlerFunc
 			rates      http.HandlerFunc
 		}
+		payment struct {
+			payment     http.HandlerFunc
+			information http.HandlerFunc
+		}
 		logout http.HandlerFunc
 	}{
 		dashboard: struct {
@@ -788,6 +792,34 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				}
 			},
 		},
+		payment: struct {
+			payment     http.HandlerFunc
+			information http.HandlerFunc
+		}{
+			payment: func(w http.ResponseWriter, r *http.Request) {
+				switch r.Method {
+				case "GET":
+					web.SystemAdminEmployeePaymentWebPage().Render(r.Context(), w)
+				default:
+					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+				}
+			},
+			information: func(w http.ResponseWriter, r *http.Request) {
+				// Extract the part after "/sysadmin/consumer/"
+				pathPart := strings.TrimPrefix(r.URL.Path, "/sysadmin/payment/")
+				// Split to handle nested paths, take the first segment
+				formType := strings.SplitN(pathPart, "/", 2)[0]
+
+				switch r.Method {
+				case "GET":
+					switch formType {
+					// routes
+					default:
+						http.Error(w, "Not Found", http.StatusNotFound)
+					}
+				}
+			},
+		},
 	}
 	// System Admin Logout Route
 	mux.HandleFunc("/sysadmin/logout", func(w http.ResponseWriter, r *http.Request) {
@@ -805,6 +837,9 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	// System Admin Account Routes
 	mux.HandleFunc("/sysadmin/accounts", sysadminRouteStruct.accounts.accounts)
 	mux.HandleFunc("/sysadmin/accounts/", sysadminRouteStruct.accounts.forms)
+	// System Admin Payment Routes
+	mux.HandleFunc("/sysadmin/payment", sysadminRouteStruct.payment.payment)
+	mux.HandleFunc("/sysadmin/payment/", sysadminRouteStruct.payment.information)
 	// System Admin Accounting Routes
 	mux.HandleFunc("/sysadmin/accounting", sysadminRouteStruct.accounting.accounting)
 	mux.HandleFunc("/sysadmin/accounting/", sysadminRouteStruct.accounting.rates)
