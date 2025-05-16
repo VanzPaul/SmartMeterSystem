@@ -150,6 +150,14 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 								Latitude:  13.838432,
 								Longitude: 120.632360,
 								Status:    "active",
+								Alert: []web.Alert{
+									{
+										ID:        "000000000",
+										Type:      web.AlertTypePowerOutage,
+										Timestamp: "1747312676",
+										Status:    web.AlertStatusActive,
+									},
+								},
 							},
 							{
 								ID:        "SM002",
@@ -166,6 +174,14 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 								Latitude:  13.838002,
 								Longitude: 120.632220,
 								Status:    "inactive",
+								Alert: []web.Alert{
+									{
+										ID:        "000000001",
+										Type:      web.AlertTypePowerOutage,
+										Timestamp: "1747312676",
+										Status:    web.AlertStatusActive,
+									},
+								},
 							},
 							{
 								ID:        "SM002",
