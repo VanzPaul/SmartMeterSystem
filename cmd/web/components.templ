@@ -591,7 +591,6 @@ templ SystemAdminEmployeeDashboardWebPage() {
 	}
 }
 
-
 //<-------------------------------------------------->//
 
 //<---------------- Accounts Section ---------------->//
@@ -655,7 +654,7 @@ templ SystemAdminEmployeeAccountsWebPage() {
 
 templ NewMeterAccountForm() {
 	<form
-		hx-post="/admin/accounts/meter"
+		hx-post="/v1/employee/sysadmin/accounts/submit-meter-form"
 		hx-target="#form-response"
 		hx-swap="innerHTML"
 		class="space-y-6"
@@ -665,20 +664,21 @@ templ NewMeterAccountForm() {
 		// Serial Number Group
 		<div class="grid grid-cols-6 gap-10 mb-8">
 			<!-- SNID (Row 1, Column 1) -->
-			<div class="col-span-2">
-				<label for="consumer-snid" class="block text-sm font-medium text-gray-700 mb-2">
-					SNID
-				</label>
-				<input
-					type="number"
-					id="consumer-snid"
-					class="block w-full px-4 py-3 border border-gray-300 
-                            rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-					placeholder="SNID"
-				/>
-			</div>
+			// REMINDER: To implement snid
+			// <div class="col-span-2">
+			// 	<label for="consumer-snid" class="block text-sm font-medium text-gray-700 mb-2">
+			// 		SNID
+			// 	</label>
+			// 	<input
+			// 		type="number"
+			// 		id="consumer-snid"
+			// 		class="block w-full px-4 py-3 border border-gray-300 
+			//                 rounded-lg focus:ring-green-500 focus:border-green-500 
+			//                 placeholder-gray-400 placeholder:text-sm
+			//                 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+			// 		placeholder="SNID"
+			// 	/>
+			// </div>
 			<!-- SN (Row 1, Column 2-3) -->
 			<div class="col-span-2">
 				<label for="meter-sn" class="block text-sm font-medium text-gray-700 mb-2">
@@ -687,6 +687,7 @@ templ NewMeterAccountForm() {
 				<input
 					type="text"
 					id="meter-sn"
+					name="meter-sn"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400"
@@ -705,6 +706,7 @@ templ NewMeterAccountForm() {
 				<input
 					type="date"
 					id="meter-installation-date"
+					name="meter-installation-date"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400"
@@ -717,6 +719,7 @@ templ NewMeterAccountForm() {
 				<input
 					type="number"
 					id="consumer-transformer-id"
+					name="consumer-transformer-id"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
@@ -736,6 +739,7 @@ templ NewMeterAccountForm() {
 					<input
 						type="number"
 						id="meter-latitude"
+						name="meter-latitude"
 						class="block w-full px-4 py-3 border border-gray-300 
                                 rounded-lg focus:ring-green-500 focus:border-green-500 
                                 placeholder-gray-400 placeholder:text-sm
@@ -745,6 +749,7 @@ templ NewMeterAccountForm() {
 					<input
 						type="number"
 						id="meter-longitude"
+						name="meter-longitude"
 						class="block w-full px-4 py-3 border border-gray-300 
                                 rounded-lg focus:ring-green-500 focus:border-green-500 
                                 placeholder-gray-400 placeholder:text-sm
@@ -780,6 +785,16 @@ templ NewConsumerAccountForm() {
 	>
 		// Horizontal line        
 		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		// Consumer Name group
+		<div class="mb-8 grid grid-cols-4 gap-4">
+			<!-- Account Number (Row 1, Column 1) -->
+			<div>
+				<label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700">First Name </label>
+				<input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Account Number (Optional)"/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
 		// Consumer Name group
 		<div class="mb-8 grid grid-cols-4 gap-4">
 			<!-- First Name (Row 1, Column 1) -->

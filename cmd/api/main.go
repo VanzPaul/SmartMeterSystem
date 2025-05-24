@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -41,6 +42,11 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 
 	// Notify the main goroutine that the shutdown is complete
 	done <- true
+}
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetOutput(os.Stdout)
 }
 
 func main() {

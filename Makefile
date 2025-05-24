@@ -16,20 +16,18 @@ all: build test
 
 templ-install:
 ifeq ($(DETECTED_OS),Windows)
-	@where templ >nul 2>&1 || ( \
-		echo Go's 'templ' is not installed on your machine. & \
-		set /p choice="Do you want to install it? [Y/n] " & \
-		if /i "!choice!" neq "n" ( \
-			go install github.com/a-h/templ/cmd/templ@latest & \
-			where templ >nul 2>&1 || ( \
-				echo templ installation failed. Exiting... & \
-				exit 1 \
-			) \
-		) else ( \
-			echo You chose not to install templ. Exiting... & \
-			exit 1 \
-		) \
-	)
+	@powershell -ExecutionPolicy Bypass -Command "if (Get-Command templ -ErrorAction SilentlyContinue) { \
+		; \
+	} else { \
+		Write-Output 'Installing templ...'; \
+		go install github.com/a-h/templ/cmd/templ@latest; \
+		if (-not (Get-Command templ -ErrorAction SilentlyContinue)) { \
+			Write-Output 'templ installation failed. Exiting...'; \
+			exit 1; \
+		} else { \
+			Write-Output 'templ installed successfully.'; \
+		} \
+	}"
 else
 	@if ! command -v templ > /dev/null; then \
 		read -p "Go's 'templ' is not installed. Install? [Y/n] " choice; \
@@ -44,10 +42,7 @@ endif
 
 tailwind-install:
 ifeq ($(DETECTED_OS),Windows)
-	@if not exist "$(TAILWIND_BIN)" ( \
-		curl -sL "$(TAILWIND_URL)" -o "$(TAILWIND_BIN)" \
-	)
-	@attrib +x "$(TAILWIND_BIN)" >nul 2>&1
+	@if not exist tailwindcss.exe powershell -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-windows-x64.exe' -OutFile 'tailwindcss.exe'"
 else
 	@if [ ! -f "$(TAILWIND_BIN)" ]; then curl -sL "$(TAILWIND_URL)" -o "$(TAILWIND_BIN)"; fi
 	@chmod +x "$(TAILWIND_BIN)"
@@ -57,7 +52,7 @@ build: tailwind-install templ-install
 	@echo "Building..."
 	@templ generate
 ifeq ($(DETECTED_OS),Windows)
-	@$(TAILWIND_BIN) -i cmd/web/styles/input.css -o cmd/web/assets/css/output.css
+	@.\tailwindcss.exe -i cmd/web/styles/input.css -o cmd/web/assets/css/output.css
 else
 	@./$(TAILWIND_BIN) -i cmd/web/styles/input.css -o cmd/web/assets/css/output.css
 endif

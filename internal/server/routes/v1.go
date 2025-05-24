@@ -6,12 +6,17 @@ package routes
 
 import (
 	"SmartMeterSystem/cmd/web"
+	"SmartMeterSystem/internal"
+	"SmartMeterSystem/internal/database"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // V1 Route Groups
@@ -75,6 +80,11 @@ func (c *V1ConsumerRoute) HandleV1() http.Handler {
 }
 
 func (c *V1EmployeeRoute) HandleV1() http.Handler {
+	logger, loggerErr := internal.NewLogger()
+	if loggerErr != nil {
+		panic("Failed to create logger in v1.go")
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -296,6 +306,46 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 						web.NewConsumerAccountForm().Render(r.Context(), w)
 					case "employee-form":
 						web.NewEmployeeAccountForm().Render(r.Context(), w)
+					default:
+						http.NotFound(w, r)
+					}
+				case "POST":
+					switch formType {
+					case "submit-meter-form":
+						meterSN := r.FormValue("meter-sn")
+						meterInstallationDate := r.FormValue("meter-installation-date")
+						consumerTransformerId := r.FormValue("consumer-transformer-id")
+						meterLatitude := r.FormValue("meter-latitude")
+						meterLongitude := r.FormValue("meter-longitude")
+
+						svc := database.New()
+
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+
+						// Create a new document
+						insertResult, err := svc.InsertOne(ctx, "users", bson.M{
+							"meter-sn":                meterSN,
+							"meter-installation-date": meterInstallationDate, // Fixed field assignment
+							"consumer-transformer-id": consumerTransformerId, // Fixed field assignment
+							"meter-latitude":          meterLatitude,
+							"meter-longitude":         meterLongitude,
+						})
+
+						if err != nil {
+							logger.Sugar().Errorf("Insert failed: %v", err)
+							http.Error(w, "Internal server error", http.StatusInternalServerError)
+							return // ← Critical: Stop execution after error
+						}
+
+						if insertResult.InsertedID == nil {
+							logger.Sugar().Warn("InsertedID is nil")
+							http.Error(w, "No document created", http.StatusInternalServerError)
+							return
+						}
+
+						logger.Sugar().Infof("Inserted ID: %v", insertResult.InsertedID)
+						w.WriteHeader(http.StatusCreated)
 					default:
 						http.NotFound(w, r)
 					}

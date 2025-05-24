@@ -11,9 +11,11 @@ services:
       APP_ENV: ${APP_ENV}
       PORT: ${PORT}
       BLUEPRINT_DB_HOST: ${BLUEPRINT_DB_HOST}
-      BLUEPRINT_DB_PORT:  ${BLUEPRINT_DB_PORT}
+      BLUEPRINT_DB_PORT: ${BLUEPRINT_DB_PORT}
       BLUEPRINT_DB_USERNAME: ${BLUEPRINT_DB_USERNAME}
       BLUEPRINT_DB_ROOT_PASSWORD: ${BLUEPRINT_DB_ROOT_PASSWORD}
+      BLUEPRINT_DB_DATABASE: ${BLUEPRINT_DB_DATABASE}
+      DEBUG: ${DEBUG}
     depends_on:
       mongo_bp:
         condition: service_healthy
@@ -30,7 +32,7 @@ services:
     volumes:
       - mongo_volume_bp:/data/db
     healthcheck:
-      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       timeout: 5s
       retries: 3
