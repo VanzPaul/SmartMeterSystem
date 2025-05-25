@@ -44,3 +44,4 @@ volumes:
   mongo_volume_bp:
 networks:
   blueprint:
+    driver: bridge
