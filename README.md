@@ -1,12 +1,8 @@
----
-
 # Project SmartMeterSystem
 
 ...
 
 ## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Windows-Specific Setup  
 For **Windows users**, follow these steps to install dependencies via [Chocolatey](https://chocolatey.org/) :  
@@ -31,8 +27,40 @@ For **Windows users**, follow these steps to install dependencies via [Chocolate
    docker --version
    ```  
 
-4. **Set up Go environment variables** (if required) :  
-   Ensure `GOPATH` and `GOROOT` are configured in your system paths.  
+4. **Clone the repository**:  
+   Run the command 
+   ```bash
+   git clone https://github.com/VanzPaul/SmartMeterSystem
+   ```
+   and switch to `dev-ui` branch.  
+
+5. **Install VsCode Extensions**:
+   It is recommended to install the following extensions for vscode:
+   - Dcoker
+   - Go
+   - Makefile 
+   -
+
+
+6. **Build and Run the prject**:
+   In the terminal, run `make build` and `make run`. 
+   
+   To run install and run the mongo-db database while in development, run the command
+   ```bash
+   make docker-run
+   ```
+   Head to the docker extension in vscode and stop the container `smartmetersystem-app` (this is the container for the application) while leaving the `mongo:latest` (this is the container for mongodb) conatiner run.
+
+
+   **Common Issues**  
+   Error: `make: *** No rule to make target '<command>'. Stop`  
+   Solution: Explicitly specify the Makefile path:  
+   ```bash
+   make -f Makefile <command>
+   ```  
+
+7. **Using the application**:
+   In your browser, head to `localhost:8080/home` to access the web application.
 
 ---
 
@@ -85,12 +113,6 @@ make clean
 
 ---
 
-### Common Issues  
-**Error**: `make: *** No rule to make target '<command>'. Stop`  
-**Solution**: Explicitly specify the Makefile path:  
-```bash
-make -f Makefile <command>
-```  
-This ensures compatibility on systems where the default `make` configuration might not recognize the target .  
+## Docs
 
----
+cmd
