@@ -605,13 +605,13 @@ templ SystemAdminEmployeeAccountsWebPage() {
 				</div>
 			</div>
 			<!-- Create Account Section -->
-			<div class="bg-white rounded-lg shadow-md p-6">
+			<div class="bg-white rounded-lg shadow-md p-6 mb-8">
 				<h2 class="text-2xl font-semibold text-gray-800 mb-6">Create Account</h2>
 				<!-- Account Type Selector -->
 				<div class="flex space-x-4 mb-8">
 					<button
-						hx-get="accounts/meter-form"
-						hx-target="#account-form-container"
+						hx-get="accounts/create/meter-form"
+						hx-target="#create-account-form-container"
 						hx-swap="innerHTML"
 						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                    hover:bg-green-200 focus:outline-none focus:ring-2 
@@ -620,8 +620,8 @@ templ SystemAdminEmployeeAccountsWebPage() {
 						Meter
 					</button>
 					<button
-						hx-get="accounts/consumer-form"
-						hx-target="#account-form-container"
+						hx-get="accounts/create/consumer-form"
+						hx-target="#create-account-form-container"
 						hx-swap="innerHTML"
 						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                    hover:bg-green-200 focus:outline-none focus:ring-2 
@@ -630,8 +630,8 @@ templ SystemAdminEmployeeAccountsWebPage() {
 						Consumer
 					</button>
 					<button
-						hx-get="accounts/employee-form"
-						hx-target="#account-form-container"
+						hx-get="accounts/create/employee-form"
+						hx-target="#create-account-form-container"
 						hx-swap="innerHTML"
 						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
                                    hover:bg-green-200 focus:outline-none focus:ring-2 
@@ -641,7 +641,95 @@ templ SystemAdminEmployeeAccountsWebPage() {
 					</button>
 				</div>
 				<!-- Dynamic Form Container -->
-				<div id="account-form-container">
+				<div id="create-account-form-container">
+					<!-- Initial empty state -->
+					<p class="text-gray-500 text-center py-4">
+						Please select an account type to begin
+					</p>
+				</div>
+			</div>
+			<!-- Update Account Section -->
+			<div class="bg-white rounded-lg shadow-md p-6">
+				<h2 class="text-2xl font-semibold text-gray-800 mb-6">Update Account</h2>
+				<!-- Account Type Selector -->
+				<div class="flex space-x-4 mb-8">
+					<button
+						hx-get="accounts/update/meter-form"
+						hx-target="#update-account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Meter
+					</button>
+					<button
+						hx-get="accounts/update/consumer-form"
+						hx-target="#update-account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Consumer
+					</button>
+					<button
+						hx-get="accounts/update/employee-form"
+						hx-target="#update-account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Employee
+					</button>
+				</div>
+				<!-- Dynamic Form Container -->
+				<div id="update-account-form-container">
+					<!-- Initial empty state -->
+					<p class="text-gray-500 text-center py-4">
+						Please select an account type to begin
+					</p>
+				</div>
+			</div>
+			<!-- Delete Account Section -->
+			<div class="bg-white rounded-lg shadow-md p-6">
+				<h2 class="text-2xl font-semibold text-gray-800 mb-6">Delete Account</h2>
+				<!-- Account Type Selector -->
+				<div class="flex space-x-4 mb-8">
+					<button
+						hx-get="accounts/delete/meter-form"
+						hx-target="#delete-account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Meter
+					</button>
+					<button
+						hx-get="accounts/delete/consumer-form"
+						hx-target="#delete-account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Consumer
+					</button>
+					<button
+						hx-get="accounts/delete/employee-form"
+						hx-target="#delete-account-form-container"
+						hx-swap="innerHTML"
+						class="px-4 py-2 rounded-lg bg-green-100 text-green-700 
+                                   hover:bg-green-200 focus:outline-none focus:ring-2 
+                                   focus:ring-green-500 transition-all active:ring-2"
+					>
+						Employee
+					</button>
+				</div>
+				<!-- Dynamic Form Container -->
+				<div id="update-account-form-container">
 					<!-- Initial empty state -->
 					<p class="text-gray-500 text-center py-4">
 						Please select an account type to begin
@@ -652,145 +740,493 @@ templ SystemAdminEmployeeAccountsWebPage() {
 	}
 }
 
-templ NewMeterAccountForm() {
-	<form
-		hx-post="/v1/employee/sysadmin/accounts/submit-meter-form"
-		hx-target="#form-response"
-		hx-swap="innerHTML"
-		class="space-y-6"
-	>
-		// Horizontal line        
-		<div class="w-full h-px bg-gray-300 mb-4"></div>
-		// Serial Number Group
-		<div class="grid grid-cols-6 gap-10 mb-8">
-			<!-- SNID (Row 1, Column 1) -->
-			// REMINDER: To implement snid
-			// <div class="col-span-2">
-			// 	<label for="consumer-snid" class="block text-sm font-medium text-gray-700 mb-2">
-			// 		SNID
-			// 	</label>
-			// 	<input
-			// 		type="number"
-			// 		id="consumer-snid"
-			// 		class="block w-full px-4 py-3 border border-gray-300 
-			//                 rounded-lg focus:ring-green-500 focus:border-green-500 
-			//                 placeholder-gray-400 placeholder:text-sm
-			//                 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-			// 		placeholder="SNID"
-			// 	/>
-			// </div>
-			<!-- SN (Row 1, Column 2-3) -->
-			<div class="col-span-2">
-				<label for="meter-sn" class="block text-sm font-medium text-gray-700 mb-2">
-					SN
-				</label>
-				<input
-					type="text"
-					id="meter-sn"
-					name="meter-sn"
-					class="block w-full px-4 py-3 border border-gray-300 
-                            rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400"
-					placeholder="SN"
-				/>
-			</div>
-		</div>
-		// Horizontal dashed-line
-		<div class="w-full border-t border-dashed border-gray-300"></div>
-		// Installation and GeoLocation Group
-		<div class="grid grid-cols-4 gap-10 mb-8">
-			<div>
-				<label for="meter-installation-date" class="block text-sm font-medium text-gray-700 mb-2">
-					Installation Date
-				</label>
-				<input
-					type="date"
-					id="meter-installation-date"
-					name="meter-installation-date"
-					class="block w-full px-4 py-3 border border-gray-300 
-                            rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400"
-				/>
-			</div>
-			<div>
-				<label for="meter-transformer-id" class="block text-sm font-medium text-gray-700 mb-2">
-					Transformer ID
-				</label>
-				<input
-					type="number"
-					id="consumer-transformer-id"
-					name="consumer-transformer-id"
-					class="block w-full px-4 py-3 border border-gray-300 
-                            rounded-lg focus:ring-green-500 focus:border-green-500 
-                            placeholder-gray-400 placeholder:text-sm
-                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-					placeholder="Transformer ID"
-				/>
-			</div>
-		</div>
-		// Horizontal dashed-line
-		<div class="w-full border-t border-dashed border-gray-300"></div>
-		<div class="grid grid-cols-2 gap-10 mb-8">
-			<div>
-				<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
-					Geolocation
-				</label>
-				<div class="grid grid-cols-2 gap-5">
+templ NewMeterAccountForm(usecase string) {
+	if usecase == "create" {
+		<form
+			hx-post="/v1/employee/sysadmin/accounts/create/create-meter-form"
+			hx-target="#form-response"
+			hx-swap="innerHTML"
+			class="space-y-6"
+		>
+			// Horizontal line        
+			<div class="w-full h-px bg-gray-300 mb-4"></div>
+			// Serial Number Group
+			<div class="grid grid-cols-6 gap-10 mb-8">
+				<!-- Consumer Account Number (Row 1, Column 1) -->
+				<div class="col-span-2">
+					<label for="consumer-acc-no" class="block text-sm font-medium text-gray-700 mb-2">
+						Consumer Account Number
+					</label>
 					<input
 						type="number"
-						id="meter-latitude"
-						name="meter-latitude"
+						id="consumer-acc-no"
+						name="consumer-acc-no"
 						class="block w-full px-4 py-3 border border-gray-300 
-                                rounded-lg focus:ring-green-500 focus:border-green-500 
-                                placeholder-gray-400 placeholder:text-sm
-                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-						placeholder="Latitude"
+								rounded-lg focus:ring-green-500 focus:border-green-500 
+								placeholder-gray-400 placeholder:text-sm
+								[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+						placeholder="Account Number"
+						required
 					/>
+				</div>
+				<!-- Meter Number (Row 1, Column 2-3) -->
+				<div class="col-span-2">
+					<label for="meter-no" class="block text-sm font-medium text-gray-700 mb-2">
+						Meter Number
+					</label>
 					<input
-						type="number"
-						id="meter-longitude"
-						name="meter-longitude"
+						type="text"
+						id="meter-no"
+						name="meter-no"
 						class="block w-full px-4 py-3 border border-gray-300 
-                                rounded-lg focus:ring-green-500 focus:border-green-500 
-                                placeholder-gray-400 placeholder:text-sm
-                                [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-						placeholder="Longitude"
+								rounded-lg focus:ring-green-500 focus:border-green-500 
+								placeholder-gray-400"
+						placeholder="Meter Number"
+						required
 					/>
 				</div>
 			</div>
+			// Horizontal dashed-line
+			<div class="w-full border-t border-dashed border-gray-300"></div>
+			// Installation and GeoLocation Group
+			<div class="grid grid-cols-4 gap-10 mb-8">
+				<div>
+					<label for="meter-installation-date" class="block text-sm font-medium text-gray-700 mb-2">
+						Installation Date
+					</label>
+					<input
+						type="date"
+						id="meter-installation-date"
+						name="meter-installation-date"
+						class="block w-full px-4 py-3 border border-gray-300 
+							rounded-lg focus:ring-green-500 focus:border-green-500 
+							placeholder-gray-400"
+					/>
+				</div>
+				<script>
+					// Set default date to today (client-side)
+					document.getElementById('meter-installation-date').value = 
+						new Date().toISOString().split('T')[0];
+				</script>
+				<div>
+					<label for="meter-transformer-id" class="block text-sm font-medium text-gray-700 mb-2">
+						Transformer ID
+					</label>
+					<input
+						type="number"
+						id="consumer-transformer-id"
+						name="consumer-transformer-id"
+						class="block w-full px-4 py-3 border border-gray-300 
+								rounded-lg focus:ring-green-500 focus:border-green-500 
+								placeholder-gray-400 placeholder:text-sm
+								[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+						placeholder="Transformer ID"
+					/>
+				</div>
+			</div>
+			// Horizontal dashed-line
+			<div class="w-full border-t border-dashed border-gray-300"></div>
+			<div class="grid grid-cols-2 gap-10 mb-8">
+				<div>
+					<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+						Geolocation
+					</label>
+					<div class="grid grid-cols-2 gap-5">
+						<input
+							type="number"
+							id="meter-latitude"
+							name="meter-latitude"
+							class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400 placeholder:text-sm
+									[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							placeholder="Latitude"
+						/>
+						<input
+							type="number"
+							id="meter-longitude"
+							name="meter-longitude"
+							class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400 placeholder:text-sm
+									[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							placeholder="Longitude"
+						/>
+					</div>
+				</div>
+			</div>
+			// Horizontal line        
+			<div class="w-full h-px bg-gray-300 mb-4"></div>
+			<div class="flex justify-end">
+				<button
+					type="submit"
+					class="px-6 py-3 bg-green-600 hover:bg-green-700 
+							text-white font-medium rounded-lg 
+							transition-all shadow-md hover:shadow-lg 
+							focus:outline-none focus:ring-2 focus:ring-green-500"
+				>
+					Create Meter Account
+				</button>
+			</div>
+			<div id="form-response"></div>
+			<!-- Loading Overlay -->
+			<div id="loading-overlay" class="hidden fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+				<div class="flex items-center space-x-3 bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+					<div class="animate-spin h-6 w-6 border-4 border-green-500 rounded-full border-t-transparent"></div>
+					<span class="text-gray-700 font-medium">Creating Meter Account...</span>
+				</div>
+			</div>
+			<!-- Success Message -->
+			<div id="success-message" class="hidden fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+				<div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+					<p class="text-green-500 font-medium text-lg">✓ Meter account created successfully!</p>
+				</div>
+			</div>
+		</form>
+		<!-- Add this error message div before the script -->
+		<div id="error-message" class="hidden fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+			<div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+				<p class="text-red-500 font-medium text-lg" id="error-text"></p>
+			</div>
 		</div>
-		// Horizontal line        
-		<div class="w-full h-px bg-gray-300 mb-4"></div>
-		<div class="flex justify-end">
-			<button
-				type="submit"
-				class="px-6 py-3 bg-green-600 hover:bg-green-700 
-                        text-white font-medium rounded-lg 
-                        transition-all shadow-md hover:shadow-lg 
-                        focus:outline-none focus:ring-2 focus:ring-green-500"
+		<script>
+			document.addEventListener('htmx:afterOnLoad', function(evt) {
+				if (evt.detail.elt === document.querySelector('form')) {
+					const loadingOverlay = document.getElementById('loading-overlay');
+					const successMessage = document.getElementById('success-message');
+					const errorMessage = document.getElementById('error-message');
+					const form = document.querySelector('form');
+
+					loadingOverlay.classList.add('hidden');
+
+					if (evt.detail.successful) {
+						// Success handling (existing code)
+						form.reset();
+						document.getElementById('meter-installation-date').value = 
+							new Date().toISOString().split('T')[0];
+						successMessage.classList.remove('hidden');
+						setTimeout(() => {
+							successMessage.classList.add('hidden');
+						}, 3000);
+					} else {
+						// Error handling
+						try {
+							const response = JSON.parse(evt.detail.xhr.responseText);
+							document.getElementById('error-text').textContent = response.error;
+							errorMessage.classList.remove('hidden');
+							setTimeout(() => {
+								errorMessage.classList.add('hidden');
+							}, 3000);
+						} catch (e) {
+							console.error('Error parsing response:', e);
+						}
+					}
+				}
+			});
+		</script>
+	} else if usecase == "update" {
+		<div class="space-y-6">
+			<!-- Verification Form -->
+			<form
+				id="verify-form"
+				hx-post="/v1/employee/sysadmin/accounts/update/update-meter-form/verify"
+				hx-target="#update-form-container"
+				hx-swap="none"
+				class="space-y-6"
 			>
-				Create Meter Account
-			</button>
+				<div class="grid grid-cols-6 gap-10 mb-8">
+					<div class="col-span-3">
+						<label for="verify-meter-no" class="block text-sm font-medium text-gray-700 mb-2">
+							Enter Meter Number to Update
+						</label>
+						<input
+							type="text"
+							id="verify-meter-no"
+							name="meter-no"
+							class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400"
+							placeholder="Meter Number"
+							required
+						/>
+					</div>
+					<div class="col-span-3 flex items-end">
+						<button
+							type="submit"
+							class="px-6 py-3 bg-green-600 hover:bg-green-700 
+								text-white font-medium rounded-lg 
+								transition-all shadow-md hover:shadow-lg 
+								focus:outline-none focus:ring-2 focus:ring-green-500"
+						>
+							Verify Meter
+						</button>
+					</div>
+				</div>
+			</form>
+			<!-- Update Form Container (Initially hidden) -->
+			<div id="update-form-container"></div>
+			<!-- Loading Overlay -->
+			<div id="loading-overlay" class="hidden fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+				<div class="flex items-center space-x-3 bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+					<div class="animate-spin h-6 w-6 border-4 border-green-500 rounded-full border-t-transparent"></div>
+					<span class="text-gray-700 font-medium">Verifying Meter...</span>
+				</div>
+			</div>
+			<!-- Error Message -->
+			<div id="error-message" class="hidden fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+				<div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+					<p class="text-red-500 font-medium text-lg" id="error-text"></p>
+				</div>
+			</div>
+			<!-- Success Message -->
+			<div id="success-message" class="hidden fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+				<div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+					<p class="text-green-500 font-medium text-lg">✓ Meter account updated successfully!</p>
+				</div>
+			</div>
+			<script>
+				document.addEventListener('htmx:afterOnLoad', function(evt) {
+					const loadingOverlay = document.getElementById('loading-overlay');
+					const errorMessage = document.getElementById('error-message');
+					
+					// Always hide loading overlay first
+					loadingOverlay.classList.add('hidden');
+
+					// Handle verification response
+					if (evt.detail.requestConfig && evt.detail.requestConfig.path.includes('/verify')) {
+						if (evt.detail.successful) {
+							const verifyForm = document.getElementById('verify-form');
+							const container  = document.getElementById('update-form-container');
+							const template   = document.getElementById('update-form-template');
+							const response   = JSON.parse(evt.detail.xhr.responseText);
+
+							// Hide the verify form
+							verifyForm.classList.add('hidden');
+
+							// Populate and show the update form
+							const clone = template.content.cloneNode(true);
+							const form  = clone.querySelector('#update-form');
+							form.querySelector('#update-meter-no').value                 = response.meterNo;
+							form.querySelector('#update-consumer-acc-no').value         = response.consumerAccNo;
+							form.querySelector('#update-meter-installation-date').value = response.installationDate;
+							form.querySelector('#update-consumer-transformer-id').value = response.transformerId;
+							form.querySelector('#update-meter-latitude').value          = response.latitude;
+							form.querySelector('#update-meter-longitude').value         = response.longitude;
+
+							container.appendChild(clone);
+
+							// Re-scan new content
+							htmx.process(container);
+
+						} else {
+							try {
+								const response = JSON.parse(evt.detail.xhr.responseText);
+								document.getElementById('error-text').textContent = response.error;
+								errorMessage.classList.remove('hidden');
+								setTimeout(() => {
+									errorMessage.classList.add('hidden');
+								}, 3000);
+							} catch (e) {
+								console.error('Error parsing response:', e);
+							}
+						}
+					}
+
+					// Handle update submission response
+					if (evt.detail.elt.closest('form')?.id === 'update-form') {
+						if (evt.detail.successful) {
+							document.getElementById('success-message').classList.remove('hidden');
+							setTimeout(() => {
+								document.getElementById('success-message').classList.add('hidden');
+
+								// Reset the form and UI
+								const container = document.getElementById('update-form-container');
+								const verifyForm = document.getElementById('verify-form');
+								
+								// 1. Clear update form
+								container.innerHTML = '';
+								
+								// 2. Show verify form again
+								verifyForm.classList.remove('hidden');
+								
+								// 3. Reset verify form input
+								document.getElementById('verify-meter-no').value = '';
+							}, 3000);
+						} else {
+							try {
+								const response = JSON.parse(evt.detail.xhr.responseText);
+								document.getElementById('error-text').textContent = response.error;
+								errorMessage.classList.remove('hidden');
+								setTimeout(() => {
+									errorMessage.classList.add('hidden');
+								}, 3000);
+							} catch (e) {
+								console.error('Error parsing response:', e);
+							}
+						}
+					}
+				});
+
+				document.addEventListener('htmx:beforeRequest', function(evt) {
+					if (evt.detail.elt.closest('form')) {
+						document.getElementById('loading-overlay').classList.remove('hidden');
+					}
+				});
+
+				// Additional safety check for overlay visibility
+				document.addEventListener('htmx:afterSwap', function(evt) {
+					if (evt.detail.target.id === 'update-form-container' && 
+						evt.detail.requestConfig.path.includes('verify')) {
+						const loadingOverlay = document.getElementById('loading-overlay');
+						loadingOverlay.classList.add('hidden');
+					}
+				});
+			</script>
+			<!-- Update Form Template -->
+			<template id="update-form-template">
+				<form
+					id="update-form"
+					hx-post="/v1/employee/sysadmin/accounts/update/update-meter-form"
+					hx-target="#form-response"
+					hx-swap="none"
+					class="space-y-6"
+				>
+					<div class="w-full h-px bg-gray-300 mb-4"></div>
+					<div class="grid grid-cols-6 gap-10 mb-8">
+						<div class="col-span-2">
+							<label for="consumer-acc-no" class="block text-sm font-medium text-gray-700 mb-2">
+								Consumer Account Number
+							</label>
+							<input
+								type="number"
+								id="update-consumer-acc-no"
+								name="consumer-acc-no"
+								class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400 placeholder:text-sm
+									[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+								required
+							/>
+						</div>
+						<div class="col-span-2">
+							<label for="meter-no" class="block text-sm font-medium text-gray-700 mb-2">
+								Meter Number
+							</label>
+							<input
+								type="text"
+								id="update-meter-no"
+								name="meter-no"
+								class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400"
+								readonly
+							/>
+						</div>
+					</div>
+					<div class="w-full border-t border-dashed border-gray-300"></div>
+					<div class="grid grid-cols-4 gap-10 mb-8">
+						<div>
+							<label for="meter-installation-date" class="block text-sm font-medium text-gray-700 mb-2">
+								Installation Date
+							</label>
+							<input
+								type="date"
+								id="update-meter-installation-date"
+								name="meter-installation-date"
+								class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400"
+							/>
+						</div>
+						<div>
+							<label for="meter-transformer-id" class="block text-sm font-medium text-gray-700 mb-2">
+								Transformer ID
+							</label>
+							<input
+								type="number"
+								id="update-consumer-transformer-id"
+								name="consumer-transformer-id"
+								class="block w-full px-4 py-3 border border-gray-300 
+									rounded-lg focus:ring-green-500 focus:border-green-500 
+									placeholder-gray-400 placeholder:text-sm
+									[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							/>
+						</div>
+					</div>
+					<div class="w-full border-t border-dashed border-gray-300"></div>
+					<div class="grid grid-cols-2 gap-10 mb-8">
+						<div>
+							<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+								Geolocation
+							</label>
+							<div class="grid grid-cols-2 gap-5">
+								<input
+									type="number"
+									id="update-meter-latitude"
+									name="meter-latitude"
+									class="block w-full px-4 py-3 border border-gray-300 
+										rounded-lg focus:ring-green-500 focus:border-green-500 
+										placeholder-gray-400 placeholder:text-sm
+										[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+								/>
+								<input
+									type="number"
+									id="update-meter-longitude"
+									name="meter-longitude"
+									class="block w-full px-4 py-3 border border-gray-300 
+										rounded-lg focus:ring-green-500 focus:border-green-500 
+										placeholder-gray-400 placeholder:text-sm
+										[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+								/>
+							</div>
+						</div>
+					</div>
+					<div class="w-full h-px bg-gray-300 mb-4"></div>
+					<div class="flex justify-end">
+						<button
+							type="submit"
+							class="px-6 py-3 bg-green-600 hover:bg-green-700 
+									text-white font-medium rounded-lg 
+									transition-all shadow-md hover:shadow-lg 
+									focus:outline-none focus:ring-2 focus:ring-green-500"
+						>
+							Update Meter Account
+						</button>
+					</div>
+					<div id="form-response"></div>
+				</form>
+			</template>
 		</div>
-		<div id="form-response"></div>
-	</form>
+	} else if usecase == "delete" {
+	}
 }
 
 templ NewConsumerAccountForm() {
 	<form
-		hx-post="/admin/accounts/meter"
+		hx-post="/v1/employee/sysadmin/accounts/create/submit-create-consumer-form"
 		hx-target="#form-response"
 		hx-swap="innerHTML"
 		class="space-y-6"
 	>
 		// Horizontal line        
 		<div class="w-full h-px bg-gray-300 mb-4"></div>
-		// Consumer Name group
+		// Account Number group
 		<div class="mb-8 grid grid-cols-4 gap-4">
 			<!-- Account Number (Row 1, Column 1) -->
-			<div>
-				<label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700">First Name </label>
-				<input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Account Number (Optional)"/>
+			<div class="col-span-2">
+				<label
+					for="consumer-acc-no"
+					class="mb-2 block text-sm font-medium text-gray-700"
+				>
+					Account Number 
+				</label>
+				<input
+					type="text"
+					id="consumer-acc-no"
+					name="consumer-acc-no"
+					class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"
+					placeholder="Account Number (Optional)"
+				/>
 			</div>
 		</div>
 		// Horizontal dashed-line
@@ -799,28 +1235,82 @@ templ NewConsumerAccountForm() {
 		<div class="mb-8 grid grid-cols-4 gap-4">
 			<!-- First Name (Row 1, Column 1) -->
 			<div>
-				<label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700">First Name </label>
-				<input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="First name"/>
+				<label
+					for="consumer-first-name"
+					class="mb-2 block text-sm font-medium text-gray-700"
+				>
+					First Name 
+				</label>
+				<input
+					type="text"
+					id="consumer-first-name"
+					name="consumer-first-name"
+					class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"
+					placeholder="First name"
+				/>
 			</div>
 			<!-- Middle Name (Row 1, Column 2) -->
 			<div>
-				<label for="consumer-middle-name" class="mb-2 block text-sm font-medium text-gray-700">Middle Name </label>
-				<input type="text" id="consumer-middle-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Middle name"/>
+				<label
+					for="consumer-middle-name"
+					class="mb-2 block text-sm font-medium text-gray-700"
+				>
+					Middle Name 
+				</label>
+				<input
+					type="text"
+					id="consumer-middle-name"
+					name="consumer-middle-name"
+					class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"
+					placeholder="Middle name"
+				/>
 			</div>
 			<!-- Last Name (Row 1, Column 3) -->
 			<div>
-				<label for="consumer-last-name" class="mb-2 block text-sm font-medium text-gray-700">Last Name </label>
-				<input type="text" id="consumer-last-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Last name"/>
+				<label
+					for="consumer-last-name"
+					class="mb-2 block text-sm font-medium text-gray-700"
+				>
+					Last Name 
+				</label>
+				<input
+					type="text"
+					id="consumer-last-name"
+					name="consumer-last-name"
+					class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"
+					placeholder="Last name"
+				/>
 			</div>
 			<!-- Suffix (Row 1, Column 4) -->
 			<div>
-				<label for="consumer-suffix-name" class="mb-2 block text-sm font-medium text-gray-700">Suffix </label>
-				<input type="text" id="consumer-suffix-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Suffix (optional)"/>
+				<label
+					for="consumer-suffix-name"
+					class="mb-2 block text-sm font-medium text-gray-700"
+				>
+					Suffix 
+				</label>
+				<input
+					type="text"
+					id="consumer-suffix-name"
+					name="consumer-suffix-name"
+					class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"
+					placeholder="Suffix (optional)"
+				/>
 			</div>
 			<!-- Birth Date (Row 1, Column 5) -->
 			<div>
-				<label for="consumer-birth-date" class="mb-2 block text-sm font-medium text-gray-700">Birth Date </label>
-				<input type="date" id="consumer-birth-date" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"/>
+				<label
+					for="consumer-birth-date"
+					class="mb-2 block text-sm font-medium text-gray-700"
+				>
+					Birth Date 
+				</label>
+				<input
+					type="date"
+					id="consumer-birth-date"
+					name="consumer-birth-date"
+					class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500"
+				/>
 			</div>
 		</div>
 		// Horizontal dashed-line
@@ -829,12 +1319,16 @@ templ NewConsumerAccountForm() {
 		<div class="grid grid-cols-3 gap-4 mb-8">
 			<!-- Province (Row 1, Column 1) -->
 			<div>
-				<label for="consumer-province" class="block text-sm font-medium text-gray-700 mb-2">
+				<label
+					for="consumer-province"
+					class="block text-sm font-medium text-gray-700 mb-2"
+				>
 					Province
 				</label>
 				<input
 					type="text"
 					id="consumer-province"
+					name="consumer-province"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm"
@@ -843,12 +1337,16 @@ templ NewConsumerAccountForm() {
 			</div>
 			<!-- Postal Code (Row 1, Column 2) -->
 			<div>
-				<label for="consumer-postal-code" class="block text-sm font-medium text-gray-700 mb-2">
+				<label
+					for="consumer-postal-code"
+					class="block text-sm font-medium text-gray-700 mb-2"
+				>
 					Postal Code
 				</label>
 				<input
 					type="number"
 					id="consumer-postal-code"
+					name="consumer-postal-code"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
@@ -858,12 +1356,16 @@ templ NewConsumerAccountForm() {
 			</div>
 			<!-- Municipality (Row 1, Column 3) -->
 			<div>
-				<label for="consumer-city-municipality" class="block text-sm font-medium text-gray-700 mb-2">
+				<label
+					for="consumer-city-municipality"
+					class="block text-sm font-medium text-gray-700 mb-2"
+				>
 					City/Municipality
 				</label>
 				<input
 					type="text"
 					id="consumer-city-municipality"
+					name="consumer-city-municipality"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm"
@@ -872,12 +1374,16 @@ templ NewConsumerAccountForm() {
 			</div>
 			<!-- Barangay (Row 2, Column 1) -->
 			<div>
-				<label for="consumer-barangay" class="block text-sm font-medium text-gray-700 mb-2">
+				<label
+					for="consumer-barangay"
+					class="block text-sm font-medium text-gray-700 mb-2"
+				>
 					Barangay
 				</label>
 				<input
 					type="text"
 					id="consumer-barangay"
+					name="consumer-barangay"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm"
@@ -886,12 +1392,16 @@ templ NewConsumerAccountForm() {
 			</div>
 			<!-- Street Address (Row 2, Columns 2-3) -->
 			<div class="col-span-2">
-				<label for="consumer-house-street" class="block text-sm font-medium text-gray-700 mb-2">
+				<label
+					for="consumer-house-street"
+					class="block text-sm font-medium text-gray-700 mb-2"
+				>
 					House or Building Number, Street Name
 				</label>
 				<input
 					type="text"
 					id="consumer-house-street"
+					name="consumer-house-street"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm"
@@ -904,12 +1414,16 @@ templ NewConsumerAccountForm() {
 		// Contact Info Group
 		<div class="grid grid-cols-3 gap-4 mb-8">
 			<div>
-				<label for="consumer-phone-number" class="block text-sm font-medium text-gray-700 mb-2">
+				<label
+					for="consumer-phone-number"
+					class="block text-sm font-medium text-gray-700 mb-2"
+				>
 					Phone Number
 				</label>
 				<input
 					type="number"
 					id="consumer-phone-number"
+					name="consumer-phone-number"
 					class="block w-full px-4 py-3 border border-gray-300 
                             rounded-lg focus:ring-green-500 focus:border-green-500 
                             placeholder-gray-400 placeholder:text-sm
@@ -944,6 +1458,16 @@ templ NewEmployeeAccountForm() {
 	>
 		// Horizontal line        
 		<div class="w-full h-px bg-gray-300 mb-4"></div>
+		// Account Number group
+		<div class="mb-8 grid grid-cols-4 gap-4">
+			<!-- Account Number (Row 1, Column 1) -->
+			<div class="col-span-2">
+				<label for="consumer-first-name" class="mb-2 block text-sm font-medium text-gray-700">Account Number </label>
+				<input type="text" id="consumer-first-name" class="block w-full rounded-lg border border-gray-300 px-4 py-3 placeholder-gray-400 placeholder:text-sm focus:border-green-500 focus:ring-green-500" placeholder="Account Number (Optional)"/>
+			</div>
+		</div>
+		// Horizontal dashed-line
+		<div class="w-full border-t border-dashed border-gray-300"></div>
 		// Consumer Name group
 		<div class="mb-8 grid grid-cols-4 gap-4">
 			<!-- First Name (Row 1, Column 1) -->

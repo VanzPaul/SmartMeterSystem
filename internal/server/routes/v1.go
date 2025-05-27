@@ -8,15 +8,19 @@ import (
 	"SmartMeterSystem/cmd/web"
 	"SmartMeterSystem/internal"
 	"SmartMeterSystem/internal/database"
+	"SmartMeterSystem/internal/models"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // V1 Route Groups
@@ -293,62 +297,381 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 			},
 			forms: func(w http.ResponseWriter, r *http.Request) {
 				// Extract the part after "/sysadmin/accounts/"
-				pathPart := strings.TrimPrefix(r.URL.Path, "/sysadmin/accounts/")
-				// Split to handle nested paths, take the first segment
-				formType := strings.SplitN(pathPart, "/", 2)[0]
+				// Split to handle nested paths
+				pathParts := strings.Split(strings.TrimPrefix(r.URL.Path, "/sysadmin/accounts/"), "/")
 
 				switch r.Method {
 				case "GET":
-					switch formType {
-					case "meter-form":
-						web.NewMeterAccountForm().Render(r.Context(), w)
-					case "consumer-form":
-						web.NewConsumerAccountForm().Render(r.Context(), w)
-					case "employee-form":
-						web.NewEmployeeAccountForm().Render(r.Context(), w)
+					// Check path length
+					if len(pathParts) < 1 {
+						http.NotFound(w, r)
+						return
+					}
+
+					switch subpath := pathParts[0]; subpath {
+					case "create":
+						// Check path length
+						if len(pathParts) < 2 {
+							http.NotFound(w, r)
+							return
+						}
+						usecase := subpath
+						switch subpath := pathParts[1]; subpath {
+						case "meter-form":
+							web.NewMeterAccountForm(usecase).Render(r.Context(), w)
+						case "consumer-form":
+							web.NewConsumerAccountForm().Render(r.Context(), w)
+						case "employee-form":
+							web.NewEmployeeAccountForm().Render(r.Context(), w)
+						default:
+							http.NotFound(w, r)
+						}
+
+					case "update":
+						// Check path length
+						if len(pathParts) < 2 {
+							http.NotFound(w, r)
+							return
+						}
+						usecase := subpath
+						switch subpath := pathParts[1]; subpath {
+						case "meter-form":
+							web.NewMeterAccountForm(usecase).Render(r.Context(), w)
+						case "consumer-form":
+							web.NewConsumerAccountForm().Render(r.Context(), w)
+						case "employee-form":
+							web.NewEmployeeAccountForm().Render(r.Context(), w)
+						default:
+							http.NotFound(w, r)
+						}
 					default:
 						http.NotFound(w, r)
 					}
 				case "POST":
-					switch formType {
-					case "submit-meter-form":
-						meterSN := r.FormValue("meter-sn")
-						meterInstallationDate := r.FormValue("meter-installation-date")
-						consumerTransformerId := r.FormValue("consumer-transformer-id")
-						meterLatitude := r.FormValue("meter-latitude")
-						meterLongitude := r.FormValue("meter-longitude")
+					// Check path length
+					if len(pathParts) < 1 {
+						http.NotFound(w, r)
+						return
+					}
 
-						svc := database.New()
-
-						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-						defer cancel()
-
-						// Create a new document
-						insertResult, err := svc.InsertOne(ctx, "users", bson.M{
-							"meter-sn":                meterSN,
-							"meter-installation-date": meterInstallationDate, // Fixed field assignment
-							"consumer-transformer-id": consumerTransformerId, // Fixed field assignment
-							"meter-latitude":          meterLatitude,
-							"meter-longitude":         meterLongitude,
-						})
-
-						if err != nil {
-							logger.Sugar().Errorf("Insert failed: %v", err)
-							http.Error(w, "Internal server error", http.StatusInternalServerError)
-							return // ← Critical: Stop execution after error
-						}
-
-						if insertResult.InsertedID == nil {
-							logger.Sugar().Warn("InsertedID is nil")
-							http.Error(w, "No document created", http.StatusInternalServerError)
+					switch subpath := pathParts[0]; subpath {
+					case "create":
+						// Check path length
+						if len(pathParts) < 2 {
+							http.NotFound(w, r)
 							return
 						}
 
-						logger.Sugar().Infof("Inserted ID: %v", insertResult.InsertedID)
-						w.WriteHeader(http.StatusCreated)
+						switch subpath := pathParts[1]; subpath {
+						case "create-meter-form":
+							// Parse form values
+							form_meterNo := r.FormValue("meter-no")
+							form_meterInstallationDate := r.FormValue("meter-installation-date")
+							form_consumerTransformerId := r.FormValue("consumer-transformer-id")
+							form_meterLatitude := r.FormValue("meter-latitude")
+							form_meterLongitude := r.FormValue("meter-longitude")
+							form_consumerAccNo := r.FormValue("consumer-acc-no")
+
+							// Validate required fields
+							if form_meterNo == "" || form_meterInstallationDate == "" || form_consumerTransformerId == "" ||
+								form_meterLatitude == "" || form_meterLongitude == "" || form_consumerAccNo == "" {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "All fields are required",
+								})
+								return
+							}
+
+							// Convert form values to appropriate types
+							meterNo, err_meterNo := strconv.Atoi(form_meterNo)
+							meterInstallationDate, err_meterInstallationDate := time.Parse("2006-01-02", form_meterInstallationDate)
+							consumerTransformerId := form_consumerTransformerId
+							meterLatitude, err_meterLatitude := strconv.ParseFloat(form_meterLatitude, 64)
+							meterLongitude, err_meterLongitude := strconv.ParseFloat(form_meterLongitude, 64)
+							consumerAccNo, err_consumerAccNo := strconv.Atoi(form_consumerAccNo)
+
+							// Handle individual conversion errors
+							if err_meterNo != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Meter Number",
+								})
+								return
+							}
+
+							if err_meterInstallationDate != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Installation Date format. Expected YYYY-MM-DD",
+								})
+								return
+							}
+
+							if err_meterLatitude != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Latitude value",
+								})
+								return
+							}
+
+							if err_meterLongitude != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Longitude value",
+								})
+								return
+							}
+
+							if err_consumerAccNo != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Consumer Account Number",
+								})
+								return
+							}
+
+							svc := database.New()
+
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+
+							bson, err_bson := bson.Marshal(models.MeterDocument{
+								ID:                    meterNo,
+								ConsumerAccNo:         consumerAccNo,
+								InstallationDate:      meterInstallationDate,
+								ConsumerTransformerID: consumerTransformerId,
+								Latitude:              meterLatitude,
+								Longitude:             meterLongitude,
+							})
+
+							if err_bson != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Error Parsing Meter Document",
+								})
+								return
+							}
+
+							// Create a new document
+							insertResult, err := svc.InsertOne(ctx, "meters", bson)
+
+							if err != nil {
+								// Check for duplicate key error
+								var writeException mongo.WriteException
+								if errors.As(err, &writeException) {
+									for _, writeError := range writeException.WriteErrors {
+										if writeError.Code == 11000 { // MongoDB duplicate key error code
+											w.Header().Set("Content-Type", "application/json")
+											w.WriteHeader(http.StatusConflict)
+											json.NewEncoder(w).Encode(map[string]string{
+												"error": "Meter Number already exists",
+											})
+											return
+										}
+									}
+								}
+
+								// Other errors
+								logger.Sugar().Errorf("Insert failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							if insertResult.InsertedID == nil {
+								logger.Sugar().Error("InsertedID is nil")
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							logger.Sugar().Infof("Inserted ID: %v", insertResult.InsertedID)
+							w.WriteHeader(http.StatusCreated)
+						default:
+							http.NotFound(w, r)
+						}
+
+					case "update":
+						if len(pathParts) < 2 {
+							http.NotFound(w, r)
+							return
+						}
+
+						switch subpath := pathParts[1]; subpath {
+						case "update-meter-form":
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+							svc := database.New()
+
+							// Verification endpoint
+							if len(pathParts) > 2 && pathParts[2] == "verify" {
+								form_meterNo := r.FormValue("meter-no")
+								meterNo, err_meterNo := strconv.Atoi(form_meterNo)
+
+								// Handle conversion error
+								if err_meterNo != nil {
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusBadRequest)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Invalid Meter Number",
+									})
+									return
+								}
+
+								var existingMeter models.MeterDocument
+								err := svc.FindOne(ctx, "meters", bson.M{"_id": meterNo}).Decode(&existingMeter)
+								if err != nil {
+									if err == mongo.ErrNoDocuments {
+										logger.Sugar().Warnf("Meter not found: %s", meterNo)
+										w.Header().Set("Content-Type", "application/json")
+										w.WriteHeader(http.StatusNotFound)
+										json.NewEncoder(w).Encode(map[string]string{
+											"error": "Meter not found: " + form_meterNo,
+										})
+										return
+									}
+									logger.Sugar().Errorf("Database error: %v", err)
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusInternalServerError)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Internal server error",
+									})
+									return
+								}
+
+								logger.Sugar().Infof("Found existing meter: %v", existingMeter)
+								w.Header().Set("Content-Type", "application/json")
+								json.NewEncoder(w).Encode(map[string]interface{}{
+									"meterNo":          existingMeter.ID,
+									"consumerAccNo":    existingMeter.ConsumerAccNo,
+									"installationDate": existingMeter.InstallationDate.Format("2006-01-02"),
+									"transformerId":    existingMeter.ConsumerTransformerID,
+									"latitude":         existingMeter.Latitude,
+									"longitude":        existingMeter.Longitude,
+								})
+								return
+							}
+
+							// Update handler
+							meterNo := r.FormValue("meter-no")
+							installationDateStr := r.FormValue("meter-installation-date")
+							transformerID := r.FormValue("consumer-transformer-id")
+							latitude := r.FormValue("meter-latitude")
+							longitude := r.FormValue("meter-longitude")
+							consumerAccNoStr := r.FormValue("consumer-acc-no")
+
+							// Parse meter number
+							meterNoInt, err := strconv.Atoi(meterNo)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid meter account number format",
+								})
+								return
+							}
+							// Parse installation date
+							installationDate, err := time.Parse("2006-01-02", installationDateStr)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid date format, use YYYY-MM-DD",
+								})
+								return
+							}
+
+							// Parse consumer account number
+							consumerAccNo, err := strconv.Atoi(consumerAccNoStr)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid consumer account number format",
+								})
+								return
+							}
+
+							// Parse latitude/longitude
+							lat, err := strconv.ParseFloat(latitude, 64)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid latitude format",
+								})
+								return
+							}
+
+							lng, err := strconv.ParseFloat(longitude, 64)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid longitude format",
+								})
+								return
+							}
+
+							updateData := bson.M{
+								"$set": bson.M{
+									"meter-installation-date": installationDate,
+									"consumer-transformer-id": transformerID,
+									"meter-latitude":          lat,
+									"meter-longitude":         lng,
+									"consumer-acc-no":         consumerAccNo,
+								},
+							}
+
+							updateResult, err := svc.UpdateOne(ctx, "meters", bson.M{"_id": meterNoInt}, updateData)
+							if err != nil {
+								logger.Sugar().Errorf("Update failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							if updateResult.MatchedCount == 0 {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusNotFound)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Meter no longer exists: " + meterNo,
+								})
+								return
+							}
+
+							logger.Sugar().Infof("Updated %d document(s)", updateResult.ModifiedCount)
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success": true,
+								"message": "Meter updated successfully",
+							})
+
+						default:
+							http.NotFound(w, r)
+						}
+
 					default:
 						http.NotFound(w, r)
 					}
+
 				default:
 					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 				}
