@@ -320,7 +320,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 						case "meter-form":
 							web.NewMeterAccountForm(usecase).Render(r.Context(), w)
 						case "consumer-form":
-							web.NewConsumerAccountForm().Render(r.Context(), w)
+							web.NewConsumerAccountForm(usecase).Render(r.Context(), w)
 						case "employee-form":
 							web.NewEmployeeAccountForm().Render(r.Context(), w)
 						default:
@@ -338,12 +338,31 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 						case "meter-form":
 							web.NewMeterAccountForm(usecase).Render(r.Context(), w)
 						case "consumer-form":
-							web.NewConsumerAccountForm().Render(r.Context(), w)
+							web.NewConsumerAccountForm(usecase).Render(r.Context(), w)
 						case "employee-form":
 							web.NewEmployeeAccountForm().Render(r.Context(), w)
 						default:
 							http.NotFound(w, r)
 						}
+
+					case "delete":
+						// Check path length
+						if len(pathParts) < 2 {
+							http.NotFound(w, r)
+							return
+						}
+						usecase := subpath
+						switch subpath := pathParts[1]; subpath {
+						case "meter-form":
+							web.NewMeterAccountForm(usecase).Render(r.Context(), w)
+						case "consumer-form":
+							web.NewConsumerAccountForm(usecase).Render(r.Context(), w)
+						case "employee-form":
+							web.NewEmployeeAccountForm().Render(r.Context(), w)
+						default:
+							http.NotFound(w, r)
+						}
+
 					default:
 						http.NotFound(w, r)
 					}
@@ -365,12 +384,12 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 						switch subpath := pathParts[1]; subpath {
 						case "create-meter-form":
 							// Parse form values
-							form_meterNo := r.FormValue("meter-no")
-							form_meterInstallationDate := r.FormValue("meter-installation-date")
-							form_consumerTransformerId := r.FormValue("consumer-transformer-id")
-							form_meterLatitude := r.FormValue("meter-latitude")
-							form_meterLongitude := r.FormValue("meter-longitude")
-							form_consumerAccNo := r.FormValue("consumer-acc-no")
+							form_meterNo := r.FormValue("create-meter-no")
+							form_meterInstallationDate := r.FormValue("create-meter-installation-date")
+							form_consumerTransformerId := r.FormValue("create-consumer-transformer-id")
+							form_meterLatitude := r.FormValue("create-meter-latitude")
+							form_meterLongitude := r.FormValue("create-meter-longitude")
+							form_consumerAccNo := r.FormValue("create-consumer-acc-no")
 
 							// Validate required fields
 							if form_meterNo == "" || form_meterInstallationDate == "" || form_consumerTransformerId == "" ||
@@ -501,6 +520,157 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 
 							logger.Sugar().Infof("Inserted ID: %v", insertResult.InsertedID)
 							w.WriteHeader(http.StatusCreated)
+
+						case "create-consumer-form":
+							form_accountNumber := r.FormValue("create-consumer-acc-no")
+							form_firstName := r.FormValue("create-consumer-first-name")
+							form_middleName := r.FormValue("create-consumer-middle-name")
+							form_lastName := r.FormValue("create-consumer-last-name")
+							form_suffix := r.FormValue("create-consumer-suffix-name")
+							form_birthDate := r.FormValue("create-consumer-birth-date") // Note: Inconsistent field name
+							form_province := r.FormValue("create-consumer-province")
+							form_postalCode := r.FormValue("create-consumer-postal-code")
+							form_cityMunicipality := r.FormValue("create-consumer-city-municipality")
+							form_barangay := r.FormValue("create-consumer-barangay")
+							form_street := r.FormValue("create-consumer-street")
+							form_phoneNumber := r.FormValue("create-consumer-phone-number")
+
+							// Validate required fields
+							if form_accountNumber == "" || form_firstName == "" || form_middleName == "" || form_lastName == "" ||
+								form_suffix == "" || form_birthDate == "" || form_province == "" || form_postalCode == "" ||
+								form_cityMunicipality == "" || form_barangay == "" || form_street == "" || form_phoneNumber == "" {
+
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "All fields are required",
+								})
+								return
+							}
+
+							// Convert form values to appropriate types
+							accountNumber, errAccountNumber := strconv.Atoi(form_accountNumber)
+							firstName := form_firstName
+							middleName := form_middleName
+							lastName := form_lastName
+							suffix := form_suffix
+							birthDate, errBirthDate := time.Parse("2006-01-02", form_birthDate)
+							province := form_province
+							postalCode, errPostalCode := strconv.Atoi(form_postalCode)
+							cityMunicipality := form_cityMunicipality
+							barangay := form_barangay
+							street := form_street
+							phoneNumber, errPhoneNumber := strconv.Atoi(form_phoneNumber)
+
+							// Handle individual conversion errors
+
+							if errAccountNumber != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Account Number",
+								})
+								return
+							}
+
+							if errBirthDate != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Birth Date format. Expected YYYY-MM-DD",
+								})
+								return
+							}
+
+							if errPostalCode != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Postal Code",
+								})
+								return
+							}
+
+							if errPhoneNumber != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Phone Number",
+								})
+								return
+							}
+
+							svc := database.New()
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+
+							bson, err_bson := bson.Marshal(models.ConsumerDocument{
+								ID:               accountNumber,
+								AccountNumber:    accountNumber,
+								FirstName:        firstName,
+								MiddleName:       middleName,
+								LastName:         lastName,
+								Suffix:           suffix,
+								BirthDate:        birthDate,
+								Province:         province,
+								PostalCode:       postalCode,
+								CityMunicipality: cityMunicipality,
+								Barangay:         barangay,
+								Street:           street,
+								PhoneNumber:      phoneNumber,
+							})
+
+							if err_bson != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Error Parsing Meter Document",
+								})
+								return
+							}
+
+							// Create a new document
+							insertResult, err := svc.InsertOne(ctx, "consumers", bson)
+
+							if err != nil {
+								// Check for duplicate key error
+								var writeException mongo.WriteException
+								if errors.As(err, &writeException) {
+									for _, writeError := range writeException.WriteErrors {
+										if writeError.Code == 11000 { // MongoDB duplicate key error code
+											w.Header().Set("Content-Type", "application/json")
+											w.WriteHeader(http.StatusConflict)
+											json.NewEncoder(w).Encode(map[string]string{
+												"error": "Consumer Account Number already exists",
+											})
+											return
+										}
+									}
+								}
+
+								// Other errors
+								logger.Sugar().Errorf("Insert failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							if insertResult.InsertedID == nil {
+								logger.Sugar().Error("InsertedID is nil")
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							logger.Sugar().Infof("Inserted ID: %v", insertResult.InsertedID)
+							w.WriteHeader(http.StatusCreated)
+
 						default:
 							http.NotFound(w, r)
 						}
@@ -629,11 +799,11 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 
 							updateData := bson.M{
 								"$set": bson.M{
-									"meter-installation-date": installationDate,
-									"consumer-transformer-id": transformerID,
-									"meter-latitude":          lat,
-									"meter-longitude":         lng,
-									"consumer-acc-no":         consumerAccNo,
+									"installDate":   installationDate,
+									"transformerId": transformerID,
+									"lat":           lat,
+									"long":          lng,
+									"acctNo":        consumerAccNo,
 								},
 							}
 
@@ -662,6 +832,398 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							json.NewEncoder(w).Encode(map[string]interface{}{
 								"success": true,
 								"message": "Meter updated successfully",
+							})
+
+						case "update-consumer-form":
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+							svc := database.New()
+
+							// Verification endpoint
+							if len(pathParts) > 2 && pathParts[2] == "verify" {
+								form_consumerAccNo := r.FormValue("update-consumer-acc-no")
+								accNo, err_accNo := strconv.Atoi(form_consumerAccNo)
+
+								// Handle conversion error
+								if err_accNo != nil {
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusBadRequest)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Invalid Account Number",
+									})
+									return
+								}
+
+								var existingConsumer models.ConsumerDocument
+								err := svc.FindOne(ctx, "consumers", bson.M{"_id": accNo}).Decode(&existingConsumer)
+								if err != nil {
+									if err == mongo.ErrNoDocuments {
+										logger.Sugar().Warnf("Meter not found: %s", form_consumerAccNo)
+										w.Header().Set("Content-Type", "application/json")
+										w.WriteHeader(http.StatusNotFound)
+										json.NewEncoder(w).Encode(map[string]string{
+											"error": "Meter not found: " + form_consumerAccNo,
+										})
+										return
+									}
+									logger.Sugar().Errorf("Database error: %v", err)
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusInternalServerError)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Internal server error",
+									})
+									return
+								}
+
+								logger.Sugar().Infof("Found existing meter: %v", existingConsumer)
+								w.Header().Set("Content-Type", "application/json")
+								json.NewEncoder(w).Encode(map[string]interface{}{
+									"acctNum":    existingConsumer.AccountNumber,
+									"firstName":  existingConsumer.FirstName,
+									"middleName": existingConsumer.MiddleName,
+									"lastName":   existingConsumer.LastName,
+									"suffix":     existingConsumer.Suffix,
+									"birthDate":  existingConsumer.BirthDate.Format("2006-01-02"),
+									"province":   existingConsumer.Province,
+									"postalCode": existingConsumer.PostalCode,
+									"cityMun":    existingConsumer.CityMunicipality,
+									"barangay":   existingConsumer.Barangay,
+									"street":     existingConsumer.Street,
+									"phoneNum":   existingConsumer.PhoneNumber,
+								})
+								return
+							}
+
+							// Update Handler
+							form_accountNumber := r.FormValue("update-consumer-acc-no")
+							form_firstName := r.FormValue("update-consumer-first-name")
+							form_middleName := r.FormValue("update-consumer-middle-name")
+							form_lastName := r.FormValue("update-consumer-last-name")
+							form_suffix := r.FormValue("update-consumer-suffix-name")
+							form_birthDate := r.FormValue("update-consumer-birth-date") // Note: Inconsistent field name
+							form_province := r.FormValue("update-consumer-province")
+							form_postalCode := r.FormValue("update-consumer-postal-code")
+							form_cityMunicipality := r.FormValue("update-consumer-city-municipality")
+							form_barangay := r.FormValue("update-consumer-barangay")
+							form_street := r.FormValue("update-consumer-street")
+							form_phoneNumber := r.FormValue("update-consumer-phone-number")
+
+							// Validate required fields
+							if form_accountNumber == "" || form_firstName == "" || form_middleName == "" || form_lastName == "" ||
+								form_suffix == "" || form_birthDate == "" || form_province == "" || form_postalCode == "" ||
+								form_cityMunicipality == "" || form_barangay == "" || form_street == "" || form_phoneNumber == "" {
+
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "All fields are required",
+								})
+								return
+							}
+
+							// Convert form values to appropriate types
+							accountNumber, errAccountNumber := strconv.Atoi(form_accountNumber)
+							firstName := form_firstName
+							middleName := form_middleName
+							lastName := form_lastName
+							suffix := form_suffix
+							birthDate, errBirthDate := time.Parse("2006-01-02", form_birthDate)
+							province := form_province
+							postalCode, errPostalCode := strconv.Atoi(form_postalCode)
+							cityMunicipality := form_cityMunicipality
+							barangay := form_barangay
+							street := form_street
+							phoneNumber, errPhoneNumber := strconv.Atoi(form_phoneNumber)
+
+							// Handle individual conversion errors
+
+							if errAccountNumber != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Account Number",
+								})
+								return
+							}
+
+							if errBirthDate != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Birth Date format. Expected YYYY-MM-DD",
+								})
+								return
+							}
+
+							if errPostalCode != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Postal Code",
+								})
+								return
+							}
+
+							if errPhoneNumber != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Phone Number",
+								})
+								return
+							}
+
+							updateData := bson.M{
+								"$set": bson.M{
+									"acctNum":    accountNumber,
+									"firstName":  firstName,
+									"middleName": middleName,
+									"lastName":   lastName,
+									"suffix":     suffix,
+									"birthDate":  birthDate,
+									"province":   province,
+									"postalCode": postalCode,
+									"cityMun":    cityMunicipality,
+									"barangay":   barangay,
+									"street":     street,
+									"phoneNum":   phoneNumber,
+								},
+							}
+
+							updateResult, err := svc.UpdateOne(ctx, "consumers", bson.M{"_id": accountNumber}, updateData)
+							if err != nil {
+								logger.Sugar().Errorf("Update failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							if updateResult.MatchedCount == 0 {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusNotFound)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Meter no longer exists: " + form_accountNumber,
+								})
+								return
+							}
+
+							logger.Sugar().Infof("Updated %d document(s)", updateResult.ModifiedCount)
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success": true,
+								"message": "Meter updated successfully",
+							})
+
+						default:
+							http.NotFound(w, r)
+						}
+
+					case "delete":
+						if len(pathParts) < 2 {
+							http.NotFound(w, r)
+							return
+						}
+
+						switch subpath := pathParts[1]; subpath {
+						case "delete-meter-form":
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+							svc := database.New()
+
+							// Verification endpoint
+							if len(pathParts) > 2 && pathParts[2] == "verify" {
+								form_meterNo := r.FormValue("meter-no")
+								meterNo, err_meterNo := strconv.Atoi(form_meterNo)
+
+								// Handle conversion error
+								if err_meterNo != nil {
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusBadRequest)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Invalid Meter Number",
+									})
+									return
+								}
+
+								var existingMeter models.MeterDocument
+								err := svc.FindOne(ctx, "meters", bson.M{"_id": meterNo}).Decode(&existingMeter)
+								if err != nil {
+									if err == mongo.ErrNoDocuments {
+										logger.Sugar().Warnf("Meter not found: %s", form_meterNo)
+										w.Header().Set("Content-Type", "application/json")
+										w.WriteHeader(http.StatusNotFound)
+										json.NewEncoder(w).Encode(map[string]string{
+											"error": "Meter not found: " + form_meterNo,
+										})
+										return
+									}
+									logger.Sugar().Errorf("Database error: %v", err)
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusInternalServerError)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Internal server error",
+									})
+									return
+								}
+
+								logger.Sugar().Infof("Found existing meter: %v", existingMeter)
+								w.Header().Set("Content-Type", "application/json")
+								json.NewEncoder(w).Encode(map[string]interface{}{
+									"meterNo":          existingMeter.ID,
+									"consumerAccNo":    existingMeter.ConsumerAccNo,
+									"installationDate": existingMeter.InstallationDate.Format("2006-01-02"),
+									"transformerId":    existingMeter.ConsumerTransformerID,
+									"latitude":         existingMeter.Latitude,
+									"longitude":        existingMeter.Longitude,
+								})
+								return
+							}
+
+							// Delete handler
+							meterNo := r.FormValue("meter-no")
+
+							// Parse meter number
+							meterNoInt, err := strconv.Atoi(meterNo)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid meter account number format",
+								})
+								return
+							}
+
+							// Delete document using meter number as ID
+							deleteResult, err := svc.DeleteOne(ctx, "meters", bson.M{"_id": meterNoInt})
+							if err != nil {
+								logger.Sugar().Errorf("Delete failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							if deleteResult.DeletedCount == 0 {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusNotFound)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Meter not found: " + meterNo,
+								})
+								return
+							}
+
+							logger.Sugar().Infof("Deleted %d document(s)", deleteResult.DeletedCount)
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success": true,
+								"message": "Meter deleted successfully",
+							})
+
+						case "delete-consumer-form":
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+							svc := database.New()
+
+							// Verification endpoint
+							if len(pathParts) > 2 && pathParts[2] == "verify" {
+								form_accNo := r.FormValue("acc-no")
+								accNo, err_accNo := strconv.Atoi(form_accNo)
+
+								// Handle conversion error
+								if err_accNo != nil {
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusBadRequest)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Invalid Account Number",
+									})
+									return
+								}
+
+								var existingConsumer models.ConsumerDocument
+								err := svc.FindOne(ctx, "consumers", bson.M{"_id": accNo}).Decode(&existingConsumer)
+								if err != nil {
+									if err == mongo.ErrNoDocuments {
+										logger.Sugar().Warnf("Consumer not found: %s", form_accNo)
+										w.Header().Set("Content-Type", "application/json")
+										w.WriteHeader(http.StatusNotFound)
+										json.NewEncoder(w).Encode(map[string]string{
+											"error": "Consumer Account not found: " + form_accNo,
+										})
+										return
+									}
+									logger.Sugar().Errorf("Database error: %v", err)
+									w.Header().Set("Content-Type", "application/json")
+									w.WriteHeader(http.StatusInternalServerError)
+									json.NewEncoder(w).Encode(map[string]string{
+										"error": "Internal server error",
+									})
+									return
+								}
+
+								logger.Sugar().Infof("Found existing meter: %v", existingConsumer)
+								w.Header().Set("Content-Type", "application/json")
+								json.NewEncoder(w).Encode(map[string]interface{}{
+									"acctNum":    existingConsumer.AccountNumber,
+									"firstName":  existingConsumer.FirstName,
+									"middleName": existingConsumer.MiddleName,
+									"lastName":   existingConsumer.LastName,
+									"suffix":     existingConsumer.Suffix,
+									"birthDate":  existingConsumer.BirthDate.Format("2006-01-02"),
+									"province":   existingConsumer.Province,
+									"postalCode": existingConsumer.PostalCode,
+									"cityMun":    existingConsumer.CityMunicipality,
+									"barangay":   existingConsumer.Barangay,
+									"street":     existingConsumer.Street,
+									"phoneNum":   existingConsumer.PhoneNumber,
+								})
+								return
+							}
+
+							// Delete handler
+							accNo := r.FormValue("delete-consumer-acc-no")
+
+							// Parse meter number
+							accNoInt, err := strconv.Atoi(accNo)
+							if err != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusBadRequest)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Invalid Account number format",
+								})
+								return
+							}
+
+							// Delete document using meter number as ID
+							deleteResult, err := svc.DeleteOne(ctx, "consumers", bson.M{"_id": accNoInt})
+							if err != nil {
+								logger.Sugar().Errorf("Delete failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							if deleteResult.DeletedCount == 0 {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusNotFound)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Consumer Account not found: " + accNo,
+								})
+								return
+							}
+
+							logger.Sugar().Infof("Deleted %d document(s)", deleteResult.DeletedCount)
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success": true,
+								"message": "Consumer Account deleted successfully",
 							})
 
 						default:
