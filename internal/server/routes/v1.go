@@ -13,7 +13,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -156,26 +155,26 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				case "GET":
 					switch formType {
 					case "meter-list":
-						smartmeters := []web.SmartMeter{
+						smartmeters := []models.SmartMeterDocument{
 							{
 								ID:        "SM001",
-								Name:      "Smart Meter 1",
+								Number:    "Smart Meter 1",
 								Location:  "Calatagan",
 								Latitude:  13.838432,
 								Longitude: 120.632360,
 								Status:    "active",
-								Alert: []web.Alert{
+								Alert: []models.Alert{
 									{
 										ID:        "000000000",
-										Type:      web.AlertTypePowerOutage,
+										Type:      models.AlertTypePowerOutage,
 										Timestamp: "1747312676",
-										Status:    web.AlertStatusActive,
+										Status:    models.AlertStatusActive,
 									},
 								},
 							},
 							{
 								ID:        "SM002",
-								Name:      "Smart Meter 2",
+								Number:    "Smart Meter 2",
 								Location:  "Calatagan",
 								Latitude:  13.839147,
 								Longitude: 120.632257,
@@ -183,23 +182,23 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							},
 							{
 								ID:        "SM003",
-								Name:      "Meter 3",
+								Number:    "Meter 3",
 								Location:  "Calatagan",
 								Latitude:  13.838002,
 								Longitude: 120.632220,
 								Status:    "inactive",
-								Alert: []web.Alert{
+								Alert: []models.Alert{
 									{
 										ID:        "000000001",
-										Type:      web.AlertTypePowerOutage,
+										Type:      models.AlertTypePowerOutage,
 										Timestamp: "1747312676",
-										Status:    web.AlertStatusActive,
+										Status:    models.AlertStatusActive,
 									},
 								},
 							},
 							{
 								ID:        "SM002",
-								Name:      "Meter 4",
+								Number:    "Meter 4",
 								Location:  "Calatagan",
 								Latitude:  13.837288,
 								Longitude: 120.632164,
@@ -604,7 +603,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 							defer cancel()
 
-							bson, err_bson := bson.Marshal(models.ConsumerDocument{
+							bsonConsumer, err_cons_bson := bson.Marshal(models.ConsumerDocument{
 								ID:               accountNumber,
 								AccountNumber:    accountNumber,
 								FirstName:        firstName,
@@ -618,24 +617,38 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 								Barangay:         barangay,
 								Street:           street,
 								PhoneNumber:      phoneNumber,
+								IsActive:         true, // REMINDER: implement this in the frontend
+							})
+							bsonBalance, err_balance_bson := bson.Marshal(models.ConsumerBalanceDocument{
+								ID:            accountNumber,
+								AccountNumber: accountNumber,
+								IsActive:      true,
 							})
 
-							if err_bson != nil {
+							if err_cons_bson != nil {
 								w.Header().Set("Content-Type", "application/json")
 								w.WriteHeader(http.StatusInternalServerError)
 								json.NewEncoder(w).Encode(map[string]string{
-									"error": "Error Parsing Meter Document",
+									"error": "Error Parsing Consumer Document",
+								})
+								return
+							} else if err_balance_bson != nil {
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Error Parsing Balance Document",
 								})
 								return
 							}
 
 							// Create a new document
-							insertResult, err := svc.InsertOne(ctx, "consumers", bson)
+							insertConsumerResult, err_consumer := svc.InsertOne(ctx, "consumers", bsonConsumer)
+							insertBalanceResult, _ := svc.InsertOne(ctx, "balances", bsonBalance)
 
-							if err != nil {
+							if err_consumer != nil {
 								// Check for duplicate key error
 								var writeException mongo.WriteException
-								if errors.As(err, &writeException) {
+								if errors.As(err_consumer, &writeException) {
 									for _, writeError := range writeException.WriteErrors {
 										if writeError.Code == 11000 { // MongoDB duplicate key error code
 											w.Header().Set("Content-Type", "application/json")
@@ -649,7 +662,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 								}
 
 								// Other errors
-								logger.Sugar().Errorf("Insert failed: %v", err)
+								logger.Sugar().Errorf("Insert failed: %v", err_consumer)
 								w.Header().Set("Content-Type", "application/json")
 								w.WriteHeader(http.StatusInternalServerError)
 								json.NewEncoder(w).Encode(map[string]string{
@@ -658,8 +671,16 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 								return
 							}
 
-							if insertResult.InsertedID == nil {
-								logger.Sugar().Error("InsertedID is nil")
+							if insertConsumerResult.InsertedID == nil {
+								logger.Sugar().Error("Consumer InsertedID is nil")
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							} else if insertBalanceResult.InsertedID == nil {
+								logger.Sugar().Error("Balance InsertedID is nil")
 								w.Header().Set("Content-Type", "application/json")
 								w.WriteHeader(http.StatusInternalServerError)
 								json.NewEncoder(w).Encode(map[string]string{
@@ -668,7 +689,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 								return
 							}
 
-							logger.Sugar().Infof("Inserted ID: %v", insertResult.InsertedID)
+							logger.Sugar().Infof("Inserted ID: %v", insertConsumerResult.InsertedID)
 							w.WriteHeader(http.StatusCreated)
 
 						default:
@@ -1246,157 +1267,157 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 			accounting: func(w http.ResponseWriter, r *http.Request) {
 				switch r.Method {
 				case "GET":
-					// web.SystemAdminEmployeeAccountingWebPage().Render(r.Context(), w)
-					web.SystemAdminEmployeeAccountingWebPage(
-						web.AccountingRatesTableFormType.Display,
-						web.AccountingRatesTable{
-							Date:        "01/01/01",
-							Particulars: "RESIDENTIAL",
-							Rates:       "",
-							ERC:         "9.9298",
-							AccountingRatesTableRowGroup: []web.AccountingRatesTableRowGroup{
-								// Generation Charges
-								{
-									Particulars: "Generation Charges",
-									Unit:        "",
-									Rates:       "5.6092",
-									ERC:         "5.6092",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "Generation Energy Charge",
-											Unit:        "PhP/kWh",
-											Rates:       "5.6092",
-											ERC:         "5.6092",
-										},
-										{
-											Particulars: "Other Generation Rate Adjustment",
-											Unit:        "PhP/kWh",
-											Rates:       "0.0000",
-											ERC:         "0.0000",
-										},
-									},
-								},
-								// Transmission Charges
-								{
-									Particulars: "Transmission Charges (NCCP)",
-									Unit:        "",
-									Rates:       "0.6853",
-									ERC:         "0.6853",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "Transmission Demand Charge",
-											Unit:        "PhP/kW",
-											Rates:       "0.0000",
-											ERC:         "0.0000",
-										},
-										{
-											Particulars: "Transmission System Charge",
-											Unit:        "PhP/kWh",
-											Rates:       "0.6853",
-											ERC:         "0.6853",
-										},
-									},
-								},
-								// System Loss Charge
-								{
-									Particulars: "System Loss Charge",
-									Unit:        "",
-									Rates:       "0.9344",
-									ERC:         "0.9344",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "System Loss Charge",
-											Unit:        "PhP/kWh",
-											Rates:       "0.9344",
-											ERC:         "0.9344",
-										},
-									},
-								},
-								// Continue with other sections following the same pattern
-								// Distribution Charges
-								{
-									Particulars: "Distribution Charges",
-									Unit:        "",
-									Rates:       "0.4613",
-									ERC:         "0.4613",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "Distribution Demand Charge",
-											Unit:        "PhP/kW",
-											Rates:       "0.0000",
-											ERC:         "0.0000",
-										},
-										{
-											Particulars: "Distribution System Charge",
-											Unit:        "PhP/kWh",
-											Rates:       "0.4613",
-											ERC:         "0.4613",
-										},
-									},
-								},
-								// Supply Charges
-								{
-									Particulars: "Supply Charges",
-									Unit:        "",
-									Rates:       "0.5376",
-									ERC:         "0.5376",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "Supply Retail Customer Charge",
-											Unit:        "PhP/Cust/Mo",
-											Rates:       "0.0000",
-											ERC:         "0.0000",
-										},
-										{
-											Particulars: "Supply System Charge",
-											Unit:        "PhP/kWh",
-											Rates:       "0.5376",
-											ERC:         "0.5376",
-										},
-									},
-								},
-								// Add remaining sections following the same structure...
-								// Example for VAT section:
-								{
-									Particulars: "VAT",
-									Unit:        "",
-									Rates:       "1.0943",
-									ERC:         "0.8543",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "Generation",
-											Unit:        "PhP/kWh",
-											Rates:       "0.6376",
-											ERC:         "0.6376",
-										},
-										{
-											Particulars: "Transmission",
-											Unit:        "PhP/kWh",
-											Rates:       "0.1096",
-											ERC:         "0.1096",
-										},
-										// Add other VAT components...
-									},
-								},
-								// Universal Charge
-								{
-									Particulars: "Universal Charge",
-									Unit:        "",
-									Rates:       "0.2250",
-									ERC:         "0.2250",
-									SubRowGroup: []web.SubRowGroup{
-										{
-											Particulars: "Missionary Electrification",
-											Unit:        "PhP/kWh",
-											Rates:       "0.1822",
-											ERC:         "0.1822",
-										},
-										// Add other universal charge components...
-									},
-								},
-							},
-						},
-					).Render(r.Context(), w)
+					web.SystemAdminEmployeeAccountingWebPage().Render(r.Context(), w)
+					// web.SystemAdminEmployeeAccountingWebPage(
+					// 	models.AccountingRatesTableFormType.Display,
+					// 	models.AccountingRatesTable{
+					// 		Date:        "01/01/01",
+					// 		Particulars: "RESIDENTIAL",
+					// 		Rates:       "",
+					// 		ERC:         "9.9298",
+					// 		AccountingRatesTableRowGroup: []models.AccountingRatesTableRowGroup{
+					// 			// Generation Charges
+					// 			{
+					// 				Particulars: "Generation Charges",
+					// 				Unit:        "",
+					// 				Rates:       "5.6092",
+					// 				ERC:         "5.6092",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "Generation Energy Charge",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "5.6092",
+					// 						ERC:         "5.6092",
+					// 					},
+					// 					{
+					// 						Particulars: "Other Generation Rate Adjustment",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.0000",
+					// 						ERC:         "0.0000",
+					// 					},
+					// 				},
+					// 			},
+					// 			// Transmission Charges
+					// 			{
+					// 				Particulars: "Transmission Charges (NCCP)",
+					// 				Unit:        "",
+					// 				Rates:       "0.6853",
+					// 				ERC:         "0.6853",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "Transmission Demand Charge",
+					// 						Unit:        "PhP/kW",
+					// 						Rates:       "0.0000",
+					// 						ERC:         "0.0000",
+					// 					},
+					// 					{
+					// 						Particulars: "Transmission System Charge",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.6853",
+					// 						ERC:         "0.6853",
+					// 					},
+					// 				},
+					// 			},
+					// 			// System Loss Charge
+					// 			{
+					// 				Particulars: "System Loss Charge",
+					// 				Unit:        "",
+					// 				Rates:       "0.9344",
+					// 				ERC:         "0.9344",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "System Loss Charge",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.9344",
+					// 						ERC:         "0.9344",
+					// 					},
+					// 				},
+					// 			},
+					// 			// Continue with other sections following the same pattern
+					// 			// Distribution Charges
+					// 			{
+					// 				Particulars: "Distribution Charges",
+					// 				Unit:        "",
+					// 				Rates:       "0.4613",
+					// 				ERC:         "0.4613",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "Distribution Demand Charge",
+					// 						Unit:        "PhP/kW",
+					// 						Rates:       "0.0000",
+					// 						ERC:         "0.0000",
+					// 					},
+					// 					{
+					// 						Particulars: "Distribution System Charge",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.4613",
+					// 						ERC:         "0.4613",
+					// 					},
+					// 				},
+					// 			},
+					// 			// Supply Charges
+					// 			{
+					// 				Particulars: "Supply Charges",
+					// 				Unit:        "",
+					// 				Rates:       "0.5376",
+					// 				ERC:         "0.5376",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "Supply Retail Customer Charge",
+					// 						Unit:        "PhP/Cust/Mo",
+					// 						Rates:       "0.0000",
+					// 						ERC:         "0.0000",
+					// 					},
+					// 					{
+					// 						Particulars: "Supply System Charge",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.5376",
+					// 						ERC:         "0.5376",
+					// 					},
+					// 				},
+					// 			},
+					// 			// Add remaining sections following the same structure...
+					// 			// Example for VAT section:
+					// 			{
+					// 				Particulars: "VAT",
+					// 				Unit:        "",
+					// 				Rates:       "1.0943",
+					// 				ERC:         "0.8543",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "Generation",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.6376",
+					// 						ERC:         "0.6376",
+					// 					},
+					// 					{
+					// 						Particulars: "Transmission",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.1096",
+					// 						ERC:         "0.1096",
+					// 					},
+					// 					// Add other VAT components...
+					// 				},
+					// 			},
+					// 			// Universal Charge
+					// 			{
+					// 				Particulars: "Universal Charge",
+					// 				Unit:        "",
+					// 				Rates:       "0.2250",
+					// 				ERC:         "0.2250",
+					// 				SubRowGroup: []models.SubRowGroup{
+					// 					{
+					// 						Particulars: "Missionary Electrification",
+					// 						Unit:        "PhP/kWh",
+					// 						Rates:       "0.1822",
+					// 						ERC:         "0.1822",
+					// 					},
+					// 					// Add other universal charge components...
+					// 				},
+					// 			},
+					// 		},
+					// 	},
+					// ).Render(r.Context(), w)
 				default:
 					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 				}
@@ -1410,331 +1431,388 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				switch r.Method {
 				case "GET":
 					switch formType {
-					case "update-rates-form":
-						web.SystemAdminEmployeeAccountingTable(
-							web.AccountingRatesTableFormType.FormRates,
-							web.AccountingRatesTable{
-								Date:        "01/01/01",
-								Particulars: "RESIDENTIAL",
-								Rates:       "",
-								AccountingRatesTableRowGroup: []web.AccountingRatesTableRowGroup{
-									// Generation Charges
-									{
-										Particulars: "Generation Charges",
-										Unit:        "",
-										Rates:       "5.6092",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Generation Energy Charge",
-												Unit:        "PhP/kWh",
-												Rates:       "5.6092",
+					case "rates-data":
+						// Process Data
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+						svc := database.New()
+
+						// Define the aggregation pipeline
+						pipeline := []bson.M{
+							{"$match": bson.M{"type": bson.M{"$in": []string{"RATES", "ERC", "INTEREST"}}}},
+							{"$group": bson.M{"_id": nil, "docs": bson.M{"$push": "$$ROOT"}}},
+							{"$addFields": bson.M{
+								"ratesDoc": bson.M{"$arrayElemAt": []interface{}{
+									bson.M{"$filter": bson.M{
+										"input": "$docs",
+										"cond":  bson.M{"$eq": []interface{}{"$$this.type", "RATES"}},
+									}},
+									0,
+								}},
+								"ercDoc": bson.M{"$arrayElemAt": []interface{}{
+									bson.M{"$filter": bson.M{
+										"input": "$docs",
+										"cond":  bson.M{"$eq": []interface{}{"$$this.type", "ERC"}},
+									}},
+									0,
+								}},
+								"interestDoc": bson.M{"$arrayElemAt": []interface{}{
+									bson.M{"$filter": bson.M{
+										"input": "$docs",
+										"cond":  bson.M{"$eq": []interface{}{"$$this.type", "INTEREST"}},
+									}},
+									0,
+								}},
+							}},
+							{"$addFields": bson.M{
+								"ercTotal": bson.M{"$let": bson.M{
+									"vars": bson.M{"totalSection": bson.M{"$arrayElemAt": []interface{}{
+										bson.M{"$filter": bson.M{
+											"input": "$ercDoc.ratesdata.sections",
+											"cond":  bson.M{"$eq": []interface{}{"$$this.name", "TOTAL RATE"}},
+										}},
+										0,
+									}}},
+									"in": "$$totalSection.erc",
+								}},
+								"totalRate": bson.M{"$let": bson.M{
+									"vars": bson.M{"totalSection": bson.M{"$arrayElemAt": []interface{}{
+										bson.M{"$filter": bson.M{
+											"input": "$ratesDoc.ratesdata.sections",
+											"cond":  bson.M{"$eq": []interface{}{"$$this.name", "TOTAL RATE"}},
+										}},
+										0,
+									}}},
+									"in": "$$totalSection.rate",
+								}},
+							}},
+							{"$project": bson.M{
+								"_id":             0,
+								"billingDate":     "$ratesDoc.ratesdata.date",
+								"type":            "RESIDENTIAL",
+								"overdueInterest": "$interestDoc.interestdata.interest",
+								"sections": bson.M{"$concatArrays": []interface{}{
+									[]interface{}{bson.M{
+										"id":   "header-residential",
+										"type": "main-header",
+										"name": "RESIDENTIAL",
+										"rate": "",
+										"erc":  "$ercTotal",
+									}},
+									bson.M{"$map": bson.M{
+										"input": bson.M{"$range": []interface{}{0, bson.M{"$size": "$ratesDoc.ratesdata.sections"}, 1}},
+										"as":    "idx",
+										"in": bson.M{"$let": bson.M{
+											"vars": bson.M{
+												"rSec": bson.M{"$arrayElemAt": []interface{}{"$ratesDoc.ratesdata.sections", "$$idx"}},
+												"eSec": bson.M{"$arrayElemAt": []interface{}{"$ercDoc.ratesdata.sections", "$$idx"}},
 											},
-											{
-												Particulars: "Other Generation Rate Adjustment",
-												Unit:        "PhP/kWh",
-												Rates:       "0.0000",
-											},
-										},
-									},
-									// Transmission Charges
-									{
-										Particulars: "Transmission Charges (NCCP)",
-										Unit:        "",
-										Rates:       "0.6853",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Transmission Demand Charge",
-												Unit:        "PhP/kW",
-												Rates:       "0.0000",
-											},
-											{
-												Particulars: "Transmission System Charge",
-												Unit:        "PhP/kWh",
-												Rates:       "0.6853",
-											},
-										},
-									},
-									// System Loss Charge
-									{
-										Particulars: "System Loss Charge",
-										Unit:        "",
-										Rates:       "0.9344",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "System Loss Charge",
-												Unit:        "PhP/kWh",
-												Rates:       "0.9344",
-											},
-										},
-									},
-									// Continue with other sections following the same pattern
-									// Distribution Charges
-									{
-										Particulars: "Distribution Charges",
-										Unit:        "",
-										Rates:       "0.4613",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Distribution Demand Charge",
-												Unit:        "PhP/kW",
-												Rates:       "0.0000",
-											},
-											{
-												Particulars: "Distribution System Charge",
-												Unit:        "PhP/kWh",
-												Rates:       "0.4613",
-											},
-										},
-									},
-									// Supply Charges
-									{
-										Particulars: "Supply Charges",
-										Unit:        "",
-										Rates:       "0.5376",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Supply Retail Customer Charge",
-												Unit:        "PhP/Cust/Mo",
-												Rates:       "0.0000",
-											},
-											{
-												Particulars: "Supply System Charge",
-												Unit:        "PhP/kWh",
-												Rates:       "0.5376",
-											},
-										},
-									},
-									// Add remaining sections following the same structure...
-									// Example for VAT section:
-									{
-										Particulars: "VAT",
-										Unit:        "",
-										Rates:       "1.0943",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Generation",
-												Unit:        "PhP/kWh",
-												Rates:       "0.6376",
-											},
-											{
-												Particulars: "Transmission",
-												Unit:        "PhP/kWh",
-												Rates:       "0.1096",
-											},
-											// Add other VAT components...
-										},
-									},
-									// Universal Charge
-									{
-										Particulars: "Universal Charge",
-										Unit:        "",
-										Rates:       "0.2250",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Missionary Electrification",
-												Unit:        "PhP/kWh",
-												Rates:       "0.1822",
-											},
-											// Add other universal charge components...
-										},
-									},
-								},
-							},
-						).Render(r.Context(), w)
-					case "update-erc-form":
-						web.SystemAdminEmployeeAccountingTable(
-							web.AccountingRatesTableFormType.FormERC,
-							web.AccountingRatesTable{
-								Date:        "01/01/01",
-								Particulars: "RESIDENTIAL",
-								ERC:         "9.9298",
-								AccountingRatesTableRowGroup: []web.AccountingRatesTableRowGroup{
-									// Generation Charges
-									{
-										Particulars: "Generation Charges",
-										Unit:        "",
-										ERC:         "5.6092",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Generation Energy Charge",
-												Unit:        "PhP/kWh",
-												ERC:         "5.6092",
-											},
-											{
-												Particulars: "Other Generation Rate Adjustment",
-												Unit:        "PhP/kWh",
-												ERC:         "0.0000",
-											},
-										},
-									},
-									// Transmission Charges
-									{
-										Particulars: "Transmission Charges (NCCP)",
-										Unit:        "",
-										ERC:         "0.6853",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Transmission Demand Charge",
-												Unit:        "PhP/kW",
-												ERC:         "0.0000",
-											},
-											{
-												Particulars: "Transmission System Charge",
-												Unit:        "PhP/kWh",
-												ERC:         "0.6853",
-											},
-										},
-									},
-									// System Loss Charge
-									{
-										Particulars: "System Loss Charge",
-										Unit:        "",
-										ERC:         "0.9344",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "System Loss Charge",
-												Unit:        "PhP/kWh",
-												ERC:         "0.9344",
-											},
-										},
-									},
-									// Continue with other sections following the same pattern
-									// Distribution Charges
-									{
-										Particulars: "Distribution Charges",
-										Unit:        "",
-										ERC:         "0.4613",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Distribution Demand Charge",
-												Unit:        "PhP/kW",
-												ERC:         "0.0000",
-											},
-											{
-												Particulars: "Distribution System Charge",
-												Unit:        "PhP/kWh",
-												ERC:         "0.4613",
-											},
-										},
-									},
-									// Supply Charges
-									{
-										Particulars: "Supply Charges",
-										Unit:        "",
-										ERC:         "0.5376",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Supply Retail Customer Charge",
-												Unit:        "PhP/Cust/Mo",
-												ERC:         "0.0000",
-											},
-											{
-												Particulars: "Supply System Charge",
-												Unit:        "PhP/kWh",
-												ERC:         "0.5376",
-											},
-										},
-									},
-									// Add remaining sections following the same structure...
-									// Example for VAT section:
-									{
-										Particulars: "VAT",
-										Unit:        "",
-										ERC:         "0.8543",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Generation",
-												Unit:        "PhP/kWh",
-												ERC:         "0.6376",
-											},
-											{
-												Particulars: "Transmission",
-												Unit:        "PhP/kWh",
-												ERC:         "0.1096",
-											},
-											// Add other VAT components...
-										},
-									},
-									// Universal Charge
-									{
-										Particulars: "Universal Charge",
-										Unit:        "",
-										ERC:         "0.2250",
-										SubRowGroup: []web.SubRowGroup{
-											{
-												Particulars: "Missionary Electrification",
-												Unit:        "PhP/kWh",
-												ERC:         "0.1822",
-											},
-											// Add other universal charge components...
-										},
-									},
-								},
-							},
-						).Render(r.Context(), w)
+											"in": bson.M{"$cond": []interface{}{
+												bson.M{"$ne": []interface{}{"$$rSec.name", "TOTAL RATE"}},
+												bson.M{"$let": bson.M{
+													"vars": bson.M{"sectionId": bson.M{"$switch": bson.M{
+														"branches": []bson.M{
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Generation Charges"}}, "then": "cat-gen"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Transmission Charges (NGCP)"}}, "then": "cat-trans"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "System Loss Charge"}}, "then": "cat-sysloss"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Distribution Charges"}}, "then": "cat-dist"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Supply Charges"}}, "then": "cat-supply"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Metering Charges"}}, "then": "cat-meter"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Reinvestment Fund/MCC"}}, "then": "cat-reinvest"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Other Charges"}}, "then": "cat-other"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Franchise Tax"}}, "then": "cat-franchise"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Business Tax"}}, "then": "cat-business"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Real Property Tax"}}, "then": "cat-property"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "VAT"}}, "then": "cat-vat"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "Universal Charge"}}, "then": "cat-universal"},
+															{"case": bson.M{"$eq": []interface{}{"$$rSec.name", "FIT - ALL"}}, "then": "cat-fit"},
+														},
+														"default": "",
+													}}},
+													"in": bson.M{
+														"id":   "$$sectionId",
+														"type": "category",
+														"name": "$$rSec.name",
+														"rate": "$$rSec.rate",
+														"erc":  "$$eSec.erc",
+														"items": bson.M{"$map": bson.M{
+															"input": bson.M{"$range": []interface{}{0, bson.M{"$size": "$$rSec.items"}, 1}},
+															"as":    "j",
+															"in": bson.M{"$let": bson.M{
+																"vars": bson.M{
+																	"rItem": bson.M{"$arrayElemAt": []interface{}{"$$rSec.items", "$$j"}},
+																	"eItem": bson.M{"$arrayElemAt": []interface{}{"$$eSec.items", "$$j"}},
+																},
+																"in": bson.M{
+																	"id": bson.M{"$concat": []interface{}{
+																		"item-",
+																		bson.M{"$substrCP": []interface{}{
+																			"$$sectionId",
+																			4,
+																			bson.M{"$subtract": []interface{}{bson.M{"$strLenCP": "$$sectionId"}, 4}},
+																		}},
+																		bson.M{"$toString": bson.M{"$add": []interface{}{"$$j", 1}}},
+																	}},
+																	"name": "$$rItem.name",
+																	"unit": "$$rItem.unit",
+																	"rate": "$$rItem.rate",
+																	"erc":  "$$eItem.erc",
+																},
+															}},
+														}},
+													},
+												}},
+												nil,
+											}},
+										}},
+									}},
+									[]interface{}{bson.M{
+										"id":   "total-section",
+										"type": "total",
+										"name": "TOTAL RATE",
+										"rate": "$totalRate",
+										"erc":  "$ercTotal",
+									}},
+								}},
+							}},
+							{"$addFields": bson.M{
+								"sections": bson.M{"$filter": bson.M{
+									"input": "$sections",
+									"as":    "sec",
+									"cond":  bson.M{"$ne": []interface{}{"$$sec", nil}},
+								}},
+							}},
+						}
+
+						cursor, err := svc.Aggregation(ctx, "rates", pipeline)
+						if err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Aggregation failed: %v", err)
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusInternalServerError)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Internal server error",
+							})
+							return
+						}
+						defer cursor.Close(ctx)
+
+						var result bson.M
+						if cursor.Next(ctx) {
+							if err := cursor.Decode(&result); err != nil {
+								c.Deps.GetLogger().Sugar().Errorf("Decoding failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Failed to decode result",
+								})
+								return
+							}
+						} else {
+							c.Deps.GetLogger().Sugar().Errorf("No results found")
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusNotFound)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "No data found",
+							})
+							return
+						}
+
+						c.Deps.GetLogger().Sugar().Debugf("Aggregation result: %v", result)
+
+						w.Header().Set("Content-Type", "application/json")
+						json.NewEncoder(w).Encode(result)
+
 					default:
 						http.NotFound(w, r)
 					}
 				case "POST":
 					switch formType {
 					case "submit-update-rates-form":
-						defer func() {
-							if r := recover(); r != nil {
-								http.Error(w, fmt.Sprintf("Internal server error: %v", r), http.StatusInternalServerError)
-								log.Printf("Panic recovered: %v", r)
+
+						// Decode incoming JSON into “payload”
+						var payload models.RatesDocument
+						if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
+							http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+							return
+						}
+
+						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
+
+						// Process Data
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+						svc := database.New()
+
+						updateResult, err := svc.UpdateOne(ctx, "rates", bson.M{"type": payload.Type}, bson.M{"$set": payload})
+						if err != nil {
+							logger.Sugar().Errorf("Update failed: %v", err)
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusInternalServerError)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Internal server error",
+							})
+							return
+						}
+
+						if updateResult.MatchedCount == 0 {
+							// Insert if no document matched
+							insertResult, err := svc.InsertOne(ctx, "rates", payload)
+							if err != nil {
+								c.Deps.GetLogger().Sugar().Errorf("Insert failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
 							}
-						}()
 
-						if r.Method != http.MethodPost {
-							http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success":     true,
+								"type":        "RATES",
+								"data":        payload.RatesData,
+								"inserted_id": insertResult.InsertedID,
+							})
+
 							return
 						}
 
-						var payload web.AccountingRatesTable
-						if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
-							http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
-							return
-						}
+						logger.Sugar().Infof("Updated %d document(s)\tID: %d", updateResult.ModifiedCount, updateResult.UpsertedID)
 
-						// Process your data here...
-						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
+						w.Header().Set("Content-Type", "application/json")
+						json.NewEncoder(w).Encode(map[string]interface{}{
+							"success":     true,
+							"type":        "RATES",
+							"data":        payload.RatesData,
+							"inserted_id": updateResult.UpsertedID,
+						})
 
-						// REMINDER: process submit-update-rates-form request here
-						// w.Header().Set("Content-Type", "application/json")
-						// if err := json.NewEncoder(w).Encode(payload); err != nil {
-						// 	http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-						// }
-
-						// Process data here
-						time.Sleep(1 * time.Second)
-						w.WriteHeader(http.StatusOK)
-						w.Write([]byte("Success"))
 					case "submit-update-erc-form":
-						if r.Method != http.MethodPost {
-							http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-							return
-						}
 
-						var payload web.AccountingRatesTable
+						// Decode incoming JSON into “payload”
+						var payload models.RatesDocument
 						if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
 							http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
 							return
 						}
 
-						// Process your data here...
 						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
 
-						// REMINDER: process submit-update-erc-form request here
-						// w.Header().Set("Content-Type", "application/json")
-						// if err := json.NewEncoder(w).Encode(payload); err != nil {
-						// 	http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-						// }
+						// Process Data
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+						svc := database.New()
 
-						time.Sleep(1 * time.Second)
-						w.WriteHeader(http.StatusOK)
-						w.Write([]byte("Success"))
+						updateResult, err := svc.UpdateOne(ctx, "rates", bson.M{"type": payload.Type}, bson.M{"$set": payload})
+						if err != nil {
+							logger.Sugar().Errorf("Update failed: %v", err)
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusInternalServerError)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Internal server error",
+							})
+							return
+						}
+
+						if updateResult.MatchedCount == 0 {
+							// Insert if no document matched
+							insertResult, err := svc.InsertOne(ctx, "rates", payload)
+							if err != nil {
+								c.Deps.GetLogger().Sugar().Errorf("Insert failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success":     true,
+								"type":        "RATES",
+								"data":        payload.RatesData,
+								"inserted_id": insertResult.InsertedID,
+							})
+
+							return
+						}
+
+						logger.Sugar().Infof("Updated %d document(s)\tID: %d", updateResult.ModifiedCount, updateResult.UpsertedID)
+
+						w.Header().Set("Content-Type", "application/json")
+						json.NewEncoder(w).Encode(map[string]interface{}{
+							"success":     true,
+							"type":        "RATES",
+							"data":        payload.RatesData,
+							"inserted_id": updateResult.UpsertedID,
+						})
+
+					case "submit-update-interest-form":
+
+						// Decode incoming JSON into “payload”
+						var payload models.RatesDocument
+						if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
+							http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+							return
+						}
+
+						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
+
+						// Process Data
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+						svc := database.New()
+
+						updateResult, err := svc.UpdateOne(ctx, "rates", bson.M{"type": payload.Type}, bson.M{"$set": payload})
+						if err != nil {
+							logger.Sugar().Errorf("Update failed: %v", err)
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusInternalServerError)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Internal server error",
+							})
+							return
+						}
+
+						if updateResult.MatchedCount == 0 {
+							// Insert if no document matched
+							insertResult, err := svc.InsertOne(ctx, "rates", payload)
+							if err != nil {
+								c.Deps.GetLogger().Sugar().Errorf("Insert failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Internal server error",
+								})
+								return
+							}
+
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"success":     true,
+								"type":        "ERC",
+								"data":        payload.RatesData,
+								"inserted_id": insertResult.InsertedID,
+							})
+
+							return
+						}
+
+						logger.Sugar().Infof("Updated %d document(s)\tID: %d", updateResult.ModifiedCount, updateResult.UpsertedID)
+
+						w.Header().Set("Content-Type", "application/json")
+						json.NewEncoder(w).Encode(map[string]interface{}{
+							"success":     true,
+							"type":        "INTEREST",
+							"data":        payload.RatesData,
+							"inserted_id": updateResult.UpsertedID,
+						})
+
 					default:
 						http.NotFound(w, r)
 					}
@@ -1765,6 +1843,134 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				case "GET":
 					switch formType {
 					// routes
+
+					default:
+						http.Error(w, "Not Found", http.StatusNotFound)
+					}
+
+				case "POST":
+					switch formType {
+					case "verify-account-number":
+						type CurrentBill struct {
+							ID                string  `json:"id"`
+							CurrentBillMonth  string  `json:"currentBillMonth"`
+							CurrentBillYear   string  `json:"currentBillYear"`
+							CurrentBillAmount float64 `json:"currentBillAmount"`
+						}
+
+						type OverdueBill struct {
+							ID             string  `json:"id"`
+							Month          string  `json:"month"`
+							Year           string  `json:"year"`
+							BaseAmount     float64 `json:"baseAmount"`
+							InterestRate   float64 `json:"interestRate"`
+							InterestAmount float64 `json:"interestAmount"`
+							ServiceFee     float64 `json:"serviceFee"`
+							DaysOverdue    int     `json:"daysOverdue"`
+						}
+
+						type Payment struct {
+							Date          string  `json:"date"`
+							TransactionID string  `json:"transactionId"`
+							Amount        float64 `json:"amount"`
+							Status        string  `json:"status"`
+						}
+
+						type CustomerData struct {
+							AccountNumber   string        `json:"accountNumber"`
+							FirstName       string        `json:"firstName"`
+							MiddleName      string        `json:"middleName"`
+							LastName        string        `json:"lastName"`
+							Suffix          string        `json:"suffix"`
+							LastPaymentDate string        `json:"lastPaymentDate"`
+							DueDate         string        `json:"dueDate"`
+							CurrentBill     CurrentBill   `json:"currentBill"`
+							OverdueBills    []OverdueBill `json:"overdueBills"`
+							TotalAmount     float64       `json:"totalAmount"`
+							PaymentHistory  []Payment     `json:"paymentHistory"`
+						}
+
+						dueDate := time.Now().AddDate(0, 1, 0) // e.g., one month from now
+
+						// Sample overdue bills
+						overdueBills := []OverdueBill{
+							{
+								ID:             "OB202506",
+								Month:          "June",
+								Year:           "2025",
+								BaseAmount:     850.25,
+								InterestRate:   3.5,
+								InterestAmount: 29.76,
+								ServiceFee:     50.00,
+								DaysOverdue:    45,
+							},
+							{
+								ID:             "OB202505",
+								Month:          "May",
+								Year:           "2025",
+								BaseAmount:     750.50,
+								InterestRate:   3.5,
+								InterestAmount: 26.27,
+								ServiceFee:     50.00,
+								DaysOverdue:    75,
+							},
+						}
+
+						// Calculate total amount
+						var totalAmount float64 = 1850.75 // current bill amount
+						for _, bill := range overdueBills {
+							totalAmount += bill.BaseAmount + bill.InterestAmount + bill.ServiceFee
+						}
+
+						data := CustomerData{
+							AccountNumber:   "AC982345",
+							FirstName:       "Maria",
+							MiddleName:      "Santos",
+							LastName:        "Dela Cruz",
+							Suffix:          "",
+							LastPaymentDate: "2023-06-15",
+							DueDate:         dueDate.Format("2006-01-02"),
+							CurrentBill: CurrentBill{
+								ID:                "CB202507",
+								CurrentBillMonth:  "July",
+								CurrentBillYear:   "2025",
+								CurrentBillAmount: 1850.75,
+							},
+							OverdueBills: overdueBills,
+							TotalAmount:  totalAmount,
+							PaymentHistory: []Payment{
+								{Date: "2023-06-15", TransactionID: "TX789012", Amount: 1750.50, Status: "Paid"},
+								{Date: "2023-05-12", TransactionID: "TX345678", Amount: 1650.25, Status: "Paid"},
+								{Date: "2023-04-10", TransactionID: "TX901234", Amount: 1800.00, Status: "Paid"},
+								{Date: "2023-03-08", TransactionID: "TX567890", Amount: 1720.30, Status: "Paid"},
+							},
+						}
+
+						w.Header().Set("Content-Type", "application/json")
+						json.NewEncoder(w).Encode(data)
+
+					case "process-payment":
+						type ProcessPayment struct {
+							AccountNumber string   `json:"accountNumber"`
+							TotalAmount   float64  `json:"amount"`
+							BillIds       []string `json:"billIds"`
+						}
+
+						var payload ProcessPayment
+						if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
+							http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+							return
+						}
+						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
+						w.WriteHeader(http.StatusOK)
+						w.Header().Set("Content-Type", "application/json")
+						json.NewEncoder(w).Encode(map[string]interface{}{
+							"amount":        payload.TotalAmount,
+							"accountNumber": payload.AccountNumber,
+							"date":          time.Now(),
+						})
+
 					default:
 						http.Error(w, "Not Found", http.StatusNotFound)
 					}

@@ -1,0 +1,398 @@
+{
+    "_id": {
+        "$oid": "683d7b3f290148f4e9595a5d"
+    },
+    "type": "RATES",
+    "ratesdata": {
+        "date": "2023-01-01",
+        "type": "",
+        "sections": [
+            {
+                "type": "",
+                "name": "Generation Charges",
+                "rate": 5.6092,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Generation Energy Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 5.6092,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Other Generation Rate Adjustment",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Transmission Charges (NGCP)",
+                "rate": 0.6853,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Transmission Demand Charge",
+                        "unit": "PhP/kW",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Transmission System Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.6853,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "System Loss Charge",
+                "rate": 0.9344,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "System Loss Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.9344,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Distribution Charges",
+                "rate": 0.4613,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Distribution Demand Charge",
+                        "unit": "PhP/kW",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Distribution System Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.4613,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Supply Charges",
+                "rate": 0.5376,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Supply Retail Customer Charge",
+                        "unit": "PhP/Cust/Mo",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Supply System Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.5376,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Metering Charges",
+                "rate": 5.3205,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Metering Retail Customer Charge",
+                        "unit": "PhP/Cust/Mo",
+                        "rate": 5,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Metering System Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.3205,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Reinvestment Fund/MCC",
+                "rate": 0.2178,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Reinvestment Fund/MCC",
+                        "unit": "PhP/kWh",
+                        "rate": 0.2178,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Other Charges",
+                "rate": 0.4506,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Lifeline Subsidy Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0003,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Sr. Citizen Subsidy Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0003,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Lifeline Discount (0-15 kWh)",
+                        "unit": "",
+                        "rate": 0.4,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Lifeline Discount (16-35 kWh)",
+                        "unit": "",
+                        "rate": 0.05,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Franchise Tax",
+                "rate": 0.005,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Franchise Tax",
+                        "unit": "",
+                        "rate": 0.005,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Business Tax",
+                "rate": 0.0307,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Business Tax - Balayan",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0041,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Business Tax - Calaca",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0117,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Business Tax - Calatagan",
+                        "unit": "PhP/kWh",
+                        "rate": 0.004,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Business Tax - Lemery",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0033,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Business Tax - Nasugbu",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0034,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Business Tax - Tuy",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0042,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Real Property Tax",
+                "rate": 0.0367,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Real Property Tax - Calaca",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0219,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Real Property Tax - Balayan",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0027,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Real Property Tax - Lemery",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0028,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Real Property Tax - Nasugbu",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0034,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Real Property Tax - Taal",
+                        "unit": "PhP/kWh",
+                        "rate": 0.003,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Real Property Tax - Calatagan",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0029,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "VAT",
+                "rate": 1.0943,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Generation",
+                        "unit": "PhP/kWh",
+                        "rate": 0.6376,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Transmission",
+                        "unit": "PhP/kWh",
+                        "rate": 0.1096,
+                        "erc": 0
+                    },
+                    {
+                        "name": "System Loss",
+                        "unit": "PhP/kWh",
+                        "rate": 0.1071,
+                        "erc": 0
+                    },
+                    {
+                        "name": "GRAM/ICERA/DAA VAT",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Distribution %",
+                        "unit": "",
+                        "rate": 0.12,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Others %",
+                        "unit": "",
+                        "rate": 0.12,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "Universal Charge",
+                "rate": 0.225,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "Missionary Electrification",
+                        "unit": "PhP/kWh",
+                        "rate": 0.1822,
+                        "erc": 0
+                    },
+                    {
+                        "name": "True-up (CY 2012)",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "True-up (CY 2013)",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "True-up (CY 2014)",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "Environmental Charge",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "NPC Stranded Contract Cost",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    },
+                    {
+                        "name": "NPC Stranded Debts",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0428,
+                        "erc": 0
+                    },
+                    {
+                        "name": "GRAM/ICERA/DAA",
+                        "unit": "PhP/kWh",
+                        "rate": 0,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "FIT - ALL",
+                "rate": 0.0838,
+                "erc": 0,
+                "items": [
+                    {
+                        "name": "FIT-ALL Php/kWh",
+                        "unit": "PhP/kWh",
+                        "rate": 0.0838,
+                        "erc": 0
+                    }
+                ]
+            },
+            {
+                "type": "",
+                "name": "TOTAL RATE",
+                "rate": 15.6922,
+                "erc": 0,
+                "items": null
+            }
+        ]
+    },
+    "interestdata": {
+        "interest": 0
+    }
+}

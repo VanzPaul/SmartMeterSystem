@@ -1,0 +1,14 @@
+{
+    "_id": {
+        "$oid": "683d7b59290148f4e9595a61"
+    },
+    "type": "INTEREST",
+    "ratesdata": {
+        "date": "",
+        "type": "",
+        "sections": null
+    },
+    "interestdata": {
+        "interest": 7.29
+    }
+}

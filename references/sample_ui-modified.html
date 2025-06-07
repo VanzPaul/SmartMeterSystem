@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electricity Rates Management</title>
+  <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 font-sans text-gray-800">
+  <!-- Main Content -->
+  <div class="flex-1 flex">
+    <!-- Content Area -->
+    <main class="flex-1 p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Accounting Management</h2>
+        <div class="flex space-x-3">
+          <button id="rates-btn"
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center">
+            <i class="fas fa-edit mr-2"></i>
+            Update Rates
+          </button>
+          <button id="erc-btn"
+            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center">
+            <i class="fas fa-file-alt mr-2"></i>
+            Update ERC
+          </button>
+        </div>
+      </div>
+
+      <!-- Rates Table Container -->
+      <div id="rates-table-container" hx-get="http://localhost:8080/v1/employee/sysadmin/accounting" hx-trigger="load">
+        <div class="bg-white rounded-xl shadow-md p-8 flex items-center justify-center">
+          <div class="text-center">
+            <div class="flex justify-center mb-4">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin text-green-500 text-2xl"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">Loading Electricity Rates</h3>
+            <p class="text-gray-600">Please wait while we fetch the latest rate information...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
+    <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-auto my-10 overflow-auto">
+      <div class="bg-gradient-to-r from-green-700 to-green-500 text-white p-4 flex justify-between items-center">
+        <h3 id="modal-title" class="text-xl font-semibold">Update Rates</h3>
+        <button class="close-modal text-white text-2xl leading-none hover:text-gray-200">&times;</button>
+      </div>
+      <div class="p-6" id="modal-content-container">
+        <div class="text-center py-10">
+          <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-spinner fa-spin text-green-500 text-2xl"></i>
+            </div>
+          </div>
+          <p class="text-gray-600">Loading form...</p>
+        </div>
+      </div>
+      <div id="error-message" class="hidden bg-red-100 text-red-700 p-4 rounded mb-4">
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        <span id="error-text">An error occurred while processing your request. Please try again.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="modal-loading" class="fixed inset-0 z-50 hidden bg-white bg-opacity-90 flex items-center justify-center">
+    <div class="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalContent = document.getElementById('modal-content-container');
+      const modalLoading = document.getElementById('modal-loading');
+      const errorMessage = document.getElementById('error-message');
+      const errorText = document.getElementById('error-text');
+      const closeModalBtn = document.querySelector('.close-modal');
+
+      const ratesBtn = document.getElementById('rates-btn');
+      const ercBtn = document.getElementById('erc-btn');
+
+      // Open modal for rates
+      ratesBtn.addEventListener('click', () => openModal('Update Rates', '/v1/employee/sysadmin/accounting/update-rates'));
+      ercBtn.addEventListener('click', () => openModal('Update ERC', '/v1/employee/sysadmin/accounting/update-erc'));
+
+      // Close modal
+      closeModalBtn.addEventListener('click', closeModal);
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // Handle HTMX requests
+      document.body.addEventListener('htmx:beforeSend', (e) => {
+        modalLoading.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+      });
+
+      document.body.addEventListener('htmx:afterRequest', (e) => {
+        modalLoading.classList.add('hidden');
+        if (e.detail.xhr.status === 200) {
+          closeModal();
+          htmx.trigger('#rates-table-container', 'refresh');
+        } else {
+          try {
+            const response = JSON.parse(e.detail.xhr.responseText);
+            errorText.textContent = response.error || 'An error occurred. Please try again.';
+          } catch (err) {
+            errorText.textContent = 'An unexpected error occurred. Please try again.';
+          }
+          errorMessage.classList.remove('hidden');
+        }
+      });
+
+      function openModal(title, url) {
+        modalTitle.textContent = title;
+        modalContent.innerHTML = `
+          <div class="text-center py-10">
+            <div class="flex justify-center mb-4">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin text-green-500 text-2xl"></i>
+              </div>
+            </div>
+            <p class="text-gray-600">Loading form...</p>
+          </div>
+        `;
+        modal.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+        htmx.ajax('GET', url, { target: '#modal-content-container', swap: 'innerHTML' });
+      }
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modalContent.innerHTML = '';
+        errorMessage.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -43,6 +43,7 @@ type Server struct {
 	logger              *zap.Logger
 	defaultRouteVersion string
 	clienttype          string
+	backgroundManager   *BackgroundManager
 }
 
 // NewServer creates a new HTTP server instance
@@ -66,6 +67,10 @@ func NewServer() *http.Server {
 		clienttype:          "",
 	}
 
+	// Initialize background manager
+	NewServer.backgroundManager = NewBackgroundManager(NewServer)
+	NewServer.backgroundManager.Start()
+
 	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),
@@ -74,6 +79,11 @@ func NewServer() *http.Server {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
+
+	// Graceful shutdown for background tasks
+	server.RegisterOnShutdown(func() {
+		NewServer.backgroundManager.Stop()
+	})
 
 	return server
 }

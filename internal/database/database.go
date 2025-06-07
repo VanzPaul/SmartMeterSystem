@@ -17,8 +17,10 @@ type Service interface {
 	Health() map[string]string
 	InsertOne(context.Context, string, interface{}) (*mongo.InsertOneResult, error)
 	FindOne(context.Context, string, interface{}) *mongo.SingleResult
+	FindMany(context.Context, string, interface{}) (*mongo.Cursor, error)
 	UpdateOne(context.Context, string, interface{}, interface{}) (*mongo.UpdateResult, error)
 	DeleteOne(context.Context, string, interface{}) (*mongo.DeleteResult, error)
+	Aggregation(context.Context, string, interface{}) (*mongo.Cursor, error)
 }
 
 type service struct {
@@ -107,6 +109,15 @@ func (s *service) FindOne(ctx context.Context, collection string, filter interfa
 	return coll.FindOne(ctx, filter)
 }
 
+func (s *service) FindMany(ctx context.Context, collection string, filter interface{}) (*mongo.Cursor, error) {
+	coll := s.db.Collection(collection)
+	cursor, err := coll.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	return cursor, nil
+}
+
 // UpdateOne updates a single document in the specified collection based on the filter
 func (s *service) UpdateOne(ctx context.Context, collection string, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
 	coll := s.db.Collection(collection)
@@ -117,4 +128,10 @@ func (s *service) UpdateOne(ctx context.Context, collection string, filter inter
 func (s *service) DeleteOne(ctx context.Context, collection string, filter interface{}) (*mongo.DeleteResult, error) {
 	coll := s.db.Collection(collection)
 	return coll.DeleteOne(ctx, filter)
+}
+
+// Aggregation performs an aggregation operation on the specified collection.
+func (s *service) Aggregation(ctx context.Context, collection string, pipeline interface{}) (*mongo.Cursor, error) {
+	coll := s.db.Collection(collection)
+	return coll.Aggregate(ctx, pipeline)
 }
