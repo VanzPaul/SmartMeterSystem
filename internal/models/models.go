@@ -9,13 +9,37 @@ import (
 )
 
 type MeterDocument struct {
-	ID                    int       `bson:"_id"`
-	InstallationDate      time.Time `bson:"installDate"`
-	ConsumerTransformerID string    `bson:"transformerId"`
-	Latitude              float64   `bson:"lat"`
-	Longitude             float64   `bson:"long"`
-	ConsumerAccNo         int       `bson:"acctNo"`
+	ID                    int        `bson:"_id"`
+	MeterNumber           int        `bson:"meterNumber"`
+	InstallationDate      time.Time  `bson:"installDate"`
+	ConsumerTransformerID string     `bson:"transformerId"`
+	Coordinates           []float64  `bson:"coordinates"`
+	ConsumerAccNo         int        `bson:"acctNo"`
+	SmartMeter            SmartMeter `bson:"smartMeteromitempty"`
+	IsActive              bool       `bson:"isActive"`
 }
+
+type SmartMeter struct {
+	IsActive              bool             `bson:"isActive"`
+	Alert                 []Alert          `json:"Alert,omitempty"`
+	UsageKwh              float64          `json:"UsageKwh,omitempty"`
+	ReadingHistory30days  []ReadingHistory `bson:"readingHistory30days,omitempty"`
+	ReadingHistory24hours []ReadingHistory `bson:"readingHistory24hours,omitempty"`
+}
+
+type Alert struct {
+	ID        string      `json:"ID"`
+	Type      AlertType   `json:"Type"`
+	Status    AlertStatus `json:"Status"`
+	Timestamp string      `json:"Timestamp"`
+}
+
+type ReadingHistory struct {
+	Timestamp time.Time `json:"timestamp"`
+	Value     float64   `json:"value"`
+}
+
+//--
 
 type ConsumerDocument struct {
 	ID               int       `bson:"_id"`
@@ -44,6 +68,7 @@ type EmployeeDocument struct {
 type ConsumerBalanceDocument struct {
 	ID             int              `bson:"_id"`
 	AccountNumber  int              `bson:"acctNum"`
+	ConsumerType   string           `bson:"consumerType"`
 	IsActive       bool             `bson:"isActive"`
 	LasPaymentDate time.Time        `bson:"lastPaymentDate,omitempty"`
 	CurrentBill    Billing          `bson:"currentBill,omitempty"`
@@ -53,14 +78,12 @@ type ConsumerBalanceDocument struct {
 }
 
 type Billing struct {
-	BillId       string        `bson:"billId"`
-	IssueDate    time.Time     `bson:"issueDate"`
-	DueDate      time.Time     `bson:"dueDate"`
-	Duration     UsageDuration `bson:"duration"`
-	ConsumerType string        `bson:"consumerType"`
-	MeterNumber  string        `bson:"meterNumber"`
-	Charges      Charges       `bson:"charges"`
-	IsPaid       bool          `bson:"isPaid"`
+	BillId    string        `bson:"billId"`
+	IssueDate time.Time     `bson:"issueDate"`
+	DueDate   time.Time     `bson:"dueDate"`
+	Duration  UsageDuration `bson:"duration"`
+	Charges   Charges       `bson:"charges"`
+	IsPaid    bool          `bson:"isPaid"`
 }
 
 type UsageDuration struct {
@@ -145,17 +168,18 @@ type SmartMeterDocument struct {
 	ReadingHistory30days  []ReadingHistory `bson:"readingHistory30days,omitempty"`
 	ReadingHistory24hours []ReadingHistory `bson:"readingHistory24hours,omitempty"`
 }
-type Alert struct {
-	ID        string      `json:"ID"`
-	Type      AlertType   `json:"Type"`
-	Status    AlertStatus `json:"Status"`
-	Timestamp string      `json:"Timestamp"`
-}
 
-type ReadingHistory struct {
-	Timestamp time.Time `json:"timestamp"`
-	Value     float64   `json:"value"`
-}
+// type Alert struct {
+// 	ID        string      `json:"ID"`
+// 	Type      AlertType   `json:"Type"`
+// 	Status    AlertStatus `json:"Status"`
+// 	Timestamp string      `json:"Timestamp"`
+// }
+
+// type ReadingHistory struct {
+// 	Timestamp time.Time `json:"timestamp"`
+// 	Value     float64   `json:"value"`
+// }
 
 // ---
 var AccountingRatesTableFormType = struct {

@@ -111,7 +111,7 @@ func (bm *BackgroundManager) Stop() {
 // -------
 
 func (bm *BackgroundManager) issueBillNotice() {
-	_, err := bm.cron.AddFunc("*/30 * * * * *", func() {
+	_, err := bm.cron.AddFunc("* */1 * * * *", func() {
 		bm.once.Do(func() {
 
 			bm.logger.Info("Issuing Bill Notice")
@@ -171,7 +171,7 @@ func (bm *BackgroundManager) issueBillNotice() {
 				bm.logger.Debug("Processing consumer",
 					zap.Int("id", balance.ID),
 					zap.Int("account", balance.AccountNumber),
-					zap.String("meter", "MTR-00123")) // Fixed field name
+				)
 
 				// Calculate charges with actual consumption (placeholder)
 				consumption := 64.00 // Should be actual usage data
@@ -184,16 +184,14 @@ func (bm *BackgroundManager) issueBillNotice() {
 				now := time.Now()
 				currentBill := models.Billing{
 					BillId:    internal.GenerateUUIDBillingID(), // Must be implemented
-					IssueDate: now,
-					DueDate:   now.AddDate(0, 0, 30), // 30 days from now
+					IssueDate: now.AddDate(0, 0, -15),
+					DueDate:   now.AddDate(0, 0, 15), // 30 days from now
 					Duration: models.UsageDuration{
-						Start: now.AddDate(0, 0, -30), // Last 30 days
+						Start: now.AddDate(0, 0, -45), // Last 30 days
 						End:   now,
 					},
-					ConsumerType: "RESIDENTIAL",
-					MeterNumber:  "MTR-00123",
-					Charges:      charges,
-					IsPaid:       false,
+					Charges: charges,
+					IsPaid:  false,
 				}
 
 				// 4) Update consumer's current bill

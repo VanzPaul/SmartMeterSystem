@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoPower - Smart Meter Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .stat-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #map {
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-popup-content {
+            min-width: 200px;
+        }
+    </style>
+</head>
+
+<body class="bg-primary-50 min-h-screen">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-primary-900 flex items-center gap-2">
+                        <i class="fas fa-map-marked-alt"></i>
+                        Smart Meter Map
+                    </h1>
+                    <p class="text-primary-700">Monitor and manage all smart meters in real-time</p>
+                </div>
+                <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <div class="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+                        <i class="fas fa-user text-primary-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">Admin User</p>
+                        <p class="text-xs text-gray-500">Dashboard</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-blue-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Total Meters</p>
+                        <p id="totalMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-lg">
+                        <i class="fas fa-bolt text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div class="h-full bg-blue-500 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-green-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Active Meters</p>
+                        <p id="activeMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-lg">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div id="activeProgress" class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-red-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Inactive Meters</p>
+                        <p id="inactiveMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+                    </div>
+                    <div class="bg-red-100 p-3 rounded-lg">
+                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div id="inactiveProgress" class="h-full bg-red-500 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-orange-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Active Alerts</p>
+                        <p id="alertMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+                    </div>
+                    <div class="bg-orange-100 p-3 rounded-lg">
+                        <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div id="alertProgress" class="h-full bg-orange-500 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <i class="fas fa-filter text-primary-600"></i>
+                Filter Meters
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <button id="showAll"
+                    class="filter-btn bg-primary-100 text-primary-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2 active">
+                    <i class="fas fa-globe-americas"></i>
+                    Show All
+                </button>
+                <button id="showActive"
+                    class="filter-btn bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                    <i class="fas fa-check-circle"></i>
+                    Active
+                </button>
+                <button id="showInactive"
+                    class="filter-btn bg-red-100 text-red-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                    <i class="fas fa-times-circle"></i>
+                    Inactive
+                </button>
+                <button id="showAlerts"
+                    class="filter-btn bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Power Outage Alerts
+                </button>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-map-marked-alt text-primary-600"></i>
+                    Meter Locations
+                </h2>
+                <div class="flex gap-2">
+                    <button
+                        class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button
+                        class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1 rounded-lg text-sm flex items-center gap-1">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            <div id="map" class="w-full h-[500px] rounded-lg overflow-hidden"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
+    <script>
+        // Custom markers
+        const blueIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        const greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        const redIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        const orangeIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        let map;
+        let markers = [];
+
+        function initMap() {
+            map = L.map('map').setView([51.505, -0.09], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Simulate loading meter data
+        async function loadMeters() {
+            try {
+                // Simulated data for demonstration
+                const smartMeters = [
+                    { ID: "SM-001", Number: "Meter-001", Location: "Downtown", Latitude: 51.505, Longitude: -0.09, Status: "Active", Alert: [{ Type: 'power_outage', Status: 'inactive' }] },
+                    { ID: "SM-002", Number: "Meter-002", Location: "East District", Latitude: 51.51, Longitude: -0.1, Status: "Active", Alert: [{ Type: 'power_outage', Status: 'active' }] },
+                    { ID: "SM-003", Number: "Meter-003", Location: "West District", Latitude: 51.50, Longitude: -0.12, Status: "Inactive", Alert: [{ Type: 'power_outage', Status: 'inactive' }] },
+                    { ID: "SM-004", Number: "Meter-004", Location: "North District", Latitude: 51.52, Longitude: -0.08, Status: "Active", Alert: [{ Type: 'power_outage', Status: 'inactive' }] },
+                    { ID: "SM-005", Number: "Meter-005", Location: "South District", Latitude: 51.49, Longitude: -0.11, Status: "Inactive", Alert: [{ Type: 'power_outage', Status: 'active' }] },
+                    { ID: "SM-006", Number: "Meter-006", Location: "Central Plaza", Latitude: 51.507, Longitude: -0.08, Status: "Active", Alert: [{ Type: 'power_outage', Status: 'inactive' }] },
+                    { ID: "SM-007", Number: "Meter-007", Location: "Industrial Zone", Latitude: 51.515, Longitude: -0.11, Status: "Active", Alert: [{ Type: 'power_outage', Status: 'active' }] },
+                    { ID: "SM-008", Number: "Meter-008", Location: "Residential Area", Latitude: 51.495, Longitude: -0.095, Status: "Inactive", Alert: [{ Type: 'power_outage', Status: 'inactive' }] },
+                ];
+
+                const activeMeters = smartMeters.filter(m => m.Status.toLowerCase() === 'active').length;
+                const inactiveMeters = smartMeters.length - activeMeters;
+                const alertCount = smartMeters.filter(m =>
+                    m.Alert?.some(alert =>
+                        alert.Type === 'power_outage' && alert.Status === 'active'
+                    )
+                ).length;
+
+                document.getElementById('totalMetersCount').textContent = smartMeters.length;
+                document.getElementById('activeMetersCount').textContent = activeMeters;
+                document.getElementById('inactiveMetersCount').textContent = inactiveMeters;
+                document.getElementById('alertMetersCount').textContent = alertCount;
+
+                // Update progress bars
+                document.getElementById('activeProgress').style.width = `${(activeMeters / smartMeters.length) * 100}%`;
+                document.getElementById('inactiveProgress').style.width = `${(inactiveMeters / smartMeters.length) * 100}%`;
+                document.getElementById('alertProgress').style.width = `${(alertCount / smartMeters.length) * 100}%`;
+
+                // Clear existing markers
+                markers.forEach(marker => map.removeLayer(marker));
+                markers = [];
+
+                // Add new markers
+                smartMeters.forEach(meter => {
+                    const hasAlert = meter.Alert?.some(alert =>
+                        alert.Type === 'power_outage' && alert.Status === 'active'
+                    ) ?? false;
+
+                    const marker = L.marker([meter.Latitude, meter.Longitude], {
+                        icon: blueIcon
+                    }).bindPopup(`
+                        <div class="p-2 min-w-[200px]">
+                            <h3 class="font-bold text-lg">${meter.Number}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <i class="fas fa-map-marker-alt text-primary-600"></i>
+                                <span>${meter.Location}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <i class="fas fa-id-card text-gray-600"></i>
+                                <span>${meter.ID}</span>
+                            </div>
+                            <div class="mt-2 flex items-center gap-2">
+                                <span class="px-2 py-1 rounded text-xs font-medium ${meter.Status.toLowerCase() === 'active'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }">
+                                    ${meter.Status}
+                                </span>
+                                ${hasAlert ?
+                            '<span class="px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">Power Outage Alert!</span>'
+                            : ''}
+                            </div>
+                        </div>
+                    `);
+
+                    marker.status = meter.Status.toLowerCase();
+                    marker.hasAlert = hasAlert;
+                    markers.push(marker);
+                });
+
+                updateMapView();
+            } catch (error) {
+                console.error('Error loading meter data:', error);
+            }
+        }
+
+        function updateMapView() {
+            const filter = document.querySelector('.filter-btn.active')?.id || 'showAll';
+            const bounds = new L.LatLngBounds();
+
+            markers.forEach(marker => {
+                let shouldShow = false;
+                let icon = blueIcon;
+
+                if (filter === 'showAll') {
+                    shouldShow = true;
+                } else if (filter === 'showActive') {
+                    shouldShow = marker.status === 'active';
+                    icon = greenIcon;
+                } else if (filter === 'showInactive') {
+                    shouldShow = marker.status === 'inactive';
+                    icon = redIcon;
+                } else if (filter === 'showAlerts') {
+                    shouldShow = marker.hasAlert;
+                    icon = orangeIcon;
+                }
+
+                if (shouldShow) {
+                    marker.setIcon(icon);
+                    if (!map.hasLayer(marker)) {
+                        marker.addTo(map);
+                    }
+                    bounds.extend(marker.getLatLng());
+                } else {
+                    if (map.hasLayer(marker)) {
+                        map.removeLayer(marker);
+                    }
+                }
+            });
+
+            if (bounds.isValid()) {
+                map.fitBounds(bounds.pad(0.1));
+            }
+        }
+
+        // Add event listeners to filter buttons
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                e.target.classList.add('active');
+                updateMapView();
+            });
+        });
+
+        // Initialize the map and load data
+        initMap();
+        loadMeters();
+
+        // Simulate data refresh every 30 seconds
+        setInterval(() => {
+            document.querySelector('#showAll').classList.add('animate-pulse');
+            setTimeout(() => {
+                loadMeters();
+                document.querySelector('#showAll').classList.remove('animate-pulse');
+            }, 1000);
+        }, 30000);
+    </script>
+</body>
+
+</html>

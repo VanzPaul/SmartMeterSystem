@@ -460,13 +460,17 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 							defer cancel()
 
-							bson, err_bson := bson.Marshal(models.MeterDocument{
+							bsonData, err_bson := bson.Marshal(models.MeterDocument{
 								ID:                    meterNo,
+								MeterNumber:           meterNo,
 								ConsumerAccNo:         consumerAccNo,
 								InstallationDate:      meterInstallationDate,
 								ConsumerTransformerID: consumerTransformerId,
-								Latitude:              meterLatitude,
-								Longitude:             meterLongitude,
+								Coordinates:           []float64{meterLongitude, meterLatitude},
+								IsActive:              true,
+								SmartMeter: models.SmartMeter{
+									UsageKwh: 79.00,
+								},
 							})
 
 							if err_bson != nil {
@@ -479,7 +483,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							}
 
 							// Create a new document
-							insertResult, err := svc.InsertOne(ctx, "meters", bson)
+							insertResult, err := svc.InsertOne(ctx, "meters", bsonData)
 
 							if err != nil {
 								// Check for duplicate key error
@@ -622,6 +626,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							bsonBalance, err_balance_bson := bson.Marshal(models.ConsumerBalanceDocument{
 								ID:            accountNumber,
 								AccountNumber: accountNumber,
+								ConsumerType:  "RESIDENTIAL",
 								IsActive:      true,
 							})
 
@@ -751,8 +756,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 									"consumerAccNo":    existingMeter.ConsumerAccNo,
 									"installationDate": existingMeter.InstallationDate.Format("2006-01-02"),
 									"transformerId":    existingMeter.ConsumerTransformerID,
-									"latitude":         existingMeter.Latitude,
-									"longitude":        existingMeter.Longitude,
+									"coordinates":      existingMeter.Coordinates,
 								})
 								return
 							}
@@ -1097,8 +1101,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 									"consumerAccNo":    existingMeter.ConsumerAccNo,
 									"installationDate": existingMeter.InstallationDate.Format("2006-01-02"),
 									"transformerId":    existingMeter.ConsumerTransformerID,
-									"latitude":         existingMeter.Latitude,
-									"longitude":        existingMeter.Longitude,
+									"coordinates":      existingMeter.Coordinates,
 								})
 								return
 							}
@@ -1851,103 +1854,139 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				case "POST":
 					switch formType {
 					case "verify-account-number":
-						type CurrentBill struct {
-							ID                string  `json:"id"`
-							CurrentBillMonth  string  `json:"currentBillMonth"`
-							CurrentBillYear   string  `json:"currentBillYear"`
-							CurrentBillAmount float64 `json:"currentBillAmount"`
+						type accountRequest struct {
+							AccountNumber string `json:"accountNumber"`
 						}
 
-						type OverdueBill struct {
-							ID             string  `json:"id"`
-							Month          string  `json:"month"`
-							Year           string  `json:"year"`
-							BaseAmount     float64 `json:"baseAmount"`
-							InterestRate   float64 `json:"interestRate"`
-							InterestAmount float64 `json:"interestAmount"`
-							ServiceFee     float64 `json:"serviceFee"`
-							DaysOverdue    int     `json:"daysOverdue"`
+						var payload accountRequest
+						if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
+							http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+							return
 						}
 
-						type Payment struct {
-							Date          string  `json:"date"`
-							TransactionID string  `json:"transactionId"`
-							Amount        float64 `json:"amount"`
-							Status        string  `json:"status"`
+						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
+
+						// Convert accountNumber to int
+						accNumInt, err := strconv.Atoi(payload.AccountNumber)
+						if err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Decode error: %v", err)
+							http.Error(w, "Invalid account number", http.StatusBadRequest)
+							return
 						}
 
-						type CustomerData struct {
-							AccountNumber   string        `json:"accountNumber"`
-							FirstName       string        `json:"firstName"`
-							MiddleName      string        `json:"middleName"`
-							LastName        string        `json:"lastName"`
-							Suffix          string        `json:"suffix"`
-							LastPaymentDate string        `json:"lastPaymentDate"`
-							DueDate         string        `json:"dueDate"`
-							CurrentBill     CurrentBill   `json:"currentBill"`
-							OverdueBills    []OverdueBill `json:"overdueBills"`
-							TotalAmount     float64       `json:"totalAmount"`
-							PaymentHistory  []Payment     `json:"paymentHistory"`
-						}
+						// Process Data
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+						svc := database.New()
 
-						dueDate := time.Now().AddDate(0, 1, 0) // e.g., one month from now
-
-						// Sample overdue bills
-						overdueBills := []OverdueBill{
+						pipeline := []bson.M{
+							{"$match": bson.M{"acctNum": accNumInt}},
 							{
-								ID:             "OB202506",
-								Month:          "June",
-								Year:           "2025",
-								BaseAmount:     850.25,
-								InterestRate:   3.5,
-								InterestAmount: 29.76,
-								ServiceFee:     50.00,
-								DaysOverdue:    45,
+								"$lookup": bson.M{
+									"from":         "balances",
+									"localField":   "acctNum",
+									"foreignField": "acctNum",
+									"as":           "balances",
+								},
 							},
+							{"$unwind": bson.M{"path": "$balances", "preserveNullAndEmptyArrays": true}},
 							{
-								ID:             "OB202505",
-								Month:          "May",
-								Year:           "2025",
-								BaseAmount:     750.50,
-								InterestRate:   3.5,
-								InterestAmount: 26.27,
-								ServiceFee:     50.00,
-								DaysOverdue:    75,
+								"$project": bson.M{
+									"_id":     1,
+									"acctNum": 1,
+									"consumerName": bson.M{
+										"$concat": []string{"$firstName", " ", "$lastName"},
+									},
+									"consumerType":    "Commercial", // Adjust if source field exists
+									"isActive":        "$isActive",
+									"lastPaymentDate": nil, // Populate if payment data exists
+									"currentBill": bson.M{
+										"$cond": bson.M{
+											"if": "$balances.currentBill",
+											"then": bson.M{
+												"billId": "$balances.currentBill.billId",
+												"issueDate": bson.M{
+													"$dateToString": bson.M{
+														"format": "%Y-%m-%dT%H:%M:%SZ",
+														"date":   "$balances.currentBill.issueDate",
+													},
+												},
+												"dueDate": bson.M{
+													"$dateToString": bson.M{
+														"format": "%Y-%m-%dT%H:%M:%SZ",
+														"date":   "$balances.currentBill.dueDate",
+													},
+												},
+												"duration": bson.M{
+													"start": bson.M{
+														"$dateToString": bson.M{
+															"format": "%Y-%m-%dT%H:%M:%SZ",
+															"date":   "$balances.currentBill.duration.start",
+														},
+													},
+													"end": bson.M{
+														"$dateToString": bson.M{
+															"format": "%Y-%m-%dT%H:%M:%SZ",
+															"date":   "$balances.currentBill.duration.end",
+														},
+													},
+												},
+												"charges": bson.M{
+													"amountDue":   "$balances.currentBill.charges.amountDue",
+													"usedKwH":     "$balances.currentBill.charges.usedKwH",
+													"rates":       bson.M{}, // Empty object
+													"overdueFees": nil,
+												},
+												"isPaid": "$balances.currentBill.isPaid",
+											},
+											"else": nil,
+										},
+									},
+									"overdueBill":    []interface{}{}, // Empty array
+									"billHistory":    []interface{}{}, // Empty array
+									"paymentHistory": []interface{}{}, // Empty array
+								},
 							},
 						}
 
-						// Calculate total amount
-						var totalAmount float64 = 1850.75 // current bill amount
-						for _, bill := range overdueBills {
-							totalAmount += bill.BaseAmount + bill.InterestAmount + bill.ServiceFee
+						cursor, err := svc.Aggregation(ctx, "consumers", pipeline)
+						if err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Aggregation failed: %v", err)
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusInternalServerError)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Internal server error",
+							})
+							return
+						}
+						defer cursor.Close(ctx)
+
+						var result bson.M
+						if cursor.Next(ctx) {
+							if err := cursor.Decode(&result); err != nil {
+								c.Deps.GetLogger().Sugar().Errorf("Decoding failed: %v", err)
+								w.Header().Set("Content-Type", "application/json")
+								w.WriteHeader(http.StatusInternalServerError)
+								json.NewEncoder(w).Encode(map[string]string{
+									"error": "Failed to decode result",
+								})
+								return
+							}
+						} else {
+							c.Deps.GetLogger().Sugar().Errorf("No results found")
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusNotFound)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "No data found",
+							})
+							return
 						}
 
-						data := CustomerData{
-							AccountNumber:   "AC982345",
-							FirstName:       "Maria",
-							MiddleName:      "Santos",
-							LastName:        "Dela Cruz",
-							Suffix:          "",
-							LastPaymentDate: "2023-06-15",
-							DueDate:         dueDate.Format("2006-01-02"),
-							CurrentBill: CurrentBill{
-								ID:                "CB202507",
-								CurrentBillMonth:  "July",
-								CurrentBillYear:   "2025",
-								CurrentBillAmount: 1850.75,
-							},
-							OverdueBills: overdueBills,
-							TotalAmount:  totalAmount,
-							PaymentHistory: []Payment{
-								{Date: "2023-06-15", TransactionID: "TX789012", Amount: 1750.50, Status: "Paid"},
-								{Date: "2023-05-12", TransactionID: "TX345678", Amount: 1650.25, Status: "Paid"},
-								{Date: "2023-04-10", TransactionID: "TX901234", Amount: 1800.00, Status: "Paid"},
-								{Date: "2023-03-08", TransactionID: "TX567890", Amount: 1720.30, Status: "Paid"},
-							},
-						}
+						c.Deps.GetLogger().Sugar().Debugf("Aggregation result: %v", result)
 
 						w.Header().Set("Content-Type", "application/json")
-						json.NewEncoder(w).Encode(data)
+						json.NewEncoder(w).Encode(result)
 
 					case "process-payment":
 						type ProcessPayment struct {

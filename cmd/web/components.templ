@@ -329,228 +329,415 @@ templ SystemAdminEmployeeBaseWebPage() {
 //<---------------- Dashboard Section ---------------->//
 templ SystemAdminEmployeeDashboardWebPage() {
 	@SystemAdminEmployeeBaseWebPage() {
-		<div class="flex flex-col h-full w-full p-4 gap-4">
-			<h1 class="text-2xl font-bold">Smart Meter Map</h1>
-			<!-- Meter Statistics -->
-			<div class="flex gap-6 p-3 bg-gray-50 rounded-lg">
-				<div class="flex items-center gap-2">
-					<span class="text-sm font-medium">Total Meters:</span>
-					<span id="totalMetersCount" class="text-sm font-bold text-blue-600">0</span>
-				</div>
-				<div class="flex items-center gap-2">
-					<span class="text-sm font-medium text-green-600">Active:</span>
-					<span id="activeMetersCount" class="text-sm font-bold text-green-600">0</span>
-				</div>
-				<div class="flex items-center gap-2">
-					<span class="text-sm font-medium text-red-600">Inactive:</span>
-					<span id="inactiveMetersCount" class="text-sm font-bold text-red-600">0</span>
-				</div>
-				<!-- Added alert counter -->
-				<div class="flex items-center gap-2">
-					<span class="text-sm font-medium text-orange-600">Alerts:</span>
-					<span id="alertMetersCount" class="text-sm font-bold text-orange-600">0</span>
-				</div>
-			</div>
-			<!-- Filter Controls -->
-			<div class="flex gap-4 items-center p-3 bg-gray-50 rounded-lg">
-				<label class="flex items-center gap-2">
-					<input
-						type="checkbox"
-						id="showAll"
-						checked
-						class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 peer"
-					/>
-					<span class="text-sm font-medium">Show All</span>
-				</label>
-				<label class="flex items-center gap-2">
-					<input
-						type="checkbox"
-						id="showActive"
-						class="rounded border-gray-300 text-green-600 focus:ring-green-500 peer"
-					/>
-					<span class="text-sm font-medium">Active</span>
-				</label>
-				<label class="flex items-center gap-2">
-					<input
-						type="checkbox"
-						id="showInactive"
-						class="rounded border-gray-300 text-red-600 focus:ring-red-500 peer"
-					/>
-					<span class="text-sm font-medium">Inactive</span>
-				</label>
-				<label class="flex items-center gap-2">
-					<input
-						type="checkbox"
-						id="showAlerts"
-						class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 peer"
-					/>
-					<span class="text-sm font-medium">Power Outage Alerts</span>
-				</label>
-			</div>
-			<!-- Map Container -->
-			<div id="map" class="w-full min-h-[400px] rounded-lg shadow-lg"></div>
-		</div>
-		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-		<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-		<script>
-            // Custom markers
-            const blueIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-            const greenIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-            const redIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-            const orangeIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-            let map;
-            let markers = [];
-
-            function initMap() {
-                map = L.map('map').setView([0, 0], 2);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-            }
-            
-            let totalMetersCount = document.getElementById('totalMetersCount');
-            let activeMetersCount = document.getElementById('activeMetersCount');
-            let inactiveMetersCount = document.getElementById('inactiveMetersCount');
-            let alertMetersCount = document.getElementById('alertMetersCount');
-
-            async function loadMeters() {
-                try {
-                    const response = await fetch('dashboard/meter-list');
-                    const smartMeters = await response.json();
-                    
-                    const activeMeters = smartMeters.filter(m => m.Status.toLowerCase() === 'active').length;
-                    const alertCount = smartMeters.filter(m => 
-                        m.Alert?.some(alert => 
-                            alert.Type === 'power_outage' && alert.Status === 'active'
-                        )
-                    ).length;
-
-                    totalMetersCount.textContent = smartMeters.length;
-                    activeMetersCount.textContent = activeMeters;
-                    inactiveMetersCount.textContent = smartMeters.length - activeMeters;
-                    alertMetersCount.textContent = alertCount;
-
-                    markers.forEach(marker => map.removeLayer(marker));
-                    markers = [];
-
-                    smartMeters.forEach(meter => {
-                        const hasAlert = meter.Alert?.some(alert => 
-                            alert.Type === 'power_outage' && alert.Status === 'active'
-                        ) ?? false;
-
-                        const marker = L.marker([meter.Latitude, meter.Longitude], {
-                            icon: blueIcon
-                        }).bindPopup(`
-                            <div class="p-2">
-                                <h3 class="font-bold">${meter.Number}</h3>
-                                <p>Location: ${meter.Location}</p>
-                                <p>ID: ${meter.ID}</p>
-                                <p class="font-semibold ${meter.Status.toLowerCase() === 'active' ? 'text-green-600' : 'text-red-600'}">
-                                    Status: ${meter.Status}
-                                </p>
-                                ${hasAlert ? '<p class="text-orange-600 font-semibold">Power Outage Alert!</p>' : ''}
-                            </div>
-                        `);
-                        
-                        marker.status = meter.Status.toLowerCase();
-                        marker.hasAlert = hasAlert;
-                        markers.push(marker);
-                    });
-
-                    updateMapView();
-                } catch (error) {
-                    console.error('Error loading meter data:', error);
-                }
-            }
-
-            function updateMapView() {
-                const bounds = new L.LatLngBounds();
-                const filter = document.querySelector('input[type="checkbox"]:checked')?.id || 'showAll';
-
-                markers.forEach(marker => {
-                    let shouldShow = false;
-                    let icon;
-
-                    if (filter === 'showAll') {
-                        shouldShow = true;
-                        icon = blueIcon;
-                    } else if (filter === 'showActive') {
-                        shouldShow = marker.status === 'active';
-                        icon = greenIcon;
-                    } else if (filter === 'showInactive') {
-                        shouldShow = marker.status === 'inactive';
-                        icon = redIcon;
-                    } else if (filter === 'showAlerts') {
-                        shouldShow = marker.hasAlert;
-                        icon = orangeIcon;
-                    }
-
-                    if (shouldShow) {
-                        marker.setIcon(icon);
-                        if (!map.hasLayer(marker)) {
-                            marker.addTo(map);
-                        }
-                        bounds.extend(marker.getLatLng());
-                    } else {
-                        if (map.hasLayer(marker)) {
-                            map.removeLayer(marker);
+		<!DOCTYPE html>
+		<html lang="en">
+			<head>
+				<meta charset="UTF-8"/>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+				<title>EcoPower - Smart Meter Dashboard</title>
+				<script src="https://cdn.tailwindcss.com"></script>
+				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+				<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
                         }
                     }
-                });
-
-                if (bounds.isValid()) {
-                    map.fitBounds(bounds.pad(0.1));
                 }
             }
+        }
+    </script>
+				<style>
+        .stat-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        #map {
+            transition: all 0.3s ease;
+        }
+        .leaflet-popup-content {
+            min-width: 200px;
+        }
+    </style>
+			</head>
+			<body class="bg-primary-50 min-h-screen">
+				<div class="max-w-7xl mx-auto p-4 sm:p-6">
+					<!-- Header -->
+					<header class="mb-8">
+						<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+							<div>
+								<h1 class="text-3xl font-bold text-primary-900 flex items-center gap-2">
+									<i class="fas fa-map-marked-alt"></i>
+									Smart Meter Map
+								</h1>
+								<p class="text-primary-700">Monitor and manage all smart meters in real-time</p>
+							</div>
+						</div>
+					</header>
+					<!-- Statistics Cards -->
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+						<div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-blue-500">
+							<div class="flex justify-between items-start">
+								<div>
+									<p class="text-gray-500 text-sm font-medium">Total Meters</p>
+									<p id="totalMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+								</div>
+								<div class="bg-blue-100 p-3 rounded-lg">
+									<i class="fas fa-bolt text-blue-600 text-xl"></i>
+								</div>
+							</div>
+							<div class="mt-4">
+								<div class="h-2 bg-gray-200 rounded-full">
+									<div class="h-full bg-blue-500 rounded-full" style="width: 100%"></div>
+								</div>
+							</div>
+						</div>
+						<div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-green-500">
+							<div class="flex justify-between items-start">
+								<div>
+									<p class="text-gray-500 text-sm font-medium">Active Meters</p>
+									<p id="activeMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+								</div>
+								<div class="bg-green-100 p-3 rounded-lg">
+									<i class="fas fa-check-circle text-green-600 text-xl"></i>
+								</div>
+							</div>
+							<div class="mt-4">
+								<div class="h-2 bg-gray-200 rounded-full">
+									<div id="activeProgress" class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+								</div>
+							</div>
+						</div>
+						<div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-red-500">
+							<div class="flex justify-between items-start">
+								<div>
+									<p class="text-gray-500 text-sm font-medium">Inactive Meters</p>
+									<p id="inactiveMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+								</div>
+								<div class="bg-red-100 p-3 rounded-lg">
+									<i class="fas fa-times-circle text-red-600 text-xl"></i>
+								</div>
+							</div>
+							<div class="mt-4">
+								<div class="h-2 bg-gray-200 rounded-full">
+									<div id="inactiveProgress" class="h-full bg-red-500 rounded-full" style="width: 0%"></div>
+								</div>
+							</div>
+						</div>
+						<div class="stat-card bg-white rounded-xl p-5 shadow-sm border-l-orange-500">
+							<div class="flex justify-between items-start">
+								<div>
+									<p class="text-gray-500 text-sm font-medium">Active Alerts</p>
+									<p id="alertMetersCount" class="text-3xl font-bold mt-1 text-gray-800">0</p>
+								</div>
+								<div class="bg-orange-100 p-3 rounded-lg">
+									<i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+								</div>
+							</div>
+							<div class="mt-4">
+								<div class="h-2 bg-gray-200 rounded-full">
+									<div id="alertProgress" class="h-full bg-orange-500 rounded-full" style="width: 0%"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Filter Controls -->
+					<div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+						<h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+							<i class="fas fa-filter text-primary-600"></i>
+							Filter Meters
+						</h2>
+						<div class="flex flex-wrap gap-3">
+							<button id="showAll" class="filter-btn bg-primary-100 text-primary-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2 active">
+								<i class="fas fa-globe-americas"></i>
+								Show All
+							</button>
+							<button id="showActive" class="filter-btn bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+								<i class="fas fa-check-circle"></i>
+								Active
+							</button>
+							<button id="showInactive" class="filter-btn bg-red-100 text-red-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+								<i class="fas fa-times-circle"></i>
+								Inactive
+							</button>
+							<button id="showAlerts" class="filter-btn bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+								<i class="fas fa-exclamation-triangle"></i>
+								Power Outage Alerts
+							</button>
+						</div>
+					</div>
+					<!-- Map Container -->
+					<div class="bg-white rounded-xl shadow-sm p-4">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+								<i class="fas fa-map-marked-alt text-primary-600"></i>
+								Meter Locations
+							</h2>
+						</div>
+						<div id="map" class="w-full h-[500px] rounded-lg overflow-hidden"></div>
+					</div>
+				</div>
+				<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+				<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+				<script>
+        // Custom markers
+        const blueIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
 
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        document.querySelectorAll('input[type="checkbox"]').forEach(other => {
-                            if (other !== e.target) other.checked = false;
-                        });
-                    } else {
-                        e.target.checked = true;
+        const greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        const redIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        const orangeIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        let map;
+        let markers = [];
+
+        function initMap() {
+            map = L.map('map').setView([51.505, -0.09], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+        
+        // Simulate loading meter data
+		async function loadMeters() {
+			try {
+				// Simulated data in new format (using "IsActive" as boolean instead of "Status")
+				const smartMeters = [
+					{
+						ID: 1,
+						MeterNumber: 1001,
+						Coordinates: [-0.09, 51.505], // [lng, lat]
+						ConsumerAccNo: 12345,
+						ConsumerTransformerID: "TF-123",
+						SmartMeter: {
+							IsActive: true,
+							Alert: [
+								{
+									ID: "A1",
+									Type: "power_outage",
+									Status: "inactive",
+									Timestamp: "2023-10-01T12:00:00Z"
+								}
+							]
+						}
+					},
+					{
+						ID: 2,
+						MeterNumber: 1002,
+						Coordinates: [-0.1, 51.51],
+						ConsumerAccNo: 12346,
+						ConsumerTransformerID: "TF-124",
+						SmartMeter: {
+							IsActive: false,
+							Alert: [
+								{
+									ID: "A2",
+									Type: "power_outage",
+									Status: "active",
+									Timestamp: "2023-10-02T14:30:00Z"
+								}
+							]
+						}
+					},
+					// ... more meters in new format ...
+				];
+				
+				// Process new data format using "IsActive" (boolean)
+				const activeMeters = smartMeters.filter(m =>
+					m.SmartMeter?.IsActive === true
+				).length;
+				
+				const inactiveMeters = smartMeters.length - activeMeters;
+				
+				const alertCount = smartMeters.filter(m =>
+					m.SmartMeter?.Alert?.some(alert =>
+						alert.Type === 'power_outage' && alert.Status === 'active'
+					)
+				).length;
+
+				// Update counts
+				document.getElementById('totalMetersCount').textContent = smartMeters.length;
+				document.getElementById('activeMetersCount').textContent = activeMeters;
+				document.getElementById('inactiveMetersCount').textContent = inactiveMeters;
+				document.getElementById('alertMetersCount').textContent = alertCount;
+				
+				// Update progress bars
+				document.getElementById('activeProgress').style.width = `${(activeMeters / smartMeters.length) * 100}%`;
+				document.getElementById('inactiveProgress').style.width = `${(inactiveMeters / smartMeters.length) * 100}%`;
+				document.getElementById('alertProgress').style.width = `${(alertCount / smartMeters.length) * 100}%`;
+
+				// Clear existing markers
+				markers.forEach(marker => map.removeLayer(marker));
+				markers = [];
+
+				// Add new markers with updated data structure
+				smartMeters.forEach(meter => {
+					const hasAlert = meter.SmartMeter?.Alert?.some(alert =>
+						alert.Type === 'power_outage' && alert.Status === 'active'
+					) ?? false;
+
+					// Use Coordinates array [lng, lat] -> reverse for Leaflet [lat, lng]
+					const coords = meter.Coordinates.slice().reverse();
+					
+					const isActive = meter.SmartMeter?.IsActive === true;
+					const statusLabel = isActive ? 'Active' : 'Inactive';
+
+					const marker = L.marker(coords, {
+						icon: blueIcon
+					}).bindPopup(`
+						<div class="p-2 min-w-[200px]">
+							<h3 class="font-bold text-lg">Meter #${meter.MeterNumber}</h3>
+							<div class="flex items-center gap-2 mt-1">
+								<i class="fas fa-id-card text-gray-600"></i>
+								<span>Account: ${meter.ConsumerAccNo}</span>
+							</div>
+							<div class="flex items-center gap-2 mt-1">
+								<i class="fas fa-bolt text-gray-600"></i>
+								<span>Transformer: ${meter.ConsumerTransformerID}</span>
+							</div>
+							<div class="mt-2 flex items-center gap-2">
+								<span class="px-2 py-1 rounded text-xs font-medium ${
+									isActive
+										? 'bg-green-100 text-green-800'
+										: 'bg-red-100 text-red-800'
+								}">
+									${statusLabel}
+								</span>
+								${hasAlert
+									? '<span class="px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">Power Outage Alert!</span>'
+									: ''}
+							</div>
+						</div>
+					`);
+					
+					// Store a normalized status on the marker for later filtering/sorting
+					marker.status = isActive ? 'active' : 'inactive';
+					marker.hasAlert = hasAlert;
+					markers.push(marker);
+				});
+
+				updateMapView();
+			} catch (error) {
+				console.error('Error loading meter data:', error);
+			}
+		}
+
+        function updateMapView() {
+            const filter = document.querySelector('.filter-btn.active')?.id || 'showAll';
+            const bounds = new L.LatLngBounds();
+
+            markers.forEach(marker => {
+                let shouldShow = false;
+                let icon = blueIcon;
+
+                if (filter === 'showAll') {
+                    shouldShow = true;
+                } else if (filter === 'showActive') {
+                    shouldShow = marker.status === 'active';
+                    icon = greenIcon;
+                } else if (filter === 'showInactive') {
+                    shouldShow = marker.status === 'inactive';
+                    icon = redIcon;
+                } else if (filter === 'showAlerts') {
+                    shouldShow = marker.hasAlert;
+                    icon = orangeIcon;
+                }
+
+                if (shouldShow) {
+                    marker.setIcon(icon);
+                    if (!map.hasLayer(marker)) {
+                        marker.addTo(map);
                     }
-                    updateMapView();
-                });
+                    bounds.extend(marker.getLatLng());
+                } else {
+                    if (map.hasLayer(marker)) {
+                        map.removeLayer(marker);
+                    }
+                }
             });
 
-            initMap();
-            loadMeters();
-        </script>
+            if (bounds.isValid()) {
+                map.fitBounds(bounds.pad(0.1));
+            }
+        }
+
+        // Add event listeners to filter buttons
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                e.target.classList.add('active');
+                updateMapView();
+            });
+        });
+
+        // Initialize the map and load data
+        initMap();
+        loadMeters();
+        
+        // Simulate data refresh every 30 seconds
+        setInterval(() => {
+            document.querySelector('#showAll').classList.add('animate-pulse');
+            setTimeout(() => {
+                loadMeters();
+                document.querySelector('#showAll').classList.remove('animate-pulse');
+            }, 1000);
+        }, 30000);
+    </script>
+			</body>
+		</html>
 	}
 }
 
@@ -5903,9 +6090,9 @@ templ SystemAdminEmployeePaymentWebPage() {
             margin-top: 3px;
         }
 
-		.loading-overlay.hidden {
-			display: none !important;
-		}
+        .loading-overlay.hidden {
+            display: none !important;
+        }
         
         .overdue-bill-card {
             border-left: 4px solid #ef4444;
@@ -5940,6 +6127,13 @@ templ SystemAdminEmployeePaymentWebPage() {
             font-weight: 600;
             display: flex;
             justify-content: space-between;
+        }
+        
+        .no-data-message {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-style: italic;
         }
     </style>
 			</head>
@@ -6034,14 +6228,16 @@ templ SystemAdminEmployeePaymentWebPage() {
 										<p class="text-gray-700 font-medium">Total Amount Due</p>
 										<p id="accountBalance" class="text-2xl font-bold text-gray-800">-</p>
 									</div>
-									<div class="mb-2">
+									<div id="dueDateContainer" class="mb-2">
 										<div class="flex justify-between text-sm text-gray-600">
 											<span>Due Date</span>
 											<span id="dueDate">-</span>
 										</div>
 									</div>
-									<div class="progress-bar">
-										<div id="dueProgress" class="progress-fill" style="width: 70%"></div>
+									<div id="progressContainer">
+										<div class="progress-bar">
+											<div id="dueProgress" class="progress-fill" style="width: 70%"></div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -6052,7 +6248,7 @@ templ SystemAdminEmployeePaymentWebPage() {
 								</h4>
 								<!-- Current Bill -->
 								<div class="mb-6">
-									<h5 class="text-md font-medium text-gray-700 mb-3 flex items-center">
+									<h5 id="currentBillTitle" class="text-md font-medium text-gray-700 mb-3 flex items-center">
 										<i class="fas fa-bolt text-green-500 mr-2"></i> Current Bill
 										<span id="dueIndicator" class="ml-auto text-sm font-normal bg-green-100 text-green-800 px-2 py-1 rounded">
 											-
@@ -6090,7 +6286,7 @@ templ SystemAdminEmployeePaymentWebPage() {
 									<div id="overdueBillsContainer" class="space-y-4">
 										<!-- Overdue bills will be populated here dynamically -->
 									</div>
-									<div class="bg-gray-50 border-t border-gray-200 p-4 mt-4">
+									<div id="overdueTotalContainer" class="bg-gray-50 border-t border-gray-200 p-4 mt-4 hidden">
 										<div class="flex justify-between">
 											<div class="font-semibold">Overdue Bills Total</div>
 											<div class="font-semibold" id="overdueTotalAmount">₱0.00</div>
@@ -6104,7 +6300,7 @@ templ SystemAdminEmployeePaymentWebPage() {
 											<p class="text-gray-700 font-medium">Total Amount Due</p>
 											<p class="text-sm text-gray-600">Includes all current and overdue charges</p>
 										</div>
-										<p id="totalAmount" class="text-2xl font-bold text-gray-800">₱2,779.76</p>
+										<p id="totalAmount" class="text-2xl font-bold text-gray-800">₱0.00</p>
 									</div>
 								</div>
 							</div>
@@ -6118,7 +6314,7 @@ templ SystemAdminEmployeePaymentWebPage() {
 										<thead>
 											<tr>
 												<th>Date</th>
-												<th>Transaction ID</th>
+												<th>Bill ID</th>
 												<th>Amount</th>
 												<th>Status</th>
 											</tr>
@@ -6133,7 +6329,7 @@ templ SystemAdminEmployeePaymentWebPage() {
 									class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-4 rounded-lg transition flex items-center justify-center text-lg"
 								>
 									<i class="fas fa-lock mr-3"></i>
-									<span>Pay ₱2,779.76 Now</span>
+									<span>Pay Now</span>
 								</button>
 								<button
 									id="cancelAccountBtn"
@@ -6164,19 +6360,19 @@ templ SystemAdminEmployeePaymentWebPage() {
 									<div class="grid grid-cols-2 gap-4 text-left">
 										<div>
 											<p class="text-gray-600 text-sm">Amount Paid:</p>
-											<p id="paidAmount" class="font-medium text-gray-800">₱2,779.76</p>
+											<p id="paidAmount" class="font-medium text-gray-800">₱0.00</p>
 										</div>
 										<div>
 											<p class="text-gray-600 text-sm">Account Number:</p>
-											<p id="paidAccount" class="font-medium text-gray-800">AC982345</p>
+											<p id="paidAccount" class="font-medium text-gray-800">-</p>
 										</div>
 										<div>
 											<p class="text-gray-600 text-sm">Transaction ID:</p>
-											<p class="font-medium text-green-600">TX984732</p>
+											<p id="transactionId" class="font-medium text-green-600">-</p>
 										</div>
 										<div>
 											<p class="text-gray-600 text-sm">Date:</p>
-											<p id="paymentDate" class="font-medium text-gray-800">July 18, 2023</p>
+											<p id="paymentDate" class="font-medium text-gray-800">-</p>
 										</div>
 									</div>
 								</div>
@@ -6226,20 +6422,87 @@ templ SystemAdminEmployeePaymentWebPage() {
             const paidAmountElement = document.getElementById('paidAmount');
             const paidAccountElement = document.getElementById('paidAccount');
             const paymentDateElement = document.getElementById('paymentDate');
+            const transactionIdElement = document.getElementById('transactionId');
             const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
             const newPaymentBtn = document.getElementById('newPaymentBtn');
             const anotherPaymentBtn = document.getElementById('anotherPaymentBtn');
             const billPeriod = document.getElementById('billPeriod');
             const billAmount = document.getElementById('billAmount');
             const currentBillTotal = document.getElementById('currentBillTotal');
+            const currentBillTitle = document.getElementById('currentBillTitle');
             const overdueBillsContainer = document.getElementById('overdueBillsContainer');
             const overdueTotalAmount = document.getElementById('overdueTotalAmount');
+            const overdueTotalContainer = document.getElementById('overdueTotalContainer');
+            const dueDateContainer = document.getElementById('dueDateContainer');
+            const progressContainer = document.getElementById('progressContainer');
+            const paymentHistoryBody = document.getElementById('paymentHistoryBody');
 
             // Utility Functions
-            function formatDate(dateString) {
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString(undefined, options);
+            function parseDate(dateValue) {
+                if (dateValue?.$date) {
+                    return new Date(dateValue.$date);
+                }
+                return new Date(dateValue);
             }
+
+            function formatDate(dateValue) {
+                const date = parseDate(dateValue);
+                if (isNaN(date.getTime())) return "N/A";
+                
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString(undefined, options);
+            }
+            
+            function formatMonthYear(dateValue) {
+                const date = parseDate(dateValue);
+                if (isNaN(date.getTime())) return "N/A";
+                
+                const options = { year: 'numeric', month: 'long' };
+                return date.toLocaleDateString(undefined, options);
+            }
+            
+            function formatDateShort(dateValue) {
+                const date = parseDate(dateValue);
+                if (isNaN(date.getTime())) return "N/A";
+                
+                const options = { month: 'short', day: 'numeric' };
+                return date.toLocaleDateString(undefined, options);
+            }
+            
+			function calculateDaysRemaining(dueDate) {
+				const today = new Date();
+				const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+				const due = parseDate(dueDate);
+				const dueUTC = Date.UTC(due.getUTCFullYear(), due.getUTCMonth(), due.getUTCDate());
+				return Math.ceil((dueUTC - todayUTC) / (1000 * 60 * 60 * 24));
+			}
+            
+            function calculateDaysOverdue(dueDate) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const due = parseDate(dueDate);
+                if (isNaN(due.getTime())) return 0;
+                
+                due.setHours(0, 0, 0, 0);
+                const timeDiff = today - due;
+                return Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+            }
+            
+			function calculateProgress(issueDate, dueDate) {
+				const today = new Date();
+				const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+				const issue = parseDate(issueDate);
+				const issueUTC = Date.UTC(issue.getUTCFullYear(), issue.getUTCMonth(), issue.getUTCDate());
+				const due = parseDate(dueDate);
+				const dueUTC = Date.UTC(due.getUTCFullYear(), due.getUTCMonth(), due.getUTCDate());
+
+				const totalDays = Math.ceil((dueUTC - issueUTC) / (1000 * 60 * 60 * 24));
+				if (totalDays <= 0) return 100;
+
+				const daysPassed = Math.ceil((todayUTC - issueUTC) / (1000 * 60 * 60 * 24));
+				const safeDaysPassed = Math.max(0, Math.min(daysPassed, totalDays));
+				return (safeDaysPassed / totalDays) * 100;
+			}
 
             function showError(message) {
                 const errorMessage = document.getElementById('errorMessage');
@@ -6256,185 +6519,407 @@ templ SystemAdminEmployeePaymentWebPage() {
             function hideLoading() {
                 loadingOverlay.classList.add('hidden');
             }
-            
-            function calculateDaysRemaining(dueDate) {
-                const today = new Date();
-                const due = new Date(dueDate);
-                const timeDiff = due - today;
-                return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            // Mock data for simulation
+            const mockAccountData = {
+                _id: 1,
+                acctNum: 12345678,
+                consumerName: "Juan Dela Cruz",
+                consumerType: "Residential",
+                isActive: true,
+                lastPaymentDate: null,
+                currentBill: {
+                    billId: "BIL20230701",
+                    issueDate: "2023-07-01T00:00:00Z",
+                    dueDate: "2023-07-31T00:00:00Z",
+                    duration: {
+                        start: "2023-06-01T00:00:00Z",
+                        end: "2023-06-30T00:00:00Z"
+                    },
+                    charges: {
+                        amountDue: 1850.75,
+                        usedKwH: 150,
+                        rates: {}, // Ignored as per requirements
+                        overdueFees: null
+                    },
+                    isPaid: false
+                },
+                overdueBill: [],
+                billHistory: [],
+                paymentHistory: []
+            };
+
+            // Mock paid account data
+            const mockPaidAccountData = {
+                _id: 2,
+                acctNum: 87654321,
+                consumerName: "Maria Santos",
+                consumerType: "Commercial",
+                isActive: true,
+                lastPaymentDate: "2023-07-15T00:00:00Z",
+                currentBill: {
+                    billId: "BIL20230801",
+                    issueDate: "2023-08-01T00:00:00Z",
+                    dueDate: "2023-08-31T00:00:00Z",
+                    duration: {
+                        start: "2023-07-01T00:00:00Z",
+                        end: "2023-07-31T00:00:00Z"
+                    },
+                    charges: {
+                        amountDue: 2250.50,
+                        usedKwH: 185,
+                        rates: {}, // Ignored as per requirements
+                        overdueFees: null
+                    },
+                    isPaid: true
+                },
+                overdueBill: [],
+                billHistory: [],
+                paymentHistory: [
+                    {
+                        billIds: ["BIL20230701"],
+                        date: "2023-07-15T00:00:00Z",
+                        amount: 1850.75,
+                        status: "Paid"
+                    }
+                ]
+            };
+
+            // Mock account with overdue bills
+            const mockOverdueAccountData = {
+                _id: 3,
+                acctNum: 11223344,
+                consumerName: "Pedro Reyes",
+                consumerType: "Residential",
+                isActive: true,
+                lastPaymentDate: "2023-06-10T00:00:00Z",
+                currentBill: {
+                    billId: "BIL20230701",
+                    issueDate: "2023-07-01T00:00:00Z",
+                    dueDate: "2023-07-31T00:00:00Z",
+                    duration: {
+                        start: "2023-06-01T00:00:00Z",
+                        end: "2023-06-30T00:00:00Z"
+                    },
+                    charges: {
+                        amountDue: 1850.75,
+                        usedKwH: 150,
+                        rates: {}, // Ignored as per requirements
+                        overdueFees: null
+                    },
+                    isPaid: false
+                },
+                overdueBill: [
+                    {
+                        billId: "BIL20230501",
+                        issueDate: "2023-05-01T00:00:00Z",
+                        dueDate: "2023-05-31T00:00:00Z",
+                        duration: {
+                            start: "2023-04-01T00:00:00Z",
+                            end: "2023-04-30T00:00:00Z"
+                        },
+                        charges: {
+                            amountDue: 1200.50,
+                            usedKwH: 95,
+                            rates: {}, // Ignored as per requirements
+                            overdueFees: {
+                                serviceFee: { rate: 0.05, value: 100 },
+                                interest: { rate: 0.03, value: 75 }
+                            }
+                        },
+                        isPaid: false
+                    },
+                    {
+                        billId: "BIL20230401",
+                        issueDate: "2023-04-01T00:00:00Z",
+                        dueDate: "2023-04-30T00:00:00Z",
+                        duration: {
+                            start: "2023-03-01T00:00:00Z",
+                            end: "2023-03-31T00:00:00Z"
+                        },
+                        charges: {
+                            amountDue: 980.25,
+                            usedKwH: 78,
+                            rates: {}, // Ignored as per requirements
+                            overdueFees: {
+                                serviceFee: { rate: 0.05, value: 85 },
+                                interest: { rate: 0.03, value: 65 }
+                            }
+                        },
+                        isPaid: false
+                    }
+                ],
+                billHistory: [],
+                paymentHistory: [
+                    {
+                        billIds: ["BIL20230301"],
+                        date: "2023-04-15T00:00:00Z",
+                        amount: 890.50,
+                        status: "Paid"
+                    },
+                    {
+                        billIds: ["BIL20230201"],
+                        date: "2023-03-10T00:00:00Z",
+                        amount: 750.25,
+                        status: "Paid"
+                    }
+                ]
+            };
+
+            async function fetchAccountDetails(accountNumber) {
+                // Mock responses for simulation
+                if (accountNumber === "12345678") {
+                    return mockAccountData;
+                } else if (accountNumber === "87654321") {
+                    return mockPaidAccountData;
+                } else if (accountNumber === "11223344") {
+                    return mockOverdueAccountData;
+                }
+
+                const url = '/v1/employee/sysadmin/payment/verify-account-number';
+                const options = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accountNumber })
+                };
+
+                try {
+                    const response = await fetch(url, options);
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to fetch account details');
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    throw new Error(error.message || 'An error occurred while fetching account details');
+                }
             }
-            
-            function calculateProgress(dueDate) {
-                const totalDays = 30; // Total billing cycle days
-				const daysRemaining = Math.min(totalDays, calculateDaysRemaining(dueDate));
-                const daysPassed = totalDays - daysRemaining;
-                return Math.min(100, Math.max(0, (daysPassed / totalDays) * 100));
+
+            async function processPayment(totalAmount, accountNumber, billIds) {
+                const url = '/v1/employee/sysadmin/payment/process-payment';
+                const options = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        accountNumber,
+                        amount: totalAmount,
+                        billIds
+                    })
+                };
+
+                try {
+                    const response = await fetch(url, options);
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Payment processing failed');
+                    }
+                    return data;
+                } catch (error) {
+                    throw new Error(error.message || 'An error occurred while processing payment');
+                }
             }
 
-			async function fetchAccountDetails(accountNumber) {
-				const url = '/v1/employee/sysadmin/payment/verify-account-number';
-				const options = {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ accountNumber })
-				};
-
-				try {
-					const response = await fetch(url, options);
-					const data = await response.json();
-					
-					if (!response.ok) {
-						if (response.status === 404) {
-							throw new Error(data.error || 'No data found');
-						}
-						throw new Error(data.error || 'Failed to fetch account details');
-					}
-					
-					return data;
-				} catch (error) {
-					throw new Error(error.message || 'An error occurred while fetching account details');
-				}
-			}
-
-			// Updated processPayment function
-			async function processPayment(totalAmount, accountNumber, billIds) {
-				const url = '/v1/employee/sysadmin/payment/process-payment';
-				const options = {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						accountNumber,
-						amount: totalAmount,
-						billIds
-					})
-				};
-
-				try {
-					const response = await fetch(url, options);
-					const data = await response.json();
-					if (!response.ok) {
-						throw new Error(data.error || 'Payment processing failed');
-					}
-					return data;
-				} catch (error) {
-					throw new Error(error.message || 'An error occurred while processing payment');
-				}
-			}
-            
             function renderAccountDetails(accountData) {
-                fullNameElement.textContent = `${accountData.firstName} ${accountData.middleName} ${accountData.lastName} ${accountData.suffix}`;
-				accountNumElement.textContent = accountData.accountNumber;
-				lastPaymentElement.textContent = formatDate(accountData.lastPaymentDate);
-				accountBalanceElement.textContent = `₱${accountData.totalAmount.toFixed(2)}`;
-				totalAmountElement.textContent = `₱${accountData.totalAmount.toFixed(2)}`;
-				
-				// Update due date and progress
-				dueDateElement.textContent = formatDate(accountData.dueDate);
-				const daysRemaining = calculateDaysRemaining(accountData.dueDate);
-				const progressPercent = calculateProgress(accountData.dueDate);
-				
-				if (daysRemaining < 0) {
-					dueIndicator.textContent = `Overdue by ${Math.abs(daysRemaining)} days`;
-					dueIndicator.className = 'ml-auto bg-red-100 text-red-800 px-4 py-2 rounded text-sm font-medium';
-				} else {
-					dueIndicator.textContent = `Due in ${daysRemaining} days`;
-					dueIndicator.className = 'ml-auto bg-green-100 text-green-800 px-4 py-2 rounded text-sm font-medium';
-				}
-				dueProgress.style.width = `${progressPercent}%`;
-				console.log(progressPercent)
-				
-				// Update current bill details
-				document.getElementById('currentBillId').textContent = accountData.currentBill.id;
-				billPeriod.textContent = `${accountData.currentBill.currentBillMonth} ${accountData.currentBill.currentBillYear}`;
-				billAmount.textContent = `₱${accountData.currentBill.currentBillAmount.toFixed(2)}`;
-				currentBillTotal.textContent = `₱${accountData.currentBill.currentBillAmount.toFixed(2)}`;
+                // Account info
+                fullNameElement.textContent = accountData.consumerName || "N/A";
+                accountNumElement.textContent = accountData.acctNum;
+                
+                // Last payment date
+                if (accountData.lastPaymentDate) {
+                    lastPaymentElement.textContent = formatDate(accountData.lastPaymentDate);
+                } else {
+                    lastPaymentElement.textContent = "No payment history";
+                }
 
+                // Initialize totals
+                let currentAmount = 0;
+                let overdueTotal = 0;
+                let totalDue = 0;
 
-				// Render overdue bills (unchanged)
-				renderOverdueBills(accountData.overdueBills);
-
-                const paymentHistoryBody = document.getElementById('paymentHistoryBody');
-                paymentHistoryBody.innerHTML = '';
-                accountData.paymentHistory.forEach(transaction => {
-                    const formattedDate = formatDate(transaction.date);
-                    const statusClass = `status-${transaction.status.toLowerCase()}`;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${formattedDate}</td>
-                        <td>${transaction.transactionId}</td>
-                        <td class="text-left">₱${transaction.amount.toFixed(2)}</td>
-                        <td><span class="payment-status ${statusClass}">${transaction.status}</span></td>
+                // Current bill handling
+                if (accountData.currentBill && !accountData.currentBill.isPaid) {
+                    const bill = accountData.currentBill;
+                    currentAmount = bill.charges.amountDue;
+                    
+                    // Update bill details
+                    document.getElementById('currentBillId').textContent = bill.billId;
+                    
+                    // Format bill period
+                    billPeriod.textContent = `${formatDateShort(bill.duration.start)} - ${formatDateShort(bill.duration.end)}`;
+                    
+                    // Update amounts
+                    billAmount.textContent = `₱${currentAmount.toFixed(2)}`;
+                    currentBillTotal.textContent = `₱${currentAmount.toFixed(2)}`;
+                    
+                    // Update bill title with issue date
+                    currentBillTitle.innerHTML = `
+                        <i class="fas fa-bolt text-green-500 mr-2"></i> 
+                        Current Bill (${formatMonthYear(bill.issueDate)})
                     `;
-                    paymentHistoryBody.appendChild(row);
-                });
+                    
+                    // Due date info
+                    const dueDate = bill.dueDate;
+					const issueDate = bill.issueDate;
+                    dueDateElement.textContent = formatDate(dueDate);
+                    
+                    // Days remaining
+                    const daysRemaining = calculateDaysRemaining(dueDate);
+                    if (daysRemaining < 0) {
+                        dueIndicator.textContent = `Overdue by ${Math.abs(daysRemaining)} days`;
+                        dueIndicator.className = 'ml-auto bg-red-100 text-red-800 px-4 py-2 rounded text-sm font-medium';
+                    } else {
+                        dueIndicator.textContent = `Due in ${daysRemaining} days`;
+                        dueIndicator.className = 'ml-auto bg-green-100 text-green-800 px-4 py-2 rounded text-sm font-medium';
+                    }
+                    
+                    // Progress bar
+                    const progressPercent = calculateProgress(issueDate,dueDate);
+                    dueProgress.style.width = `${progressPercent}%`;
+                    
+                    // Show due date elements
+                    dueDateContainer.classList.remove('hidden');
+                    progressContainer.classList.remove('hidden');
+                    dueIndicator.classList.remove('hidden');
+                } else {
+                    // Current bill is paid or doesn't exist
+                    document.getElementById('currentBillId').textContent = "N/A";
+                    billPeriod.textContent = "No current bill";
+                    billAmount.textContent = "₱0.00";
+                    currentBillTotal.textContent = "₱0.00";
+                    
+                    // Update bill title
+                    if (accountData.currentBill?.isPaid) {
+                        currentBillTitle.innerHTML = `
+                            <i class="fas fa-bolt text-green-500 mr-2"></i> 
+                            Current Bill (${formatMonthYear(accountData.currentBill.issueDate)})
+                        `;
+                        dueIndicator.textContent = "Paid";
+                        dueIndicator.className = 'ml-auto bg-green-100 text-green-800 px-4 py-2 rounded text-sm font-medium';
+                    } else {
+                        currentBillTitle.innerHTML = `
+                            <i class="fas fa-bolt text-green-500 mr-2"></i> 
+                            Current Bill
+                        `;
+                        dueIndicator.classList.add('hidden');
+                    }
+                    
+                    // Hide due date elements
+                    dueDateContainer.classList.add('hidden');
+                    progressContainer.classList.add('hidden');
+                }
 
-                if (accountData.totalAmount <= 0) {
+                // Overdue bills handling
+                overdueBillsContainer.innerHTML = '';
+                if (accountData.overdueBill && accountData.overdueBill.length > 0) {
+                    accountData.overdueBill.forEach(bill => {
+                        if (!bill.isPaid) {
+                            const base = bill.charges.amountDue;
+                            const interest = bill.charges.overdueFees?.interest?.value || 0;
+                            const serviceFee = bill.charges.overdueFees?.serviceFee?.value || 0;
+                            const billTotal = base + interest + serviceFee;
+                            overdueTotal += billTotal;
+                            
+                            const issueDate = bill.issueDate;
+                            const dueDate = bill.dueDate;
+                            const daysOverdue = calculateDaysOverdue(dueDate);
+                            
+                            const billElement = document.createElement('div');
+                            billElement.className = 'overdue-bill-card';
+                            billElement.innerHTML = `
+                                <div class="overdue-bill-header">
+                                    ${formatMonthYear(issueDate)} (${daysOverdue} days overdue)
+                                </div>
+                                <div class="overdue-bill-detail">
+                                    <div>Bill ID</div>
+                                    <div class="font-mono">${bill.billId}</div>
+                                </div>
+                                <div class="overdue-bill-detail">
+                                    <div>Base Amount</div>
+                                    <div>₱${base.toFixed(2)}</div>
+                                </div>
+                                <div class="overdue-bill-detail">
+                                    <div>Interest (${bill.charges.overdueFees?.interest?.rate * 100 || 0}%)</div>
+                                    <div>₱${interest.toFixed(2)}</div>
+                                </div>
+                                <div class="overdue-bill-detail">
+                                    <div>Service Fee</div>
+                                    <div>₱${serviceFee.toFixed(2)}</div>
+                                </div>
+                                <div class="overdue-bill-footer">
+                                    <div>Total for ${formatMonthYear(issueDate)}</div>
+                                    <div>₱${billTotal.toFixed(2)}</div>
+                                </div>
+                            `;
+                            overdueBillsContainer.appendChild(billElement);
+                        }
+                    });
+                    
+                    // Show overdue total
+                    if (overdueTotal > 0) {
+                        overdueTotalAmount.textContent = `₱${overdueTotal.toFixed(2)}`;
+                        overdueTotalContainer.classList.remove('hidden');
+                    } else {
+                        overdueTotalContainer.classList.add('hidden');
+                    }
+                }
+                
+                if (overdueBillsContainer.children.length === 0) {
+                    overdueBillsContainer.innerHTML = `
+                        <div class="no-data-message">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i> No overdue bills
+                        </div>
+                    `;
+                    overdueTotalContainer.classList.add('hidden');
+                }
+
+                // Calculate total amount due
+                totalDue = currentAmount + overdueTotal;
+                accountBalanceElement.textContent = `₱${totalDue.toFixed(2)}`;
+                totalAmountElement.textContent = `₱${totalDue.toFixed(2)}`;
+                
+                // Update payment button
+                confirmPaymentBtn.innerHTML = `<i class="fas fa-lock mr-3"></i><span>Pay ₱${totalDue.toFixed(2)} Now</span>`;
+                
+                if (totalDue <= 0) {
                     confirmPaymentBtn.disabled = true;
                     confirmPaymentBtn.classList.add('disabled-button');
-                    confirmPaymentBtn.textContent = "Pay ₱0.00 Now";
                 } else {
                     confirmPaymentBtn.disabled = false;
                     confirmPaymentBtn.classList.remove('disabled-button');
-                    confirmPaymentBtn.innerHTML = `<i class="fas fa-lock mr-3"></i><span>Pay ₱${accountData.totalAmount.toFixed(2)} Now</span>`;
                 }
-            }
 
-            function renderOverdueBills(overdueBills) {
-                overdueBillsContainer.innerHTML = '';
-                let totalOverdue = 0;
-                
-                if (overdueBills.length === 0) {
-                    const emptyMessage = document.createElement('div');
-                    emptyMessage.className = 'text-center py-6 text-gray-500';
-                    emptyMessage.innerHTML = '<i class="fas fa-check-circle mr-2 text-green-500"></i> No overdue bills';
-                    overdueBillsContainer.appendChild(emptyMessage);
-                } else {
-                    overdueBills.forEach(bill => {
-                        const billTotal = bill.baseAmount + bill.interestAmount + bill.serviceFee;
-                        totalOverdue += billTotal;
-                        
-                        const billElement = document.createElement('div');
-                        billElement.className = 'overdue-bill-card';
-                        billElement.innerHTML = `
-                            <div class="overdue-bill-header">
-                                ${bill.month} ${bill.year} (${bill.daysOverdue} days overdue)
-                            </div>
-							<div class="overdue-bill-detail">
-								<div>Bill ID</div>
-								<div class="font-mono">${bill.id}</div>
-							</div>
-                            <div class="overdue-bill-detail">
-                                <div>Base Amount</div>
-                                <div>₱${bill.baseAmount.toFixed(2)}</div>
-                            </div>
-                            <div class="overdue-bill-detail">
-                                <div>Interest (${bill.interestRate}%)</div>
-                                <div>₱${bill.interestAmount.toFixed(2)}</div>
-                            </div>
-                            <div class="overdue-bill-detail">
-                                <div>Service Fee</div>
-                                <div>₱${bill.serviceFee.toFixed(2)}</div>
-                            </div>
-                            <div class="overdue-bill-footer">
-                                <div>Total for ${bill.month} ${bill.year}</div>
-                                <div>₱${billTotal.toFixed(2)}</div>
-                            </div>
+                // Payment history
+                paymentHistoryBody.innerHTML = '';
+                if (accountData.paymentHistory && accountData.paymentHistory.length > 0) {
+                    accountData.paymentHistory.forEach(payment => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${formatDate(payment.date)}</td>
+                            <td>${payment.billIds[0] || 'N/A'}</td>
+                            <td>₱${payment.amount.toFixed(2)}</td>
+                            <td><span class="payment-status status-${payment.status.toLowerCase()}">${payment.status}</span></td>
                         `;
-                        overdueBillsContainer.appendChild(billElement);
+                        paymentHistoryBody.appendChild(row);
                     });
+                } else {
+                    paymentHistoryBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="no-data-message">No payment history found</td>
+                        </tr>
+                    `;
                 }
                 
-                overdueTotalAmount.textContent = `₱${totalOverdue.toFixed(2)}`;
+                // Store account data for payment processing
+                window.currentAccountData = accountData;
             }
 
             function renderPaymentConfirmation(paymentData) {
                 paidAmountElement.textContent = `₱${paymentData.amount.toFixed(2)}`;
                 paidAccountElement.textContent = paymentData.accountNumber;
-                paymentDateElement.textContent = formatDate(paymentData.date);
+                transactionIdElement.textContent = paymentData.transactionId || "TX984732";
+                paymentDateElement.textContent = formatDate(new Date());
             }
 
             // Event Handlers
@@ -6445,15 +6930,13 @@ templ SystemAdminEmployeePaymentWebPage() {
                     return;
                 }
                 showLoading();
-				try {
-					const accountData = await fetchAccountDetails(accountNumber);
-					window.currentAccountData = accountData;
-					renderAccountDetails(accountData);
-					accountInputCard.classList.add('hidden');
-					accountDetails.classList.remove('hidden');
-					accountDetails.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                try {
+                    const accountData = await fetchAccountDetails(accountNumber);
+                    renderAccountDetails(accountData);
+                    accountInputCard.classList.add('hidden');
+                    accountDetails.classList.remove('hidden');
+                    accountDetails.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } catch (error) {
-                    accountDetails.classList.add('hidden');
                     showError(error.message);
                 } finally {
                     hideLoading();
@@ -6465,32 +6948,41 @@ templ SystemAdminEmployeePaymentWebPage() {
                 accountInputCard.classList.remove('hidden');
             });
 
-			confirmPaymentBtn.addEventListener('click', async function () {
-				if (confirmPaymentBtn.disabled) return;
-				showLoading();
-				try {
-					const totalAmount = parseFloat(totalAmountElement.textContent.replace('₱', ''));
-					const accountNumber = accountNumElement.textContent;
-					
-					// Collect bill IDs
-					const billIds = [];
-					billIds.push(currentAccountData.currentBill.id);
-					currentAccountData.overdueBills.forEach(bill => {
-						billIds.push(bill.id);
-					});
-					
-					const paymentData = await processPayment(totalAmount, accountNumber, billIds);
-					renderPaymentConfirmation(paymentData);
-					accountDetails.classList.add('hidden');
-					paymentConfirmation.classList.remove('hidden');
-					paymentConfirmation.scrollIntoView({ behavior: 'smooth' });
-				} catch (error) {
-					console.error('Error processing payment:', error);
-					alert('An unexpected error occurred. Please try again.');
-				} finally {
-					hideLoading();
-				}
-			});
+            confirmPaymentBtn.addEventListener('click', async function () {
+                if (confirmPaymentBtn.disabled) return;
+                
+                const totalAmount = parseFloat(
+                    totalAmountElement.textContent.replace('₱', '').replace(',', '')
+                );
+                const accountNumber = accountNumElement.textContent;
+                
+                // Collect bill IDs
+                const billIds = [];
+                if (currentAccountData.currentBill && !currentAccountData.currentBill.isPaid) {
+                    billIds.push(currentAccountData.currentBill.billId);
+                }
+                
+                if (currentAccountData.overdueBill) {
+                    currentAccountData.overdueBill.forEach(bill => {
+                        if (!bill.isPaid) {
+                            billIds.push(bill.billId);
+                        }
+                    });
+                }
+                
+                showLoading();
+                try {
+                    const paymentData = await processPayment(totalAmount, accountNumber, billIds);
+                    renderPaymentConfirmation(paymentData);
+                    accountDetails.classList.add('hidden');
+                    paymentConfirmation.classList.remove('hidden');
+                    paymentConfirmation.scrollIntoView({ behavior: 'smooth' });
+                } catch (error) {
+                    showError('Payment failed: ' + error.message);
+                } finally {
+                    hideLoading();
+                }
+            });
 
             anotherPaymentBtn.addEventListener('click', function () {
                 paymentConfirmation.classList.add('hidden');
@@ -6500,9 +6992,8 @@ templ SystemAdminEmployeePaymentWebPage() {
             });
 
             newPaymentBtn.addEventListener('click', function () {
-                alert('Receipt downloaded! Transaction ID: TX984732');
+                alert('Receipt downloaded! Transaction ID: ' + transactionIdElement.textContent);
             });
-
         });
     </script>
 			</body>
