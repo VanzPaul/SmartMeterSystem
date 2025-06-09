@@ -9,11 +9,12 @@ import (
 )
 
 type MeterDocument struct {
-	ID                    int        `bson:"_id"`
+	ID                    int        `bson:"_id,omitempty"`
 	MeterNumber           int        `bson:"meterNumber"`
 	InstallationDate      time.Time  `bson:"installDate"`
 	ConsumerTransformerID string     `bson:"transformerId"`
 	Coordinates           []float64  `bson:"coordinates"`
+	Address               string     `bson:"address"`
 	ConsumerAccNo         int        `bson:"acctNo"`
 	SmartMeter            SmartMeter `bson:"smartMeteromitempty"`
 	IsActive              bool       `bson:"isActive"`
@@ -92,10 +93,10 @@ type UsageDuration struct {
 }
 
 type PaymentHistory struct {
-	BillIds []string  `bson:"billIds"`
-	Date    time.Time `bson:"date"`
-	Amount  float64   `bson:"amount"`
-	Status  string    `bson:"status"`
+	TransactionId string    `bson:"transactionId"`
+	BillIds       []string  `bson:"billIds"`
+	Date          time.Time `bson:"date"`
+	Amount        float64   `bson:"amount"`
 }
 
 type Charges struct {

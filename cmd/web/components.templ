@@ -552,119 +552,116 @@ templ SystemAdminEmployeeDashboardWebPage() {
         // Simulate loading meter data
 		async function loadMeters() {
 			try {
-				// Simulated data in new format (using "IsActive" as boolean instead of "Status")
-				const smartMeters = [
-					{
-						ID: 1,
-						MeterNumber: 1001,
-						Coordinates: [-0.09, 51.505], // [lng, lat]
-						ConsumerAccNo: 12345,
-						ConsumerTransformerID: "TF-123",
-						SmartMeter: {
-							IsActive: true,
-							Alert: [
-								{
-									ID: "A1",
-									Type: "power_outage",
-									Status: "inactive",
-									Timestamp: "2023-10-01T12:00:00Z"
-								}
-							]
-						}
-					},
-					{
-						ID: 2,
-						MeterNumber: 1002,
-						Coordinates: [-0.1, 51.51],
-						ConsumerAccNo: 12346,
-						ConsumerTransformerID: "TF-124",
-						SmartMeter: {
-							IsActive: false,
-							Alert: [
-								{
-									ID: "A2",
-									Type: "power_outage",
-									Status: "active",
-									Timestamp: "2023-10-02T14:30:00Z"
-								}
-							]
-						}
-					},
-					// ... more meters in new format ...
-				];
-				
-				// Process new data format using "IsActive" (boolean)
-				const activeMeters = smartMeters.filter(m =>
-					m.SmartMeter?.IsActive === true
-				).length;
-				
-				const inactiveMeters = smartMeters.length - activeMeters;
-				
-				const alertCount = smartMeters.filter(m =>
-					m.SmartMeter?.Alert?.some(alert =>
-						alert.Type === 'power_outage' && alert.Status === 'active'
-					)
-				).length;
+				const url = '/v1/employee/sysadmin/dashboard/meter-list';
+				const response = await fetch(url);
 
-				// Update counts
+				if (!response.ok) {
+				console.error(`Server returned HTTP ${response.status}`);
+				return;
+				}
+
+				const smartMeters = await response.json();
+				// smartMeters is now an array like:
+				// [
+				//   {
+				//     "_id": "684640399ad5ad9989380938",
+				//     "acctNo": 11111111,
+				//     "address": "Brg.Calzada, Balayan, 4213 Batangas",
+				//     "coordinates": [13.945487653703744, 120.73046879087848],
+				//     "installDate": "2025-06-09T00:00:00Z",
+				//     "isActive": true,
+				//     "meterNumber": 1001,
+				//     "smartMeteromitempty": {
+				//       "alert": null,
+				//       "isActive": false,
+				//       "usagekwh": 79
+				//     },
+				//     "transformerId": "123"
+				//   },
+				//   // …more entries…
+				// ]
+
+				// 1) Count active/inactive based on root “isActive”
+				const activeMeters = smartMeters.filter(m => m.isActive === true).length;
+				const inactiveMeters = smartMeters.length - activeMeters;
+
+				// 2) Count “active power_outage” alerts, treating alert == null as zero
+				const alertCount = smartMeters.filter(m => {
+				// Pull the “alert” array (or null) from smartMeteromitempty:
+				const alerts = m.smartMeteromitempty?.alert;
+				if (!Array.isArray(alerts)) {
+					// If alert is null or missing, count as “no active alerts”
+					return false;
+				}
+				// Otherwise check if any “power_outage” is “active”
+				return alerts.some(a => a.Type === 'power_outage' && a.Status === 'active');
+				}).length;
+
+				// 3) Update the dashboard counters
 				document.getElementById('totalMetersCount').textContent = smartMeters.length;
 				document.getElementById('activeMetersCount').textContent = activeMeters;
 				document.getElementById('inactiveMetersCount').textContent = inactiveMeters;
 				document.getElementById('alertMetersCount').textContent = alertCount;
-				
-				// Update progress bars
-				document.getElementById('activeProgress').style.width = `${(activeMeters / smartMeters.length) * 100}%`;
-				document.getElementById('inactiveProgress').style.width = `${(inactiveMeters / smartMeters.length) * 100}%`;
-				document.getElementById('alertProgress').style.width = `${(alertCount / smartMeters.length) * 100}%`;
 
-				// Clear existing markers
+				// 4) Update progress bars
+				document.getElementById('activeProgress').style.width =
+				`${(activeMeters / smartMeters.length) * 100}%`;
+				document.getElementById('inactiveProgress').style.width =
+				`${(inactiveMeters / smartMeters.length) * 100}%`;
+				document.getElementById('alertProgress').style.width =
+				`${(alertCount / smartMeters.length) * 100}%`;
+
+				// 5) Remove old markers
 				markers.forEach(marker => map.removeLayer(marker));
 				markers = [];
 
-				// Add new markers with updated data structure
+				// 6) Add a marker for each meter
 				smartMeters.forEach(meter => {
-					const hasAlert = meter.SmartMeter?.Alert?.some(alert =>
-						alert.Type === 'power_outage' && alert.Status === 'active'
-					) ?? false;
+				// Determine if there’s an active power_outage in this meter’s “alert” list
+				const alerts = meter.smartMeteromitempty?.alert;
+				const hasAlert = Array.isArray(alerts)
+					? alerts.some(a => a.Type === 'power_outage' && a.Status === 'active')
+					: false;
 
-					// Use Coordinates array [lng, lat] -> reverse for Leaflet [lat, lng]
-					const coords = meter.Coordinates.slice().reverse();
-					
-					const isActive = meter.SmartMeter?.IsActive === true;
-					const statusLabel = isActive ? 'Active' : 'Inactive';
+				// Use the root “isActive” for meter status
+				const isActive = meter.isActive === true;
+				const statusLabel = isActive ? 'Active' : 'Inactive';
 
-					const marker = L.marker(coords, {
-						icon: blueIcon
-					}).bindPopup(`
-						<div class="p-2 min-w-[200px]">
-							<h3 class="font-bold text-lg">Meter #${meter.MeterNumber}</h3>
-							<div class="flex items-center gap-2 mt-1">
-								<i class="fas fa-id-card text-gray-600"></i>
-								<span>Account: ${meter.ConsumerAccNo}</span>
-							</div>
-							<div class="flex items-center gap-2 mt-1">
-								<i class="fas fa-bolt text-gray-600"></i>
-								<span>Transformer: ${meter.ConsumerTransformerID}</span>
-							</div>
-							<div class="mt-2 flex items-center gap-2">
-								<span class="px-2 py-1 rounded text-xs font-medium ${
-									isActive
-										? 'bg-green-100 text-green-800'
-										: 'bg-red-100 text-red-800'
-								}">
-									${statusLabel}
-								</span>
-								${hasAlert
-									? '<span class="px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">Power Outage Alert!</span>'
-									: ''}
-							</div>
-						</div>
-					`);
-					
-					// Store a normalized status on the marker for later filtering/sorting
-					marker.status = isActive ? 'active' : 'inactive';
-					marker.hasAlert = hasAlert;
-					markers.push(marker);
+				// Grab coordinates (assumed [lat, lng] from server)
+				const coords = meter.coordinates;
+
+				// Create the Leaflet marker at [lat, lng]
+				const marker = L.marker(coords, { icon: blueIcon }).bindPopup(`
+					<div class="p-2 min-w-[200px]">
+					<h3 class="font-bold text-lg">Meter #${meter.meterNumber}</h3>
+					<div class="flex items-center gap-2 mt-1">
+						<i class="fas fa-id-card text-gray-600"></i>
+						<span>Account: ${meter.acctNo}</span>
+					</div>
+					<div class="flex items-center gap-2 mt-1">
+						<i class="fas fa-map-pin text-gray-600"></i>
+						<span>Address: ${meter.address}</span>
+					</div>
+					<div class="flex items-center gap-2 mt-1">
+						<i class="fas fa-bolt text-gray-600"></i>
+						<span>Transformer: ${meter.transformerId}</span>
+					</div>
+					<div class="mt-2 flex items-center gap-2">
+						<span class="px-2 py-1 rounded text-xs font-medium ${
+						isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+						}">${statusLabel}</span>
+						${
+						hasAlert
+							? '<span class="px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">Power Outage Alert!</span>'
+							: ''
+						}
+					</div>
+					</div>
+				`);
+
+				marker.status = isActive ? 'active' : 'inactive';
+				marker.hasAlert = hasAlert;
+				markers.push(marker);
 				});
 
 				updateMapView();
@@ -976,7 +973,7 @@ templ NewMeterAccountForm(usecase string) {
 			</div>
 			// Horizontal dashed-line
 			<div class="w-full border-t border-dashed border-gray-300"></div>
-			<div class="grid grid-cols-2 gap-10 mb-8">
+			<div class="flex flex-col mb-8">
 				<div>
 					<label for="geolocation" class="block text-sm font-medium text-gray-700 mb-2">
 						Geolocation
@@ -987,6 +984,18 @@ templ NewMeterAccountForm(usecase string) {
 					>
 						<input
 							type="number"
+							step="any"
+							id="create-meter-longitude"
+							name="create-meter-longitude"
+							class="block w-full px-4 py-3 border border-gray-300 
+										rounded-lg focus:ring-green-500 focus:border-green-500 
+										placeholder-gray-400 placeholder:text-sm
+										[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							placeholder="Longitude"
+						/>
+						<input
+							type="number"
+							step="any"
 							id="create-meter-latitude"
 							name="create-meter-latitude"
 							class="block w-full px-4 py-3 border border-gray-300 
@@ -995,15 +1004,22 @@ templ NewMeterAccountForm(usecase string) {
 									[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 							placeholder="Latitude"
 						/>
+					</div>
+				</div>
+				<div class="grid grid-cols-3">
+					<div class="col-span-2">
+						<label for="create-meter-address" class="block text-sm font-medium text-gray-700 mb-2">
+							Addresss
+						</label>
 						<input
-							type="number"
-							id="create-meter-longitude"
-							name="create-meter-longitude"
+							type="text"
+							id="create-meter-address"
+							name="create-meter-address"
 							class="block w-full px-4 py-3 border border-gray-300 
-									rounded-lg focus:ring-green-500 focus:border-green-500 
-									placeholder-gray-400 placeholder:text-sm
-									[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-							placeholder="Longitude"
+										rounded-lg focus:ring-green-500 focus:border-green-500 
+										placeholder-gray-400 placeholder:text-sm
+										[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+							placeholder="Adresss"
 						/>
 					</div>
 				</div>
@@ -6436,6 +6452,7 @@ templ SystemAdminEmployeePaymentWebPage() {
             const dueDateContainer = document.getElementById('dueDateContainer');
             const progressContainer = document.getElementById('progressContainer');
             const paymentHistoryBody = document.getElementById('paymentHistoryBody');
+			const currentBillTable = document.getElementById('currentBillTable');
 
             // Utility Functions
             function parseDate(dateValue) {
@@ -6783,31 +6800,45 @@ templ SystemAdminEmployeePaymentWebPage() {
                     progressContainer.classList.remove('hidden');
                     dueIndicator.classList.remove('hidden');
                 } else {
-                    // Current bill is paid or doesn't exist
-                    document.getElementById('currentBillId').textContent = "N/A";
-                    billPeriod.textContent = "No current bill";
-                    billAmount.textContent = "₱0.00";
-                    currentBillTotal.textContent = "₱0.00";
-                    
-                    // Update bill title
-                    if (accountData.currentBill?.isPaid) {
-                        currentBillTitle.innerHTML = `
-                            <i class="fas fa-bolt text-green-500 mr-2"></i> 
-                            Current Bill (${formatMonthYear(accountData.currentBill.issueDate)})
-                        `;
-                        dueIndicator.textContent = "Paid";
-                        dueIndicator.className = 'ml-auto bg-green-100 text-green-800 px-4 py-2 rounded text-sm font-medium';
-                    } else {
-                        currentBillTitle.innerHTML = `
-                            <i class="fas fa-bolt text-green-500 mr-2"></i> 
-                            Current Bill
-                        `;
-                        dueIndicator.classList.add('hidden');
-                    }
-                    
-                    // Hide due date elements
-                    dueDateContainer.classList.add('hidden');
-                    progressContainer.classList.add('hidden');
+                    // Check if current bill is paid AND amount due is zero
+					if (accountData.currentBill?.isPaid || accountData.currentBill.charges.amountDue === 0.00) {
+						// Replace table with "No current bill to pay" message
+						currentBillTable.innerHTML = `
+							<tr>
+								<td colspan="2">
+									<div class="no-data-message">
+										<i class="fas fa-check-circle text-green-500 mr-2"></i> No current bill to pay
+									</div>
+								</td>
+							</tr>
+						`;
+					} else {
+						// Existing logic for paid bills with amount due
+						document.getElementById('currentBillId').textContent = "N/A";
+						billPeriod.textContent = "No current bill";
+						billAmount.textContent = "₱0.00";
+						currentBillTotal.textContent = "₱0.00";
+					}
+
+					// Update bill title
+					if (accountData.currentBill?.isPaid) {
+						currentBillTitle.innerHTML = `
+							<i class="fas fa-bolt text-green-500 mr-2"></i> 
+							Current Bill (${formatMonthYear(accountData.currentBill.issueDate)})
+						`;
+						dueIndicator.textContent = "Paid";
+						dueIndicator.className = 'ml-auto bg-green-100 text-green-800 px-4 py-2 rounded text-sm font-medium';
+					} else {
+						currentBillTitle.innerHTML = `
+							<i class="fas fa-bolt text-green-500 mr-2"></i> 
+							Current Bill
+						`;
+						dueIndicator.classList.add('hidden');
+					}
+					
+					// Hide due date elements
+					dueDateContainer.classList.add('hidden');
+					progressContainer.classList.add('hidden');
                 }
 
                 // Overdue bills handling
@@ -6895,11 +6926,12 @@ templ SystemAdminEmployeePaymentWebPage() {
                 if (accountData.paymentHistory && accountData.paymentHistory.length > 0) {
                     accountData.paymentHistory.forEach(payment => {
                         const row = document.createElement('tr');
+						const statusText = 'paid';
                         row.innerHTML = `
                             <td>${formatDate(payment.date)}</td>
                             <td>${payment.billIds[0] || 'N/A'}</td>
                             <td>₱${payment.amount.toFixed(2)}</td>
-                            <td><span class="payment-status status-${payment.status.toLowerCase()}">${payment.status}</span></td>
+                            <td><span class="payment-status status-${statusText}">${statusText}</span></td>
                         `;
                         paymentHistoryBody.appendChild(row);
                     });
@@ -6918,8 +6950,8 @@ templ SystemAdminEmployeePaymentWebPage() {
             function renderPaymentConfirmation(paymentData) {
                 paidAmountElement.textContent = `₱${paymentData.amount.toFixed(2)}`;
                 paidAccountElement.textContent = paymentData.accountNumber;
-                transactionIdElement.textContent = paymentData.transactionId || "TX984732";
-                paymentDateElement.textContent = formatDate(new Date());
+                transactionIdElement.textContent = paymentData.transactionId;
+                paymentDateElement.textContent = formatDate(paymentData.date);
             }
 
             // Event Handlers
@@ -7004,3 +7036,312 @@ templ SystemAdminEmployeePaymentWebPage() {
 /********************************************************************/
 /********************************************************************/
 /********************************************************************/
+
+templ ConsumerPage() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Energy Dashboard - GreenPower Inc.</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+			<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+			<style>
+        .stat-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+        .filter-btn:hover {
+            background-color: #bbf7d0;
+        }
+        .filter-btn.active {
+            background-color: #22c55e;
+            color: white;
+        }
+        .chart-container {
+            background: linear-gradient(to bottom, #f0fdf4, #ffffff);
+        }
+    </style>
+		</head>
+		<body class="bg-primary-50 min-h-screen">
+			<!-- Navigation -->
+			<nav class="bg-primary-900 text-white">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div class="flex justify-between h-16">
+						<div class="flex items-center">
+							<div class="flex-shrink-0 flex items-center">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+								</svg>
+								<span class="text-xl font-bold">BATELEC I</span>
+							</div>
+						</div>
+						<div class="hidden md:flex items-center">
+							<div class="ml-4 flex items-center md:ml-6">
+								<button class="p-1 rounded-full text-primary-200 hover:text-white focus:outline-none">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+									</svg>
+								</button>
+								<div class="ml-3 relative">
+									<div>
+										<button class="max-w-xs flex items-center text-sm rounded-full focus:outline-none">
+											<img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt=""/>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+					<div>
+						<h1 class="text-3xl font-bold text-gray-900">Energy Dashboard</h1>
+					</div>
+					<div class="mt-4 md:mt-0">
+						<div class="relative">
+							<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+								</svg>
+							</div>
+							<select class="bg-white border border-gray-300 rounded-lg py-2 pl-10 pr-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+								<option>July 2023</option>
+								<option>June 2023</option>
+								<option>May 2023</option>
+								<option>April 2023</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<!-- Account Details -->
+				<div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+					<h2 class="text-xl font-semibold text-gray-900 mb-4">Account Details</h2>
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<div class="p-4 border border-gray-200 rounded-lg">
+							<p class="text-sm text-gray-500">Account Number</p>
+							<p class="font-medium text-gray-900">AC-7890-4567-1234</p>
+						</div>
+						<div class="p-4 border border-gray-200 rounded-lg">
+							<p class="text-sm text-gray-500">Account Name</p>
+							<p class="font-medium text-gray-900">John Doe</p>
+						</div>
+						<div class="p-4 border border-gray-200 rounded-lg">
+							<p class="text-sm text-gray-500">Billing Address</p>
+							<p class="font-medium text-gray-900">123 Green St, Eco City, EC 12345</p>
+						</div>
+					</div>
+				</div>
+				<!-- Meter Details -->
+				<div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+					<h2 class="text-xl font-semibold text-gray-900 mb-4">Meter Details</h2>
+					<div class="overflow-x-auto">
+						<table class="min-w-full divide-y divide-gray-200">
+							<thead class="bg-gray-50">
+								<tr>
+									<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Meter Number</th>
+									<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KWH</th>
+									<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Installation Date</th>
+									<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+								</tr>
+							</thead>
+							<tbody class="bg-white divide-y divide-gray-200">
+								<tr>
+									<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">M-12345678</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 15, 2020</td>
+									<td class="px-6 py-4 whitespace-nowrap">
+										<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">M-87654321</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mar 22, 2022</td>
+									<td class="px-6 py-4 whitespace-nowrap">
+										<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- Stats Cards -->
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+					<div class="stat-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-primary-500">
+						<div class="flex justify-between items-start">
+							<div>
+								<p class="text-sm font-medium text-gray-500">Current Bill</p>
+								<p class="text-3xl font-bold text-gray-900 mt-1">$142.50</p>
+								<p class="text-sm text-gray-600 mt-2">Due: Aug 15, 2023</p>
+							</div>
+							<div class="bg-primary-100 p-3 rounded-lg">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+								</svg>
+							</div>
+						</div>
+						<div class="mt-4">
+							<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+								<svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+								</svg>
+								12% less than last month
+							</span>
+						</div>
+					</div>
+					<div class="stat-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-primary-500">
+						<div class="flex justify-between items-start">
+							<div>
+								<p class="text-sm font-medium text-gray-500">Total kWh Used</p>
+								<p class="text-3xl font-bold text-gray-900 mt-1">632 kWh</p>
+								<p class="text-sm text-gray-600 mt-2">Current Billing Period</p>
+							</div>
+							<div class="bg-primary-100 p-3 rounded-lg">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+								</svg>
+							</div>
+						</div>
+						<div class="mt-4">
+							<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+								<svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+								</svg>
+								8% less than last month
+							</span>
+						</div>
+					</div>
+					<div class="stat-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-primary-500">
+						<div class="flex justify-between items-start">
+							<div>
+								<p class="text-sm font-medium text-gray-500">Daily Average</p>
+								<p class="text-3xl font-bold text-gray-900 mt-1">20.4 kWh</p>
+								<p class="text-sm text-gray-600 mt-2">Current Billing Period</p>
+							</div>
+							<div class="bg-primary-100 p-3 rounded-lg">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+								</svg>
+							</div>
+						</div>
+						<div class="mt-4">
+							<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+								<svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+								</svg>
+								5% less than last month
+							</span>
+						</div>
+					</div>
+				</div>
+				<!-- Consumption Chart -->
+				<div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+					<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+						<h2 class="text-xl font-semibold text-gray-900">Energy Consumption</h2>
+						<div class="mt-4 md:mt-0 flex space-x-1">
+							<button class="filter-btn px-3 py-1 rounded-md text-sm font-medium bg-primary-500 text-white active">Month</button>
+							<button class="filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-700 hover:bg-primary-100">Quarter</button>
+							<button class="filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-700 hover:bg-primary-100">Year</button>
+						</div>
+					</div>
+					<div class="chart-container p-4 rounded-lg">
+						<canvas id="consumptionChart" height="300"></canvas>
+					</div>
+				</div>
+			</div>
+			<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize chart
+            const ctx = document.getElementById('consumptionChart').getContext('2d');
+            const consumptionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jul 1', 'Jul 5', 'Jul 10', 'Jul 15', 'Jul 20', 'Jul 25', 'Jul 30'],
+                    datasets: [{
+                        label: 'Daily Consumption (kWh)',
+                        data: [22.5, 19.8, 21.2, 18.7, 20.3, 19.1, 21.5],
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderColor: 'rgb(34, 197, 94)',
+                        borderWidth: 3,
+                        pointBackgroundColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' kWh';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Filter button interaction
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+		</body>
+	</html>
+}

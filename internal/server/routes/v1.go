@@ -12,7 +12,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -59,24 +58,62 @@ func (r *V1Routes) V1Handler() http.Handler {
 
 // Handler methods for V1 route groups
 func (c *V1ConsumerRoute) HandleV1() http.Handler {
+	logger, loggerErr := internal.NewLogger()
+	if loggerErr != nil {
+		panic("Failed to create logger in v1.go")
+	}
+	logger.Info("")
+
 	mux := http.NewServeMux()
+
+	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		userType := r.URL.Query().Get("user_type")
+
+		switch r.Method {
+		case "GET":
+			web.LoginWebPage(c.Deps.GetDefaultRouteVersion(), userType).Render(r.Context(), w)
+		case "POST":
+			w.Header().Set("HX-Redirect", "/v1/consumer/dashboard") // REMINDER: Make the redirect Dynamic
+			w.WriteHeader(http.StatusOK)
+		default:
+			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		}
+
+	})
+
+	consumerRouteStruct := struct {
+		dashboard struct {
+			dashboard   http.HandlerFunc
+			information http.HandlerFunc
+		}
+	}{
+		dashboard: struct {
+			dashboard   http.HandlerFunc
+			information http.HandlerFunc
+		}{
+			dashboard: func(w http.ResponseWriter, r *http.Request) {
+				switch r.Method {
+				case "GET":
+					web.ConsumerPage().Render(r.Context(), w)
+				default:
+					http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+				}
+			},
+			information: func(w http.ResponseWriter, r *http.Request) {
+				// // Extract the part after "/sysadmin/consumer/"
+				// pathPart := strings.TrimPrefix(r.URL.Path, "/sysadmin/dashboard/")
+				// // Split to handle nested paths, take the first segment
+				// formType := strings.SplitN(pathPart, "/", 2)[0]
+			},
+		},
+	}
+
+	mux.HandleFunc("/dashboard", consumerRouteStruct.dashboard.dashboard)
+	mux.HandleFunc("/dashboard/", consumerRouteStruct.dashboard.information)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
 		web.NotFound().Render(r.Context(), w)
-	})
-
-	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-
-		// Inside your handler function
-		userType := r.URL.Query().Get("user_type")
-
-		web.LoginWebPage(c.Deps.GetDefaultRouteVersion(), userType).Render(r.Context(), w)
-	})
-
-	mux.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
-
-		web.ConsumerDashboardWebPage().Render(r.Context(), w)
 	})
 
 	return mux
@@ -96,9 +133,10 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 	})
 
 	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		userType := r.URL.Query().Get("user_type")
+
 		switch r.Method {
 		case "GET":
-			userType := r.URL.Query().Get("user_type")
 			web.LoginWebPage(c.Deps.GetDefaultRouteVersion(), userType).Render(r.Context(), w)
 		case "POST":
 			w.Header().Set("HX-Redirect", "/v1/employee/sysadmin/dashboard") // REMINDER: Make the redirect Dynamic
@@ -155,60 +193,31 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 				case "GET":
 					switch formType {
 					case "meter-list":
-						smartmeters := []models.SmartMeterDocument{
-							{
-								ID:        "SM001",
-								Number:    "Smart Meter 1",
-								Location:  "Calatagan",
-								Latitude:  13.838432,
-								Longitude: 120.632360,
-								Status:    "active",
-								Alert: []models.Alert{
-									{
-										ID:        "000000000",
-										Type:      models.AlertTypePowerOutage,
-										Timestamp: "1747312676",
-										Status:    models.AlertStatusActive,
-									},
-								},
-							},
-							{
-								ID:        "SM002",
-								Number:    "Smart Meter 2",
-								Location:  "Calatagan",
-								Latitude:  13.839147,
-								Longitude: 120.632257,
-								Status:    "active",
-							},
-							{
-								ID:        "SM003",
-								Number:    "Meter 3",
-								Location:  "Calatagan",
-								Latitude:  13.838002,
-								Longitude: 120.632220,
-								Status:    "inactive",
-								Alert: []models.Alert{
-									{
-										ID:        "000000001",
-										Type:      models.AlertTypePowerOutage,
-										Timestamp: "1747312676",
-										Status:    models.AlertStatusActive,
-									},
-								},
-							},
-							{
-								ID:        "SM002",
-								Number:    "Meter 4",
-								Location:  "Calatagan",
-								Latitude:  13.837288,
-								Longitude: 120.632164,
-								Status:    "inactive",
-							},
+						ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+						defer cancel()
+
+						svc := database.New()
+
+						cursorFind, errFindMany := svc.FindMany(ctx, "meters", bson.M{"isActive": true})
+						if errFindMany != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Error fetching active meters: %v", errFindMany)
+							http.Error(w, "Internal server error", http.StatusInternalServerError)
+							return
 						}
+						defer cursorFind.Close(ctx)
+
+						var smartmeters []bson.M
+						if err := cursorFind.All(ctx, &smartmeters); err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Error decoding cursor: %v", err)
+							http.Error(w, "Internal server error", http.StatusInternalServerError)
+							return
+						}
+
 						w.Header().Set("Content-Type", "application/json")
 						if err := json.NewEncoder(w).Encode(smartmeters); err != nil {
+							c.Deps.GetLogger().Sugar().Errorf("Error encoding JSON: %v", err)
 							http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
-							fmt.Println("Error:", err)
+							return
 						}
 
 					default:
@@ -389,10 +398,12 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							form_meterLatitude := r.FormValue("create-meter-latitude")
 							form_meterLongitude := r.FormValue("create-meter-longitude")
 							form_consumerAccNo := r.FormValue("create-consumer-acc-no")
+							form_meterAddress := r.FormValue("create-meter-address")
 
 							// Validate required fields
 							if form_meterNo == "" || form_meterInstallationDate == "" || form_consumerTransformerId == "" ||
-								form_meterLatitude == "" || form_meterLongitude == "" || form_consumerAccNo == "" {
+								form_meterLatitude == "" || form_meterLongitude == "" || form_consumerAccNo == "" ||
+								form_meterAddress == "" {
 								w.Header().Set("Content-Type", "application/json")
 								w.WriteHeader(http.StatusBadRequest)
 								json.NewEncoder(w).Encode(map[string]string{
@@ -461,15 +472,19 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							defer cancel()
 
 							bsonData, err_bson := bson.Marshal(models.MeterDocument{
-								ID:                    meterNo,
 								MeterNumber:           meterNo,
 								ConsumerAccNo:         consumerAccNo,
 								InstallationDate:      meterInstallationDate,
 								ConsumerTransformerID: consumerTransformerId,
 								Coordinates:           []float64{meterLongitude, meterLatitude},
+								Address:               form_meterAddress,
 								IsActive:              true,
 								SmartMeter: models.SmartMeter{
-									UsageKwh: 79.00,
+									IsActive:              false,
+									Alert:                 nil,
+									UsageKwh:              79.00,
+									ReadingHistory30days:  nil,
+									ReadingHistory24hours: nil,
 								},
 							})
 
@@ -706,6 +721,8 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							http.NotFound(w, r)
 							return
 						}
+
+						// FIXME: update this code according to the new data structure
 
 						switch subpath := pathParts[1]; subpath {
 						case "update-meter-form":
@@ -1893,14 +1910,19 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							{"$unwind": bson.M{"path": "$balances", "preserveNullAndEmptyArrays": true}},
 							{
 								"$project": bson.M{
-									"_id":     1,
+									"_id": 1,
+
 									"acctNum": 1,
 									"consumerName": bson.M{
 										"$concat": []string{"$firstName", " ", "$lastName"},
 									},
-									"consumerType":    "Commercial", // Adjust if source field exists
+									"consumerType":    "Commercial", // adjust if you have a real source field
 									"isActive":        "$isActive",
-									"lastPaymentDate": nil, // Populate if payment data exists
+									"lastPaymentDate": time.Now().UTC(),
+
+									// -------------------------------
+									// CURRENT BILL (unchanged)
+									// -------------------------------
 									"currentBill": bson.M{
 										"$cond": bson.M{
 											"if": "$balances.currentBill",
@@ -1935,7 +1957,7 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 												"charges": bson.M{
 													"amountDue":   "$balances.currentBill.charges.amountDue",
 													"usedKwH":     "$balances.currentBill.charges.usedKwH",
-													"rates":       bson.M{}, // Empty object
+													"rates":       bson.M{}, // leave empty or reshape if needed
 													"overdueFees": nil,
 												},
 												"isPaid": "$balances.currentBill.isPaid",
@@ -1943,9 +1965,165 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 											"else": nil,
 										},
 									},
-									"overdueBill":    []interface{}{}, // Empty array
-									"billHistory":    []interface{}{}, // Empty array
-									"paymentHistory": []interface{}{}, // Empty array
+
+									// -------------------------------
+									// OVERDUE BILL
+									// -------------------------------
+									"overdueBill": bson.M{
+										"$cond": bson.M{
+											"if": bson.M{
+												// If balances.overdueBill is missing, treat as []
+												"$gt": []interface{}{
+													bson.M{
+														"$size": bson.M{
+															"$ifNull": []interface{}{"$balances.overdueBill", []interface{}{}},
+														},
+													},
+													0,
+												},
+											},
+											"then": bson.M{
+												"$map": bson.M{
+													"input": "$balances.overdueBill",
+													"as":    "bill",
+													"in": bson.M{
+														"billId": "$$bill.billId",
+														"issueDate": bson.M{
+															"$dateToString": bson.M{
+																"format": "%Y-%m-%dT%H:%M:%SZ",
+																"date":   "$$bill.issueDate",
+															},
+														},
+														"dueDate": bson.M{
+															"$dateToString": bson.M{
+																"format": "%Y-%m-%dT%H:%M:%SZ",
+																"date":   "$$bill.dueDate",
+															},
+														},
+														"duration": bson.M{
+															"start": bson.M{
+																"$dateToString": bson.M{
+																	"format": "%Y-%m-%dT%H:%M:%SZ",
+																	"date":   "$$bill.duration.start",
+																},
+															},
+															"end": bson.M{
+																"$dateToString": bson.M{
+																	"format": "%Y-%m-%dT%H:%M:%SZ",
+																	"date":   "$$bill.duration.end",
+																},
+															},
+														},
+														"charges": bson.M{
+															"amountDue":   "$$bill.charges.amountDue",
+															"usedKwH":     "$$bill.charges.usedKwH",
+															"rates":       "$$bill.charges.rates",
+															"overdueFees": "$$bill.charges.overdueFees",
+														},
+														"isPaid": "$$bill.isPaid",
+													},
+												},
+											},
+											"else": []interface{}{},
+										},
+									},
+
+									// -------------------------------
+									// BILL HISTORY
+									// -------------------------------
+									"billHistory": bson.M{
+										"$cond": bson.M{
+											"if": bson.M{
+												"$gt": []interface{}{
+													bson.M{
+														"$size": bson.M{
+															"$ifNull": []interface{}{"$balances.billHistory", []interface{}{}},
+														},
+													},
+													0,
+												},
+											},
+											"then": bson.M{
+												"$map": bson.M{
+													"input": "$balances.billHistory",
+													"as":    "bill",
+													"in": bson.M{
+														"billId": "$$bill.billId",
+														"issueDate": bson.M{
+															"$dateToString": bson.M{
+																"format": "%Y-%m-%dT%H:%M:%SZ",
+																"date":   "$$bill.issueDate",
+															},
+														},
+														"dueDate": bson.M{
+															"$dateToString": bson.M{
+																"format": "%Y-%m-%dT%H:%M:%SZ",
+																"date":   "$$bill.dueDate",
+															},
+														},
+														"duration": bson.M{
+															"start": bson.M{
+																"$dateToString": bson.M{
+																	"format": "%Y-%m-%dT%H:%M:%SZ",
+																	"date":   "$$bill.duration.start",
+																},
+															},
+															"end": bson.M{
+																"$dateToString": bson.M{
+																	"format": "%Y-%m-%dT%H:%M:%SZ",
+																	"date":   "$$bill.duration.end",
+																},
+															},
+														},
+														"charges": bson.M{
+															"amountDue":   "$$bill.charges.amountDue",
+															"usedKwH":     "$$bill.charges.usedKwH",
+															"rates":       "$$bill.charges.rates",
+															"overdueFees": "$$bill.charges.overdueFees",
+														},
+														"isPaid": "$$bill.isPaid",
+													},
+												},
+											},
+											"else": []interface{}{},
+										},
+									},
+
+									// -------------------------------
+									// PAYMENT HISTORY
+									// -------------------------------
+									"paymentHistory": bson.M{
+										"$cond": bson.M{
+											"if": bson.M{
+												"$gt": []interface{}{
+													bson.M{
+														"$size": bson.M{
+															"$ifNull": []interface{}{"$balances.paymentHistory", []interface{}{}},
+														},
+													},
+													0,
+												},
+											},
+											"then": bson.M{
+												"$map": bson.M{
+													"input": "$balances.paymentHistory",
+													"as":    "payment",
+													"in": bson.M{
+														"transactionId": "$$payment.transactionId",
+														"billIds":       "$$payment.billIds",
+														"date": bson.M{
+															"$dateToString": bson.M{
+																"format": "%Y-%m-%dT%H:%M:%SZ",
+																"date":   "$$payment.date",
+															},
+														},
+														"amount": "$$payment.amount",
+													},
+												},
+											},
+											"else": []interface{}{},
+										},
+									},
 								},
 							},
 						}
@@ -2002,12 +2180,77 @@ func (c *V1EmployeeRoute) HandleV1() http.Handler {
 							return
 						}
 						c.Deps.GetLogger().Sugar().Infof("Received valid payload: %+v", payload)
+
+						// Process Data
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+						defer cancel()
+						svc := database.New()
+
+						payment := models.PaymentHistory{
+							TransactionId: internal.GenerateUUIDBillingID(),
+							BillIds:       payload.BillIds,
+							Date:          time.Now().UTC(),
+							Amount:        payload.TotalAmount,
+						}
+
+						updateData := bson.M{
+							"$set": bson.M{
+								"currentBill.isPaid": true,
+							},
+							"$push": bson.M{
+								"paymentHistory": bson.M{
+									"$each": []bson.M{
+										{
+											"transactionId": payment.TransactionId,
+											"billIds":       payment.BillIds,
+											"date":          payment.Date,
+											"amount":        payment.Amount,
+										},
+									},
+								},
+							},
+						}
+
+						accNoInt, err := strconv.Atoi(payload.AccountNumber)
+						if err != nil {
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusBadRequest)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Invalid Account number format",
+							})
+							return
+						}
+
+						updateResult, err := svc.UpdateOne(ctx, "balances", bson.M{"acctNum": accNoInt}, updateData)
+						if err != nil {
+							logger.Sugar().Errorf("Update failed: %v", err)
+							w.Header().Set("Content-Type", "application/json")
+							w.WriteHeader(http.StatusInternalServerError)
+							json.NewEncoder(w).Encode(map[string]string{
+								"error": "Internal server error",
+							})
+							return
+						}
+
+						if updateResult.MatchedCount == 0 {
+							// return an error
+							w.WriteHeader(http.StatusInternalServerError)
+							w.Header().Set("Content-Type", "application/json")
+							json.NewEncoder(w).Encode(map[string]interface{}{
+								"errro": "No Matched Document",
+							})
+							return
+						}
+
+						logger.Sugar().Infof("Updated %d document(s)", updateResult.ModifiedCount)
+
 						w.WriteHeader(http.StatusOK)
 						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(map[string]interface{}{
-							"amount":        payload.TotalAmount,
+							"amount":        payment.Amount,
 							"accountNumber": payload.AccountNumber,
-							"date":          time.Now(),
+							"date":          payment.Date,
+							"transactionId": payment.TransactionId,
 						})
 
 					default:
